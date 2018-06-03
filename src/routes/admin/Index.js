@@ -3,7 +3,8 @@ import {connect} from 'dva';
 import {Table,Button} from "antd";
 import {Route} from "dva/router";
 import AdminHeader from "../../components/header/Header";
-
+import MainNavs from
+"../../components/mainNavs/MainNavs";
 
 class AdminIndex extends React.Component{
   constructor(){
@@ -21,18 +22,15 @@ class AdminIndex extends React.Component{
   render(){
     return (
       <div>
-
-       <div>
        {
          //this.props.products.age
        }
         <AdminHeader/>
-       </div>
-       <Button size="small" onClick={this.changeInfo.bind(this,1)}>ooo</Button>
+       <MainNavs/>
        {
+         //<Button size="small" onClick={this.changeInfo.bind(this,1)}>ooo</Button>
          //<Route path="/admin/game" component={Game}/>
        }
-
       </div>
     )
   }
