@@ -1,37 +1,32 @@
 import React from "react";
 import {connect} from 'dva';
-import {Table,Button} from "antd";
+import {Table,Button,Layout} from "antd";
 import {Route} from "dva/router";
 import AdminHeader from "../../components/header/Header";
 import MainNavs from
 "../../components/mainNavs/MainNavs";
+import styles from "./Index.scss";
+import Game from "./game/Game";
+const { Header, Footer, Sider, Content } = Layout;
 
 class AdminIndex extends React.Component{
   constructor(){
     super();
-    this.state={
-      age:666
-    }
-  }
-   changeInfo(id){
-    // this.props.dispatch({
-    //   type:'products/delete',
-    //   id:id
-    // });
   }
   render(){
     return (
-      <div>
-       {
-         //this.props.products.age
-       }
-        <AdminHeader/>
-       <MainNavs/>
-       {
-         //<Button size="small" onClick={this.changeInfo.bind(this,1)}>ooo</Button>
-         //<Route path="/admin/game" component={Game}/>
-       }
-      </div>
+      <Layout style={{ minHeight:'100vh'}}>
+       <Sider className={styles.navs}>
+         <div className={styles.logo}></div>
+         <MainNavs/>
+       </Sider>
+       <Layout>
+        <Header className={styles.header}><AdminHeader/></Header>
+        <Content className={styles.contents}>
+          <Route path="/admin/game" component={Game} />
+        </Content>
+       </Layout>
+      </Layout>
     )
   }
 }

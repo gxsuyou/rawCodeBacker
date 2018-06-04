@@ -3,13 +3,11 @@ import { connect } from 'dva';
 import styles from './IndexPage.scss';
 import {Button,Form, Input,Icon,message} from "antd";
 import config from "../common/config.js";
-import axios from "axios-es6";
 import fetch from "../utils/request.js";
 const FormItem = Form.Item;
 message.config({
   maxCount:1,
 })
-
 
 class IndexPage extends React.Component{
   constructor(){
@@ -24,16 +22,12 @@ class IndexPage extends React.Component{
      message.error("用户名或密码不能为空");
      return false;
    }
-
     fetch(config.url_login,
       {method:"POST",
       headers: {
       'Content-Type':'application/x-www-form-urlencoded' // 指定提交方式为表单提交
       },
-      body:JSON.stringify({
-       name:this.state.user,
-       pwd:this.state.pwd
-     })
+      body:`name=${this.state.user}&pwd=${this.state.pwd}`
    }
   )
     .then((res)=>{
@@ -41,7 +35,7 @@ class IndexPage extends React.Component{
          //登录成功
          window.location="/#/admin";
          this.props.dispatch({
-           type:"adminIndex/loginTrue",
+           type:"adminIndex/loginToggle",
            user:this.state.user,
            loginTrue:true
          })
@@ -54,7 +48,6 @@ class IndexPage extends React.Component{
     })
   }
   componentWillUnmount(){
-    //console.log(this.props.adminIndex.login);
     if(this.props.adminIndex.login){
 
     }else{

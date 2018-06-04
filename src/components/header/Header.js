@@ -1,36 +1,31 @@
 import React from "react";
-import {Menu,Icon,Popover,Layout,Button} from 'antd';
+import {Menu,Icon,Popover,Button} from 'antd';
 import styles from "./Header.scss";
+import {connect} from "dva";
 const { SubMenu } = Menu;
 class AdminHeader extends React.Component{
+  loginOut(){
+    //退出
+    this.props.dispatch({
+      type:"adminIndex/loginToggle",
+      user:"",
+      loginTrue:false
+    })
+    window.location="/#/";
+  }
   render(){
     return (
-      <Layout.Header className={styles.header}>
         <div className={styles.rightWarpper}>
             <div>
              <Icon type="user"/>
-             <span className={styles.names}>Andy</span>
+             <span className={styles.names}>{this.props.adminIndex.user}</span>
             </div>
-            <Button className={styles.outPut}>注销</Button>
+            <Button onClick={this.loginOut.bind(this)} className={styles.outPut}>注销</Button>
         </div>
-      </Layout.Header>
     )
   }
 }
 
-
-// <SubMenu
-//   style={{
-//     float: 'right',
-//   }}
-//   title={<span>
-//     <Icon type="user" />
-//     {
-//       //user.username
-//     }
-//     andy
-//   </span>}
-// >
-// </SubMenu>
-
-export default AdminHeader;
+export default connect(({adminIndex})=>({
+  adminIndex
+}))(AdminHeader);

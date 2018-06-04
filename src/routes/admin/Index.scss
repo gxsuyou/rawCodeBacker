@@ -1,0 +1,25 @@
+.header{
+  box-shadow:4px 4px 40px 0 rgba(0,0,0,0.05);
+  position: relative;
+  display: flex;
+  justify-content:flex-end;
+  height: 40px;
+  z-index: 9;
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+}
+.navs{
+  background-color:#fff;
+  border-right: 1px solid #e8e8e8;
+}
+.contents{
+  background-color: #f3f9f9;
+  height: 100%;
+}
+
+.logo{
+  height: 48px;
+  background:url("../../assets/logo.png") no-repeat 0 0 /100% 48px;
+  margin: 16px;
+}
