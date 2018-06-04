@@ -23,13 +23,22 @@ class MainNavs extends React.Component{
        >
           <SubMenu key="sub1" title={<span><Icon type="setting" /><span>游戏管理</span></span>}>
            <Menu.Item key="1">
-            <Link to="/admin/Game">游戏</Link>
+            <Link to="/admin/game">游戏</Link>
            </Menu.Item>
-           <Menu.Item key="2">推荐位</Menu.Item>
-           <Menu.Item key="3">专题</Menu.Item>
-           <Menu.Item key="4">标题</Menu.Item>
+           <Menu.Item key="2">
+             <Link to="/admin/recommend">
+             推荐位</Link>
+           </Menu.Item>
+           <Menu.Item key="3">
+            <Link to="/admin/tag">专题</Link>
+            </Menu.Item>
+           <Menu.Item key="4">
+            <Link to="/admin/title">
+             标签
+            </Link>
+           </Menu.Item>
          </SubMenu>
-         <SubMenu key="sub2" title={<span><Icon type="mail" /><span>Navigation One</span></span>}>
+         <SubMenu key="sub2" title={<span><Icon type="setting" /><span>咨询管理</span></span>}>
           <Menu.Item key="5">Option 5</Menu.Item>
           <Menu.Item key="6">Option 6</Menu.Item>
           <Menu.Item key="7">Option 7</Menu.Item>
