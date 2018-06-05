@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
 import styles from './IndexPage.scss';
-import {Button,Form, Input,Icon,message} from "antd";
+import {Button,Form,Input,Icon,message} from "antd";
 import config from "../common/config.js";
 import fetch from "../utils/request.js";
 const FormItem = Form.Item;
@@ -33,7 +33,7 @@ class IndexPage extends React.Component{
     .then((res)=>{
        if(res.data.state){
          //登录成功
-         window.location="/#/admin";
+         window.location="/#/admin/game";
          this.props.dispatch({
            type:"adminIndex/loginToggle",
            user:this.state.user,
@@ -47,13 +47,13 @@ class IndexPage extends React.Component{
       message.error('网络错误，请重试!');
     })
   }
-  componentWillUnmount(){
-    if(this.props.adminIndex.login){
-
-    }else{
-      window.location="/#/";
-    }
- }
+ //  componentWillUnmount(){
+ //    if(this.props.adminIndex.login){
+ //
+ //    }else{
+ //      window.location="/#/";
+ //    }
+ // }
   render(){
     const { getFieldDecorator } = this.props.form;
     return(

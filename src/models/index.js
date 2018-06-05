@@ -12,6 +12,5 @@ export default {
      "loginToggle"(state,payload){
        return {...state,login:payload.loginTrue,user:payload.user}
      }
-
   }
 }

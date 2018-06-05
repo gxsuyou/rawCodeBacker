@@ -6,4 +6,26 @@
 }
 .table tr{
   height:60px;
+  text-align:center;
+}
+
+.table tr th{
+  text-align:center;
+}
+.tableOperations{
+  margin-top:10px;
+  margin-bottom:10px;
+  display:flex;
+  justify-content:flex-end;
+}
+.tableOperations button{
+  margin-right:30px;
+}
+
+.button Button{
+  margin:0 3px;
+}
+
+.InputGroup>span{
+  margin:10px 0;
 }

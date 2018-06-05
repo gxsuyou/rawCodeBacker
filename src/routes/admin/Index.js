@@ -14,8 +14,13 @@ import Title from "./title/Title";
 const { Header, Footer, Sider, Content } = Layout;
 
 class AdminIndex extends React.Component{
-  constructor(){
-    super();
+  componentWillMount(){
+    console.log(this.props.adminIndex.login);
+    if(this.props.adminIndex.login){
+
+    }else{
+      window.location="/#/";
+    }
   }
   render(){
     return (
@@ -44,29 +49,6 @@ class AdminIndex extends React.Component{
   }
 }
 
-// const Products=({dispatch,products,match})=>{
-//   function constructor(){
-//     console.log(1)
-//   }
-//   function hand(id){
-//     dispatch({
-//       type:"products/delete",
-//       payload:id
-//     });
-//   }
-//     return (
-//       <div>
-//          <h2>List of admin</h2>
-//          {
-//           //  <Popconfirm >
-//           //  <Button >111</Button>
-//           // </Popconfirm>
-//            //<Button onClick={hand(id)}>按钮</Button>
-//          }
-//           <Route path="/game" component={Game} />
-//        </div>
-//     )
-// }
 
 
 export default connect(({adminIndex})=>({

@@ -39,16 +39,19 @@ class MainNavs extends React.Component{
            </Menu.Item>
          </SubMenu>
          <SubMenu key="sub2" title={<span><Icon type="setting" /><span>咨询管理</span></span>}>
-          <Menu.Item key="5">Option 5</Menu.Item>
-          <Menu.Item key="6">Option 6</Menu.Item>
-          <Menu.Item key="7">Option 7</Menu.Item>
-          <Menu.Item key="8">Option 8</Menu.Item>
+          <Menu.Item key="5">资讯</Menu.Item>
+          <Menu.Item key="6">头部游戏设置</Menu.Item>
+          <Menu.Item key="7">横向游戏设置</Menu.Item>
         </SubMenu>
-        <SubMenu key="sub3" title={<span><Icon type="setting" /><span>Navigation Three</span></span>}>
-          <Menu.Item key="9">Option 9</Menu.Item>
-          <Menu.Item key="10">Option 10</Menu.Item>
-          <Menu.Item key="11">Option 11</Menu.Item>
-          <Menu.Item key="12">Option 12</Menu.Item>
+        <SubMenu key="sub3" title={<span><Icon type="setting" /><span>H5游戏管理</span></span>}>
+          <Menu.Item key="8">H5</Menu.Item>
+        </SubMenu>
+        <SubMenu key="sub4" title={<span><Icon type="setting" /><span>攻略管理</span></span>}>
+          <Menu.Item key="9">攻略</Menu.Item>
+        </SubMenu>
+        <SubMenu key="sub5" title={<span><Icon type="setting" /><span>渠道管理</span></span>}>
+        </SubMenu>
+        <SubMenu key="sub5" title={<span><Icon type="setting" /><span>超级管理</span></span>}>
         </SubMenu>
        </Menu>
     )
