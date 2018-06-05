@@ -76,6 +76,7 @@ class Game extends React.Component{
     console.log(this.state.MainData);
   }
   componentWillMount(){
+    return false;
     fetch(config.url_getAdminGame)
     .then((res)=>{
       var i=1;
