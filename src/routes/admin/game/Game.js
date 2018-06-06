@@ -4,7 +4,7 @@ import styles from "./Game.scss";
 import fetch from "../../../utils/request.js";
 import config from "../../../common/config.js";
 import fetchs from "../../../utils/request.js";
-import AddToGameBox from "../../../components/gameBox/AddToGameBox";
+import TagBox from "../../../components/gameBox/AddToGameBox";
 class Game extends React.Component{
   state={
       checkAll:true,
@@ -22,7 +22,7 @@ class Game extends React.Component{
       editorMessageGameSize:"",
       editorMessageId:"",
       //add
-      addToGameVisible:false,
+      tagBoxVision:false,
       plainOptions:[],
       defaultOption:[],
       titleData:[{
@@ -65,7 +65,7 @@ class Game extends React.Component{
           <span className={styles.button}>
            <Button  onClick={this.showModalEditorMessage.bind(this,record.id,record.game_name)}>编辑信息</Button>
            <Button >上传数据</Button>
-           <Button >标签</Button>
+           <Button onClick={()=>{this.setState({tagBoxVision:true})}} >标签</Button>
            <Button onClick={this.deleteData.bind(this,record.key,record.id)} type="danger" >删除</Button>
           </span>
         )
@@ -106,10 +106,13 @@ class Game extends React.Component{
 
      this.setState({
        //EditorMessageTitle:res.data.cls[0].cls_name,
+       //...this.state,
        editorMessageId:id,
        editorMessageVisible:true,
-       editorMessageGameName:gameName
+       editorMessageGameName:gameName,
+       tagBoxVision:false,
      });
+     console.log(2);
    //})
   }
   handleOk(){
@@ -232,11 +235,7 @@ class Game extends React.Component{
         }
        </Input.Group>
       </Modal>
-      {
-       //  <AddToGameBox/>
-       }
-
-
+      <TagBox tagBoxVision={this.state.tagBoxVision}/>
      </div>
     )
   }

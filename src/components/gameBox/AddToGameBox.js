@@ -1,21 +1,25 @@
 import react from "react";
 import {Modal,Button} from "antd";
-class AddToGameBox extends react.Component{
+class TagBox extends react.Component{
   state={
-    visible:false
+    visible:this.props.tagBoxVision
   }
   onModal(){
+    console.log(1)
+  }
+  componentWillReceiveProps(){
     this.setState({
-      visible:true
+      visible:this.props.tagBoxVision
     })
+    console.log(this.props.tagBoxVision)
   }
   render(){
     return(
       <div>
-        <Button onClick={this.onModal.bind(this)} />
+        <Button onClick={this.onModal.bind(this)}> ok</Button>
         <Modal
-        onOK={this.onModal.bind(this)}
-        onCancel={()=>{console.log(1)}}
+        onOk={this.onModal.bind(this)}
+        onCancel={()=>{this.setState({visible:false})}}
         visible={this.state.visible}
         >
           <p>thank</p>
@@ -25,4 +29,4 @@ class AddToGameBox extends react.Component{
   }
 }
 
-export default AddToGameBox;
+export default TagBox;
