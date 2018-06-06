@@ -15,7 +15,7 @@ class MainNavs extends React.Component{
   render(){
     return(
        <Menu
-        defaultSelectedKeys={[1]}
+
         defaultOpenKeys={['sub1','sub2','sub3']}
         mode="inline"
         inlineCollapsed={this.state.collapsed}
@@ -51,7 +51,7 @@ class MainNavs extends React.Component{
         </SubMenu>
         <SubMenu key="sub5" title={<span><Icon type="setting" /><span>渠道管理</span></span>}>
         </SubMenu>
-        <SubMenu key="sub5" title={<span><Icon type="setting" /><span>超级管理</span></span>}>
+        <SubMenu key="sub6" title={<span><Icon type="setting" /><span>超级管理</span></span>}>
         </SubMenu>
        </Menu>
     )
