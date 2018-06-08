@@ -1,6 +1,8 @@
 import React from "react";
 import {Select,Table,Icon,Modal,Button,Input} from 'antd';
 import styles from "./Recommend.scss";
+import fetchs from "../../../utils/request.js";
+import config from "../../../common/config";
 const Search =Input.Search;
 const Option = Select.Option;
 const data = [{
@@ -32,40 +34,32 @@ const selectBefore = (
 class Recommend extends React.Component{
   state={
     visible:false,
+    loading:false,
     columns:[
       {title:'序号',
       dataIndex:'key',
       key:'key',
-      // render:text=><a href="javascript:;">
-      //  {text}</a>
      },{
        title:'ID',
        dataIndex:'id',
-       key:'id'
      },{
        title:'活动名',
        dataIndex:'active',
-       key:'active'
      },{
        title:'标题',
        dataIndex:'title',
-       key:'key'
      },{
        title:'排列',
        dataIndex:"row",
-       key:'row'
      },{
        title:'活动图片地址',
        dataIndex:'imgSrc',
-       key:'imgSrc'
      },{
        title:'状态',
        dataIndex:'status',
-       key:'status'
      },{
        title:'推荐位类型',
        dataIndex:'recommendType',
-       key:'recommendType'
      },{
        title:"操作",
        key:'action',
@@ -76,10 +70,42 @@ class Recommend extends React.Component{
         </span>
        )
      }
-    ]
+   ],
+   mainData:[],
+   pagination:{}
   }
 
+ componentWillMount(){
+   this.setState({
+     loading:true
+   })
 
+   fetchs(`${config.url_admin}/active?start=0`)
+   .then((res)=>{
+     console.log(res.data);
+     var i =1;
+     res.data.result.forEach((item)=>{
+       this.state.mainData.push({
+         key:i++,
+         id:item.game_id,
+         imgSrc:item.active_img,
+         title:item.title,
+         recommendType:item.type
+       });
+
+     });
+     const pagination={...this.state.pagination};
+     pagination.total=res.data.totalPage*10;
+     this.setState({
+       loading:false,
+       pagination
+     })
+     console.log(this.state.mainData);
+   })
+ }
+  addGameModel(){
+
+  }
   showModal = (v) => {
     console.log(v);
     this.setState({
@@ -98,8 +124,8 @@ class Recommend extends React.Component{
       visible: false,
     });
   }
-  addGameModel(){
-
+  handleTableChange(e){
+      console.log(e);
   }
   render(){
     return(
@@ -114,17 +140,23 @@ class Recommend extends React.Component{
         <Button onClick={this.addGameModel.bind(this)} type="primary">添加</Button>
        </div>
        <Table
-       columns={this.state.columns} dataSource={data} />
-       <Modal
-          title="Basic Modal"
-          visible={this.state.visible}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
-        >
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-        </Modal>
+       columns={this.state.columns} dataSource={this.state.mainData}
+       pagination={this.state.pagination} onChange={this.handleTableChange}
+       />
+       {
+       // <Modal
+       //    title="Basic Modal"
+       //    visible={this.state.visible}
+       //    onOk={this.handleOk}
+       //    onCancel={this.handleCancel}
+       //    pagination={2}
+       //    loading={this.state.loading}
+       //  >
+       //    <p>Some contents...</p>
+       //    <p>Some contents...</p>
+       //    <p>Some contents...</p>
+       //  </Modal>
+        }
       </div>
     )
   }

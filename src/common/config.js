@@ -2,9 +2,10 @@
 
 console.log(process.env.NODE_ENV);
 if(process.env.NODE_ENV=="development"){
-  var url_1="http://192.168.0.104:8080/";
+  // var url_1="http://192.168.2.117:9800/";
+  var url_1="http://127.0.0.1:8878/";
 }else{
-  var url_1="/";
+  var url_1="http://127.0.0.1:8878/";
 }
 
 

@@ -1,10 +1,10 @@
 import React from "react";
-import {Table,List,Card,Button,Modal,Input,Checkbox,Divider,message} from 'antd';
+import {Table,List,Card,Button,Modal,Input,Divider,message} from 'antd';
 import styles from "./Game.scss";
-import fetch from "../../../utils/request.js";
 import config from "../../../common/config.js";
 import fetchs from "../../../utils/request.js";
-import TagBox from "../../../components/gameBox/AddToGameBox";
+import TagBox from "../../../components/gameBox/TagBox";
+import AddBox from "../../../components/gameBox/AddBox";
 class Game extends React.Component{
   state={
       checkAll:true,
@@ -21,10 +21,10 @@ class Game extends React.Component{
       editorMessageHotPriority:"",
       editorMessageGameSize:"",
       editorMessageId:"",
-      //add
+      //tagBox
       tagBoxVision:false,
-      plainOptions:[],
-      defaultOption:[],
+      //addBox
+      addBoxVision:false,
       titleData:[{
         title: '序号',
         dataIndex:'key',
@@ -65,13 +65,21 @@ class Game extends React.Component{
           <span className={styles.button}>
            <Button  onClick={this.showModalEditorMessage.bind(this,record.id,record.game_name)}>编辑信息</Button>
            <Button >上传数据</Button>
-           <Button onClick={()=>{this.setState({tagBoxVision:true})}} >标签</Button>
+           <Button onClick={this.tagBoxVision.bind(this,record.id)}>标签</Button>
            <Button onClick={this.deleteData.bind(this,record.key,record.id)} type="danger" >删除</Button>
           </span>
         )
       }],
       MainData:[]
   }
+  tagBoxVision(id){
+    this.setState({
+      editorMessageId:id,
+      tagBoxVision:true
+    })
+  }
+
+  /*删除接口*/
   deleteData(key,id){
      fetchs(`${config.url_admin}/deleteGame?id=${id}`).
      then(res=>{
@@ -88,73 +96,76 @@ class Game extends React.Component{
        }
      });
   }
+
+  /* 打开编辑弹框初始化数据 */
   showModalEditorMessage(id,gameName){
-   // fetchs(`${config.url_adminGame}/gameAdminDetail?id=${id}`)
-   // .then((res)=>{
-   //    this.state.plainOptions=[];
-   //    for(let i=1;i<res.data.cls.length-1;i++){
-   //     if(res.data.cls[i].checked){
-   //       this.state.defaultOption.push(res.data.cls[i].cls_name);
-   //     }
-   //     this.state.plainOptions.push({
-   //       label:res.data.cls[i].cls_name,
-   //       value:res.data.cls[i].cls_name,
-   //       key:res.data.cls[i].id
-   //     });
-   //    }
-
-
      this.setState({
-       //EditorMessageTitle:res.data.cls[0].cls_name,
-       //...this.state,
        editorMessageId:id,
        editorMessageVisible:true,
        editorMessageGameName:gameName,
-       tagBoxVision:false,
+       tagBoxVision:false
      });
-     console.log(2);
-   //})
   }
   handleOk(){
-    //console.log(v);
-    //console.log(this.state.editorMessageUp,this.state.editorMessageGameName)
-    console.log(
-      this.state.editorMessageGameName,
-      this.state.editorMessageUp,
-      this.state.editorMessageVision,
-      this.state.editorMessageDownloadNum,
-      this.state.editorMessageIndexPriority,
-      this.state.editorMessageHotPriority,
-      this.state.editorMessageGameSize,
-      this.state.editorMessageId
-    );
+  const loadNum=this.state.editorMessageDownloadNum,
+  up=this.state.editorMessageUp,
+  IndexPriority=this.state.editorMessageIndexPriority,
+  HotPriority=this.state.editorMessageHotPriority,
+  GameSize=this.state.editorMessageGameSize,
+  GameName=this.state.editorMessageGameName,
+  MessageVision=this.state.editorMessageVision;
+ if(
+     MessageVision===""||
+     GameName===""||
+     GameSize===""||
+     HotPriority===""||
+     IndexPriority===""||
+     up===""||
+     loadNum===""
+   ){
+   message.error("不能留空!");
+   return false;
+ }
 
+  if(
+  Object.is(Number(loadNum),NaN)!=false||
+  Object.is(Number(up),NaN)!=false||
+  Object.is(Number(IndexPriority),NaN)!=false||
+  Object.is(Number(HotPriority),NaN)!=false||
+  Object.is(Number(GameSize),NaN)!=false
+    ){
+      message.error("必须输入数字!");
+      return false;
+    }
 
     fetchs(`${config.url_adminGame}/SetGameMsg`,{
     method:"POST",
     headers: {
       'Content-Type':'application/x-www-form-urlencoded' // 指定提交方式为表单提交
     },
-    body:`activation=${this.state.editorMessageUp}&company=${this.state.editorMessageCompanyName}&version=${this.state.editorMessageVision}&download_num${this.state.editorMessageDownloadNum}&sort=${this.state.editorMessageIndexPriority}&sort2=${this.state.editorMessageHotPriority}&size=${this.state.editorMessageGameSize}&id=${this.state.editorMessageId}`
-  })
-  .then((res)=>{
-    console.log(res);
-  })
-
-
-
+    body:`name=${  this.state.editorMessageGameName}&activation=${this.state.editorMessageUp}&company=${this.state.editorMessageCompanyName}&version=${this.state.editorMessageVision}&download_num=${this.state.editorMessageDownloadNum}&sort=${this.state.editorMessageIndexPriority}&sort2=${this.state.editorMessageHotPriority}&size=${this.state.editorMessageGameSize}&id=${this.state.editorMessageId}`
+     })
+    .then((res)=>{
+      if(res.data.state){
+         this.setState({
+           editorMessageVisible:false
+         });
+         this.fetch(this.state.currentPagination);
+      }else{
+        message.error("网络错误,请稍后提交!");
+      }
+    })
   }
+  /* 修改编辑弹框里的内容  */
   EditorMessageOnChange(choices,e){
     this.setState({
       [`editorMessage${choices}`]:e.target.value
-    })
-
+    });
   }
-  // onChange(checkedValues) {
-  //    console.log('checked = ', checkedValues);
-  // }
   addGameModel(){
-    console.log(this.state.MainData);
+    this.setState({
+      addBoxVision:true
+    });
   }
   handleTableChange=(pagination,filters,sorter)=>{
     this.setState({
@@ -162,12 +173,19 @@ class Game extends React.Component{
     })
     this.fetch(pagination.current);
   }
+
   componentWillMount(){
     this.fetch(1);
   }
+  handleTagBoxChange(e){
+    this.setState({
+        tagBoxVision:e,
+        addBoxVision:e
+    })
+  }
   fetch(p){
     this.setState({ loading: true });
-    fetch(`${config.url_getAdminGame}?p=${p}`)
+    fetchs(`${config.url_getAdminGame}?p=${p}`)
     .then((res)=>{
       var i=1;
       var c=[]
@@ -229,13 +247,13 @@ class Game extends React.Component{
          <Input addonBefore="首页优先级" onChange={this.EditorMessageOnChange.bind(this,"IndexPriority")}   placeholder="请输入首页优先级" />
          <Input addonBefore="热玩优先级" onChange={this.EditorMessageOnChange.bind(this,"HotPriority")} placeholder="请输入热玩优先级" />
          <Input addonBefore="游戏大小" onChange={this.EditorMessageOnChange.bind(this,"GameSize")} placeholder="输入游戏大小" />
-        {
-          //<Divider orientation="left">{this.state.EditorMessageTitle}</Divider>
-         //<Checkbox.Group options={this.state.plainOptions} defaultValue={this.state.defaultOption} onChange={this.onChange} styles={{marginTop:10}}></Checkbox.Group>
-        }
        </Input.Group>
       </Modal>
-      <TagBox tagBoxVision={this.state.tagBoxVision}/>
+      <TagBox tagBoxVision={this.state.tagBoxVision} id={this.state.editorMessageId} handleTagBoxChange={this.handleTagBoxChange.bind(this)}/>
+      {
+        /*添加的文本框*/
+      }
+      <AddBox addBoxVision={this.state.addBoxVision} handleAddBoxChange={this.handleTagBoxChange.bind(this)} fetch={this.fetch.bind(this)}/>
      </div>
     )
   }
