@@ -12,9 +12,11 @@
     "axios-es6": "^0.11.1",
     "babel-plugin-import": "^1.7.0",
     "dva": "^2.2.3",
+    "qiniu-js": "^2.2.2",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "sass": "^1.5.0"
+    "sass": "^1.5.0",
+    "scriptjs": "^2.5.8"
   },
   "devDependencies": {
     "babel-plugin-dva-hmr": "^0.3.2",

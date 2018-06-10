@@ -3,8 +3,11 @@ import {Table,List,Card,Button,Modal,Input,Divider,message} from 'antd';
 import styles from "./Game.scss";
 import config from "../../../common/config.js";
 import fetchs from "../../../utils/request.js";
+//盒子
 import TagBox from "../../../components/gameBox/TagBox";
 import AddBox from "../../../components/gameBox/AddBox";
+import UploadBox from "../../../components/gameBox/UploadBox";
+const Search =Input.Search;
 class Game extends React.Component{
   state={
       checkAll:true,
@@ -25,6 +28,8 @@ class Game extends React.Component{
       tagBoxVision:false,
       //addBox
       addBoxVision:false,
+      //UploadBox
+      uploadBoxVision:false,
       titleData:[{
         title: '序号',
         dataIndex:'key',
@@ -64,7 +69,7 @@ class Game extends React.Component{
         render:(text,record)=>(
           <span className={styles.button}>
            <Button  onClick={this.showModalEditorMessage.bind(this,record.id,record.game_name)}>编辑信息</Button>
-           <Button >上传数据</Button>
+           <Button  onClick={this.UploadVision.bind(this,record.id)}>上传数据</Button>
            <Button onClick={this.tagBoxVision.bind(this,record.id)}>标签</Button>
            <Button onClick={this.deleteData.bind(this,record.key,record.id)} type="danger" >删除</Button>
           </span>
@@ -72,6 +77,13 @@ class Game extends React.Component{
       }],
       MainData:[]
   }
+  UploadVision(id){
+    this.setState({
+      uploadBoxVision:true,
+      editorMessageId:id
+    })
+  }
+
   tagBoxVision(id){
     this.setState({
       editorMessageId:id,
@@ -148,7 +160,15 @@ class Game extends React.Component{
     .then((res)=>{
       if(res.data.state){
          this.setState({
-           editorMessageVisible:false
+           editorMessageVisible:false,
+           editorMessageUp:"",
+           editorMessageCompanyName:"",
+           editorMessageVision:"",
+           editorMessageDownloadNum:"",
+           editorMessageIndexPriority:"",
+           editorMessageHotPriority:"",
+           editorMessageGameSize:"",
+           editorMessageId:""
          });
          this.fetch(this.state.currentPagination);
       }else{
@@ -180,7 +200,8 @@ class Game extends React.Component{
   handleTagBoxChange(e){
     this.setState({
         tagBoxVision:e,
-        addBoxVision:e
+        addBoxVision:e,
+        uploadBoxVision:e
     })
   }
   fetch(p){
@@ -216,11 +237,56 @@ class Game extends React.Component{
       })
     })
   }
+  searchName(e){
+    if(e==""){
+      //message.error("选择框不能为空");
+      this.fetch(1);
+      return false;
+    }
+    fetchs(`${config.url_admin}/searchGameByMsg?type=game_name&msg=${e}`)
+    .then((res)=>{
+        this.setState({
+          MainData:[]
+        });
+        var i=1;
+        var up,sys;
+        res.data.game.forEach((item)=>{
+          item.activation?up="是":up="否";
+          item.sys==2?sys="Android":sys="ios";
+           this.state.MainData.push({
+             key:i++,
+             game_name:item.game_name,
+             id:item.id,
+             up:up,
+             sys:sys,
+             gameDetail:`游戏公司:${item.game_company} 版本:${item.game_version} 大小:${item.game_download_num}`,
+             gameInstallNum:item.game_install_num,
+             sortIndex:item.sort,
+             sortHot:item.sort2,
+             admin:item.admin
+           })
+        });
+        const pagination ={...this.state.pagination};
+        pagination.total=1*10;
+
+        this.setState({
+          MainData:this.state.MainData,
+          pagination
+        });
+
+    })
+  }
   render(){
     return(
      <div className={styles.table}>
      <div className={styles.tableOperations}>
-       <Button onClick={this.addGameModel.bind(this)} type="primary">添加</Button>
+     <Search
+     addonBefore="游戏名"
+     style={{width:350,marginRight:20}}
+     placeholder="输入游戏名称"
+     onSearch={this.searchName.bind(this)}
+       />
+      <Button onClick={this.addGameModel.bind(this)} type="primary">添加</Button>
      </div>
      <Table
       columns={this.state.titleData}
@@ -240,13 +306,27 @@ class Game extends React.Component{
       >
        <Input.Group className={styles.InputGroup}>
          <Input addonBefore="游戏名" onChange={this.EditorMessageOnChange.bind(this,"GameName")}  value={this.state.editorMessageGameName}/>
-         <Input addonBefore="上架" onChange={this.EditorMessageOnChange.bind(this,"Up")} placeholder="输入是否上架，1上架，0下架" />
-         <Input addonBefore="游戏公司" onChange={this.EditorMessageOnChange.bind(this,"CompanyName")}  placeholder="请输入游戏公司"  />
-         <Input addonBefore="游戏版本"  onChange={this.EditorMessageOnChange.bind(this,"Vision")}   placeholder="输入游戏版本号"/>
-         <Input addonBefore="游戏下载数" onChange={this.EditorMessageOnChange.bind(this,"DownloadNum")}   placeholder="请输入游戏下载数"/>
-         <Input addonBefore="首页优先级" onChange={this.EditorMessageOnChange.bind(this,"IndexPriority")}   placeholder="请输入首页优先级" />
-         <Input addonBefore="热玩优先级" onChange={this.EditorMessageOnChange.bind(this,"HotPriority")} placeholder="请输入热玩优先级" />
-         <Input addonBefore="游戏大小" onChange={this.EditorMessageOnChange.bind(this,"GameSize")} placeholder="输入游戏大小" />
+         <Input addonBefore="上架" onChange={this.EditorMessageOnChange.bind(this,"Up")}
+         value={this.state.editorMessageUp}
+         placeholder="输入是否上架，1上架，0下架" />
+         <Input addonBefore="游戏公司" onChange={this.EditorMessageOnChange.bind(this,"CompanyName")}
+         value={this.state.editorMessageCompanyName}
+         placeholder="请输入游戏公司"  />
+         <Input addonBefore="游戏版本"  onChange={this.EditorMessageOnChange.bind(this,"Vision")}
+          value={this.state.editorMessageVision}
+           placeholder="输入游戏版本号"/>
+         <Input addonBefore="游戏下载数" onChange={this.EditorMessageOnChange.bind(this,"DownloadNum")}
+         value={this.state.editorMessageDownloadNum}
+         placeholder="请输入游戏下载数"/>
+         <Input addonBefore="首页优先级" onChange={this.EditorMessageOnChange.bind(this,"IndexPriority")}
+        value={this.state.editorMessageIndexPriority}
+          placeholder="请输入首页优先级" />
+         <Input addonBefore="热玩优先级" onChange={this.EditorMessageOnChange.bind(this,"HotPriority")}
+         value={this.state.editorMessageHotPriority}
+         placeholder="请输入热玩优先级" />
+         <Input addonBefore="游戏大小" onChange={this.EditorMessageOnChange.bind(this,"GameSize")}
+         value={this.state.editorMessageGameSize}
+         placeholder="输入游戏大小" />
        </Input.Group>
       </Modal>
       <TagBox tagBoxVision={this.state.tagBoxVision} id={this.state.editorMessageId} handleTagBoxChange={this.handleTagBoxChange.bind(this)}/>
@@ -254,6 +334,9 @@ class Game extends React.Component{
         /*添加的文本框*/
       }
       <AddBox addBoxVision={this.state.addBoxVision} handleAddBoxChange={this.handleTagBoxChange.bind(this)} fetch={this.fetch.bind(this)}/>
+      <UploadBox
+      id={this.state.editorMessageId} uploadBoxVision={this.state.uploadBoxVision} handleUploadBoxChange={this.handleTagBoxChange.bind(this)}
+      />
      </div>
     )
   }

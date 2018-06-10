@@ -1,0 +1,334 @@
+import React from "react";
+import {Modal,Upload,Button,Icon,Tabs,Message} from "antd";
+import fetchs from "../../utils/request";
+import config from "../../common/config";
+import styles from "./UploadBox.scss";
+var qiniu =require("qiniu-js");
+const TabPane=Tabs.TabPane;
+class UploadBox extends React.Component{
+  state={
+    visible:false,
+    uploading: false,
+    fileList_icon: [],
+    fileList_main:[],
+    fileList_cut:[],
+    id:"",
+    tabActive:"imgUpload"
+  }
+  onCancel(){
+    this.setState({
+      visible:false,
+      fileList_icon:this.state.fileList_icon.splice(0,this.state.fileList_icon.length),
+      fileList_main:[],
+      fileList_cut:[]
+    });
+    this.props.handleUploadBoxChange(false);
+
+  }
+
+  uploadQiniu(options){
+    var file=options.file||null,
+    key=options.key||null,
+    token=options.token||null,
+    next=options.next||null,
+    error=options.error||null,
+    success=options.success||null,
+    putExtra={
+      fname:"",
+      params:{},
+      mimeType:null
+    },
+    config={
+      useCdnDomain:true,
+      region:'z2',
+      disableStatisticsReport:false
+    },
+    subObject={
+      next:next,
+      error:error,
+      complete:success
+    },
+    observable = qiniu.upload(file, key, token, putExtra, config),
+    subscription = observable.subscribe(subObject);
+  }
+  uploadIcon(id){
+    return new Promise((resolve,reject)=>{
+
+          fetchs(`${config.url_admin}/getUptokenByMsg?scope=oneyouxiimg&key=game/gameId${this.state.id}/icon`,).then((res)=>{
+              // if(res.data.state){
+                 this.uploadQiniu({
+                   file:this.state.fileList_icon[0],
+                   key:`game/gameId${this.state.id}/icon`,
+                   token:res.data.upToken,
+                   success:function(res_1){
+
+
+                     if(res_1.key){
+                        fetchs(`${config.url_adminGame}/updateGameIcon?id=${id}&url=${res_1.key}`).then((res_2)=>{
+                            if(res_2.data.state){
+                              resolve();
+                            }else{
+                              reject();
+                              Message.error('上传失败!');
+                            }
+                        });
+
+                     }
+
+
+                   }
+
+                 });
+               //}
+
+
+            });
+
+
+    });
+  }
+  uploadMain(id){
+    return new Promise((resolve,reject)=>{
+
+         fetchs(`${config.url_admin}/getUptokenByMsg?scope=oneyouxiimg&key=game/gameId${this.state.id}/titleImg`).then((res)=>{
+             // if(res.data.state){
+                this.uploadQiniu({
+                  file:this.state.fileList_main[0],
+                  key:`game/gameId${this.state.id}/titleImg`,
+                  token:res.data.upToken,
+                  success:function(res_1){
+
+                      if(res_1.key){
+                        fetchs(`${config.url_adminGame}/updateGameTitleImg?id=${id}&url=${res_1.key}`).then((res_2)=>{
+                              if(res_2.data.state){
+                                resolve();
+                              }else{
+                                reject();
+                                Message.error('上传失败!');
+                              }
+                        });
+
+
+                      }else{
+
+                      }
+                  }
+                });
+
+          });
+    });
+  }
+  uploadCut(id,file,i){
+    fetchs(`${config.url_admin}/getUptokenByMsg?scope=oneyouxiimg&key=game/gameId${id}/list${i}`).then((res)=>{
+       this.uploadQiniu({
+         file:file,
+         key:`game/gameId${id}/list${i}`,
+         token:res.data.upToken,
+         success:function(res_1){
+             if(res_1.key){
+                 fetchs(`${config.url_adminGame}/addGameImg?id=${id}&url=${res_1.key}`).then((res_2)=>{
+                   if(res_2.data.state){
+
+
+                   }
+                 });
+             }
+         }
+       });
+    });
+  }
+  handleUpload(){
+    if(this.state.tabActive=="imgUpload"){
+       if(this.state.fileList_icon.length!==1){
+         Message.error("icon只能选取1张图");
+         return false;
+       }
+
+       if(this.state.fileList_main.length!==1){
+          Message.error("游戏头图只能选取一张");
+          return false;
+       }
+
+      if(this.state.fileList_cut.length<3){
+        Message.error("游戏截图不能小于三张");
+        return false;
+      }
+
+      if(this.state.fileList_cut.length>8){
+        Message.error("游戏截图不能大于8张");
+        return false;
+      }
+
+
+      Promise.all([
+        this.uploadIcon(this.state.id),
+        this.uploadMain(this.state.id)
+      ]).then(()=>{
+        fetchs(`${config.url_adminGame}/deleteGameImg?id=${this.state.id}`).
+        then((res)=>{
+          if(res.data.state){
+            var i=0;
+            this.state.fileList_cut.forEach((item)=>{
+              this.uploadCut(this.state.id,item,i++);
+            });
+            Message.success("图片上传成功");
+            this.setState({
+              visible:false
+            });
+            this.props.handleUploadBoxChange(false);
+          }
+        });
+      }).catch(()=>{
+        Message.error("上传错误!");
+      })
+
+
+    }else{
+      console.log("我是packpage")
+    }
+
+    // return false;
+    // const { fileList } = this.state;
+    // const formData = new FormData();
+    // fileList.forEach((file) => {
+    //   formData.append('files[]', file);
+    // });
+
+    //console.log(qiniu.upload);
+    // console.log(fileList[0]);
+    // return false;
+    // fetchs(`${config.url_admin}/getUptokenByMsg?scope=oneyouxiimg&key=game/gameId${this.state.id}icon`,).then((res)=>{
+    //     //console.log(res);
+    //     this.uploadQiniu({
+    //       file:fileList[0],
+    //       key:`game/gameId${this.state.id}icon`,
+    //       token:res.data.upToken,
+    //       success:function(data){
+    //         console.log(data);
+    //       }
+    //     })
+    //   });
+  }
+  componentWillReceiveProps(p){
+    this.setState({
+      visible:p.uploadBoxVision,
+      id:p.id
+    });
+  }
+  render(){
+    const { uploading } = this.state;
+    const props_icon = {
+      onRemove: (file) => {
+        //删除时候触发
+        this.setState(({ fileList_icon }) => {
+          const index = fileList_icon.indexOf(file);
+          const newFileList = fileList_icon.slice();
+          newFileList.splice(index, 1);
+          return {
+            fileList_icon: newFileList,
+          };
+        });
+      },
+      beforeUpload: (file) => {
+        // if(this.state.fileList_icon.length>0){
+        //   Message.error("只能上传一张图片");
+        //   return false;
+        // }
+        this.setState(({fileList_icon})=>({
+          fileList_icon: [...fileList_icon, file]
+        }));
+        return false;
+      },
+      fileList_icon: this.state.fileList_icon,
+    };
+    const props_main = {
+      onRemove: (file) => {
+        //删除时候触发
+        this.setState(({ fileList_main }) => {
+          const index = fileList_main.indexOf(file);
+          const newFileList = fileList_main.slice();
+          newFileList.splice(index, 1);
+          return {
+            fileList_main: newFileList,
+          };
+        });
+      },
+      beforeUpload: (file) => {
+        this.setState(({ fileList_main }) => ({
+          fileList_main: [...fileList_main, file],
+        }));
+        return false;
+      },
+      fileList_main: this.state.fileList_main,
+    };
+    const props_cut={
+      onRemove:(file)=>{
+        this.setState(({ fileList_cut }) => {
+          const index = fileList_cut.indexOf(file);
+          const newFileList = fileList_cut.slice();
+          newFileList.splice(index, 1);
+          return {
+            fileList_cut: newFileList,
+          };
+        });
+      },
+      beforeUpload: (file) => {
+        this.setState(({ fileList_cut }) => ({
+          fileList_cut: [...fileList_cut, file],
+        }));
+        return false;
+      },
+      fileList_cut:this.state.fileList
+    }
+    return(
+       <Modal
+       visible={this.state.visible}
+       onOk={this.handleUpload.bind(this)}
+       onCancel={this.onCancel.bind(this)}
+       okText="提交"
+       cancelText="取消"
+       >
+       <Tabs
+        className={styles.tabs}
+        onChange={(e)=>this.setState({tabActive:e})}
+        defaultActiveKey="imgUpload"
+       >
+        <TabPane
+          style={{marginTop:10}}
+          tab="游戏图片上传"
+          key="imgUpload"
+        >
+          <Upload {...props_icon}>
+             <Button>
+               <Icon type="upload"/> 游戏icon(单张,192*192以上)
+             </Button>
+           </Upload>
+           <Upload {...props_main}>
+             <Button>
+               <Icon type="upload"/> 游戏头图(单张,1280*720以上)
+             </Button>
+           </Upload>
+           <Upload {...props_cut}>
+            <Button>
+              <Icon type="upload"/> 游戏截图(最少3张,最多8张横竖图不限制)
+            </Button>
+           </Upload>
+        </TabPane>
+        <TabPane
+        tab="游戏包上传"
+        key="packPageUpload"
+        >
+      {
+          // <Upload {...props}>
+          //  <Button>
+          //    <Icon type="upload"/> 游戏包上传
+          //  </Button>
+          // </Upload>
+          }
+        </TabPane>
+       </Tabs>
+       </Modal>
+    )
+  }
+}
+export default UploadBox;

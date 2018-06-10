@@ -5,13 +5,31 @@ import {Link} from "dva/router";
 const SubMenu=Menu.SubMenu;
 class MainNavs extends React.Component{
   state={
-    collapsed:false
+    collapsed:false,
+    current:"1"
   }
   toggle=()=>{
     this.setState({
      collapsed: !this.state.collapsed,
    });
   }
+  handleClick = (e)=>{
+    this.setState({
+      current: e.key,
+    });
+  }
+  componentWillMount() {
+      const hash=window.location.hash;
+      if(hash.indexOf("game")!=-1){
+        this.setState({
+          current:"1"
+        });
+      }else if(hash.indexOf("recommend")!=-1){
+        this.setState({
+          current:"2"
+        });
+      }
+    }
   render(){
     return(
        <Menu
@@ -19,6 +37,8 @@ class MainNavs extends React.Component{
         mode="inline"
         inlineCollapsed={this.state.collapsed}
         style={{border:"none"}}
+        selectedKeys={[this.state.current]}
+        onClick={this.handleClick}
        >
           <SubMenu key="sub1" title={<span><Icon type="setting" /><span>游戏管理</span></span>}>
            <Menu.Item key="1">
@@ -48,7 +68,7 @@ class MainNavs extends React.Component{
         <SubMenu key="sub4" title={<span><Icon type="setting" /><span>攻略管理</span></span>}>
           <Menu.Item key="9">攻略</Menu.Item>
         </SubMenu>
-        <SubMenu key="sub5" title={<span><Icon type="setting" /><span>超级管理</span></span>}>
+        <SubMenu key="sub5" title={<span><Icon type="setting"/><span>超级管理</span></span>}>
         </SubMenu>
        </Menu>
     )
