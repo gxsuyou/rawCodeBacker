@@ -1,10 +1,22 @@
 import React from "react";
-import {Modal,Button} from "antd";
+import {Modal,Button,Select} from "antd";
+const Option=Select.Option;
 
+function fake(callback){
+  const data=[];
+  data.push({
+    value:"json",
+    text:"json"
+  });
+  callback(data);
+}
 
 class AddBox extends React.Component{
   state={
-    visible:false
+    visible:false,
+    autoBox:[],
+    data: [],
+    value: ''
   }
   handleCancel = (e) => {
     console.log(e);
@@ -17,25 +29,42 @@ class AddBox extends React.Component{
       visible: false,
     });
   }
-  componentWillReceiveProps(e){
+  UNSAFE_componentWillReceiveProps(e){
     this.setState({
-      visible:e.addBoxVisible
+      visible:e.visible
     });
   }
+  autoSelectBox(value){
+    this.setState({ value });
+    fake((data)=> this.setState({ data }));
+    //console.log(this.state.data)
+  }
+
    render(){
+     const options = this.state.data.map(d => <Option key={d.value}>{d.text}</Option>);
      return(
        <Modal
-          title="Basic Modal"
+          title="添加推荐位"
           visible={this.state.visible}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
-          pagination={2}
           loading={this.state.loading}
         >
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
+          <Select
+             mode="combobox"
+             value={this.state.value}
+             placeholder={this.props.placeholder}
+            style={{width:200}}
+             defaultActiveFirstOption={false}
+             showArrow={false}
+             filterOption={false}
+             onChange={this.autoSelectBox.bind(this)}
+          >
+           {options}
+         </Select>
         </Modal>
      )
    }
 }
+
+export default AddBox;

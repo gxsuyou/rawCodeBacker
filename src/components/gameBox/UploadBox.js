@@ -21,7 +21,8 @@ class UploadBox extends React.Component{
       visible:false,
       fileList_icon:[],
       fileList_main:[],
-      fileList_cut:[]
+      fileList_cut:[],
+      fileList_package:[],
     });
     this.props.handleUploadBoxChange(false);
   }
@@ -241,7 +242,6 @@ class UploadBox extends React.Component{
     });
   }
   render(){
-    //const { uploading } = this.state;
     const props_icon = {
       onRemove: (file) => {
         //删除时候触发
@@ -261,6 +261,9 @@ class UploadBox extends React.Component{
         return false;
       },
       fileList_icon: this.state.fileList_icon,
+      //showUploadList:{showPreviewIcon:true,showRemoveIcon:true}
+      // showPreviewIcon:{false}
+      // showRemoveIcon:{false}
     };
     const props_main = {
       onRemove: (file) => {
@@ -339,6 +342,7 @@ class UploadBox extends React.Component{
           key="imgUpload"
         >
           <Upload {...props_icon}
+
           >
              <Button>
                <Icon type="upload"/> 游戏icon(单张,192*192以上)
