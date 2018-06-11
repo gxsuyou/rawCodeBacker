@@ -18,7 +18,7 @@ class IndexPage extends React.Component{
     }
   }
   login(){
-   if(this.state.user==""||this.state.pwd==""){
+   if(this.state.user===""||this.state.pwd===""){
      message.error("用户名或密码不能为空");
      return false;
    }

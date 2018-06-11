@@ -1,6 +1,6 @@
 import React from "react";
 import {connect} from 'dva';
-import {Table,Button,Layout} from "antd";
+import {Layout} from "antd";
 import {Route} from "dva/router";
 import AdminHeader from "../../components/header/Header";
 import MainNavs from
@@ -11,10 +11,10 @@ import Game from "./game/Game";
 import Recommend from "./recommend/Recommend.js";
 import Tag from "./tag/Tag";
 import Title from "./title/Title";
-const { Header, Footer, Sider, Content } = Layout;
+const { Header, Sider, Content } = Layout;
 
 class AdminIndex extends React.Component{
-  componentWillMount(){
+  UNSAFE_componentWillMount(){
     console.log(this.props.adminIndex.login);
     if(this.props.adminIndex.login){
 

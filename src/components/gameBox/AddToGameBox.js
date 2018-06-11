@@ -10,8 +10,7 @@ class TagBox extends react.Component{
   componentWillReceiveProps(){
     this.setState({
       visible:this.props.tagBoxVision
-    })
-    console.log(this.props.tagBoxVision)
+    });
   }
   render(){
     return(

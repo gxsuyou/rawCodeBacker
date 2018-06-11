@@ -1,5 +1,5 @@
 import React from "react";
-import {Table,List,Card,Button,Modal,Input,Divider,message} from 'antd';
+import {Table,Button,Modal,Input,message} from 'antd';
 import styles from "./Game.scss";
 import config from "../../../common/config.js";
 import fetchs from "../../../utils/request.js";
@@ -68,7 +68,7 @@ class Game extends React.Component{
         dataIndex:"action",
         render:(text,record)=>(
           <span className={styles.button}>
-           <Button  onClick={this.showModalEditorMessage.bind(this,record.id,record.game_name)}>编辑信息</Button>
+           <Button  onClick={this.showModalEditorMessage.bind(this,record.id,record.game_name,record.company,record.version,record.updowm,record.size,record.sortIndex,record.sortHot,record.gameInstallNum)}>编辑信息</Button>
            <Button  onClick={this.UploadVision.bind(this,record.id)}>上传数据</Button>
            <Button onClick={this.tagBoxVision.bind(this,record.id)}>标签</Button>
            <Button onClick={this.deleteData.bind(this,record.key,record.id)} type="danger" >删除</Button>
@@ -93,8 +93,7 @@ class Game extends React.Component{
 
   /*删除接口*/
   deleteData(key,id){
-     fetchs(`${config.url_admin}/deleteGame?id=${id}`).
-     then(res=>{
+     fetchs(`${config.url_admin}/deleteGame?id=${id}`).then(res=>{
        console.log(res.data.state);
        if(res.data.state==1){
          const c=[...this.state.MainData];
@@ -110,11 +109,18 @@ class Game extends React.Component{
   }
 
   /* 打开编辑弹框初始化数据 */
-  showModalEditorMessage(id,gameName){
+  showModalEditorMessage(id,gameName,company,version,activation,size,sort,sort2,gameInstallNum){
      this.setState({
        editorMessageId:id,
        editorMessageVisible:true,
        editorMessageGameName:gameName,
+       editorMessageCompanyName:company,
+       editorMessageVision:version,
+       editorMessageUp:activation,
+       editorMessageIndexPriority:sort,
+       editorMessageHotPriority:sort2,
+       editorMessageGameSize:size,
+       editorMessageDownloadNum:gameInstallNum,
        tagBoxVision:false
      });
   }
@@ -194,7 +200,7 @@ class Game extends React.Component{
     this.fetch(pagination.current);
   }
 
-  componentWillMount(){
+  UNSAFE_componentWillMount(){
     this.fetch(1);
   }
   handleTagBoxChange(e){
@@ -211,7 +217,21 @@ class Game extends React.Component{
       var i=1;
       var c=[]
       var up,sys;
+
       res.data.result.forEach((item)=>{
+
+        if(item.game_size==null){
+          var size=0;
+        }else{
+          size=item.game_size;
+        }
+        if(item.game_company==null){
+          var company="无";
+        }else{
+           company=item.game_company;
+        }
+
+
         item.activation?up="是":up="否";
         item.sys==2?sys="Android":sys="ios";
         c.push({
@@ -221,11 +241,15 @@ class Game extends React.Component{
           up:up,
           sys:sys,
           addTime:item.add_time,
-          gameDetail:`游戏公司:${item.game_company} 版本:${item.game_version} 大小:${item.game_download_num}`,
+          gameDetail:`游戏公司:${company} 版本:${item.game_version} 大小:${size}mb`,
           gameInstallNum:item.game_install_num,
           sortIndex:item.sort,
           sortHot:item.sort2,
-          admin:item.admin
+          admin:item.admin,
+          company:company,
+          version:item.game_version,
+          updowm:item.activation,
+          size:size
         });
       });
      const pagination ={...this.state.pagination};

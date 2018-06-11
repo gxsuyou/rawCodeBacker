@@ -1,7 +1,7 @@
-if(process.env.NODE_ENV=="development"){
+if(process.env.NODE_ENV==="development"){
   var login=true;
 }else{
-  var login=false;
+   login=false;
 }
 const c= {
   namespace:'adminIndex',

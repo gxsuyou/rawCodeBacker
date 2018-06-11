@@ -75,36 +75,36 @@ class AddBox extends react.Component{
     plainOptions_online:[
       {
         label:"益智",
-        value:"7",
-        key:"7"
+        value:"28",
+        key:"28"
       },{
         label:"角色扮演",
-        value:"6",
-        key:"6"
+        value:"29",
+        key:"29"
       },{
         label:"棋牌",
-        value:"3",
-        key:"3"
+        value:"30",
+        key:"30"
       },{
         label:"射击",
-        value:"1",
-        key:"1"
+        value:"36",
+        key:"36"
       },{
         label:"休闲",
-        value:"8",
-        key:"8"
+        value:"32",
+        key:"32"
       },{
         label:"经营养成",
-        value:"2",
-        key:"2"
+        value:"33",
+        key:"33"
       },{
         label:"其他游戏",
-        value:"9",
-        key:"9"
+        value:"35",
+        key:"35"
       },{
         label:"策略",
-        value:"4",
-        key:"4"
+        value:"34",
+        key:"34"
       }
     ],
     plainOptions_application:[{
@@ -156,8 +156,7 @@ class AddBox extends react.Component{
   }
   componentWillReceiveProps(p){
     this.setState({
-      visible:p.addBoxVision,
-
+      visible:p.addBoxVision
     });
   }
   onCancel(){
@@ -167,14 +166,15 @@ class AddBox extends react.Component{
     this.props.handleAddBoxChange(false);
   }
   onOk(){
-    if(this.state.gameName==""){
+    if(this.state.gameName===""){
       Message.error("不能为空");
       return false;
     }
-   const cls=this.state.defaultOption.join(",")
-   fetchs(`${config.url_adminGame}/addGameMsg?gameName=${this.state.gameName}&gameVersion=${this.state.gameVersion}&gamePackagename=${this.state.gamePackagename}&gameRecommend=${this.state.gameRecommend}&type=${this.state.type}&cls=${cls}&gameCompany=${this.state.gameCompany}&sys=${this.state.sys}`)
+   const cls=this.state.defaultOption.join(",");
+   const uid=config.getCookie("uid");
+   fetchs(`${config.url_adminGame}/addGameMsg?gameName=${this.state.gameName}&gameVersion=${this.state.gameVersion}&gamePackagename=${this.state.gamePackagename}&gameRecommend=${this.state.gameRecommend}&type=${this.state.type}&cls=${cls}&gameCompany=${this.state.gameCompany}&sys=${this.state.sys}&admin=${uid}`)
    .then((res)=>{
-     if(res.data.state==1){
+     if(res.data.state===1){
         this.setState({
           visible:false,
           gameName:"",

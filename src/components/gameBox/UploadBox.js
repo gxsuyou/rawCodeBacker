@@ -12,20 +12,19 @@ class UploadBox extends React.Component{
     fileList_icon: [],
     fileList_main:[],
     fileList_cut:[],
+    fileList_package:[],
     id:"",
     tabActive:"imgUpload"
   }
   onCancel(){
     this.setState({
       visible:false,
-      fileList_icon:this.state.fileList_icon.splice(0,this.state.fileList_icon.length),
+      fileList_icon:[],
       fileList_main:[],
       fileList_cut:[]
     });
     this.props.handleUploadBoxChange(false);
-
   }
-
   uploadQiniu(options){
     var file=options.file||null,
     key=options.key||null,
@@ -48,8 +47,8 @@ class UploadBox extends React.Component{
       error:error,
       complete:success
     },
-    observable = qiniu.upload(file, key, token, putExtra, config),
-    subscription = observable.subscribe(subObject);
+    observable = qiniu.upload(file, key, token, putExtra, config);
+    //subscription = observable.subscribe(subObject);
   }
   uploadIcon(id){
     return new Promise((resolve,reject)=>{
@@ -137,6 +136,39 @@ class UploadBox extends React.Component{
        });
     });
   }
+  uploadPackage(id){
+    return new Promise((resolve,reject)=>{
+      fetchs(`${config.url_admin}/getUptokenByMsg?scope=oneyouxiapk&key=game/gameId${id}.apk`).then((res)=>{
+          if(res.data.state){
+
+            this.uploadQiniu({
+              file:this.state.fileList_package[0],
+              key:'game/gameId'+id+".apk",
+              token:res.data.upToken,
+              success:function(res_1){
+
+                 if(res_1.key){
+                   const size=(res_1.fsize/1024/1024).toFixed(1);
+                   fetchs(`${config.url_adminGame}/updateDownloadAndroid?id=${id}&url=${res_1.key}&size=${size}`).then((res_2)=>{
+                         if(res_2.data.state){
+                           Message.success('上传成功!');
+                           resolve();
+                         }else{
+                           Message.error('上传失败!');
+                           reject();
+                         }
+                   });
+                 }
+
+              }
+            });
+          }else{
+            Message.error("上传错误,请稍后重试!");
+          }
+      });
+    });
+
+  }
   handleUpload(){
     if(this.state.tabActive=="imgUpload"){
        if(this.state.fileList_icon.length!==1){
@@ -164,8 +196,7 @@ class UploadBox extends React.Component{
         this.uploadIcon(this.state.id),
         this.uploadMain(this.state.id)
       ]).then(()=>{
-        fetchs(`${config.url_adminGame}/deleteGameImg?id=${this.state.id}`).
-        then((res)=>{
+        fetchs(`${config.url_adminGame}/deleteGameImg?id=${this.state.id}`).then((res)=>{
           if(res.data.state){
             var i=0;
             this.state.fileList_cut.forEach((item)=>{
@@ -173,9 +204,13 @@ class UploadBox extends React.Component{
             });
             Message.success("图片上传成功");
             this.setState({
-              visible:false
+              visible:false,
+              fileList_icon:[],
+              fileList_main:[],
+              fileList_cut:[]
             });
             this.props.handleUploadBoxChange(false);
+            console.log("重要"+this.state.fileList_icon)
           }
         });
       }).catch(()=>{
@@ -184,39 +219,29 @@ class UploadBox extends React.Component{
 
 
     }else{
-      console.log("我是packpage")
+      if(this.state.fileList_package.length!==1){
+        Message.error("只能上传一个安装包");
+        return false;
+      }
+     this.uploadPackage(this.state.id).then(()=>{
+
+       this.setState({
+         visible:false,
+         fileList_package:[]
+       });
+       this.props.handleUploadBoxChange(false);
+
+     });
     }
-
-    // return false;
-    // const { fileList } = this.state;
-    // const formData = new FormData();
-    // fileList.forEach((file) => {
-    //   formData.append('files[]', file);
-    // });
-
-    //console.log(qiniu.upload);
-    // console.log(fileList[0]);
-    // return false;
-    // fetchs(`${config.url_admin}/getUptokenByMsg?scope=oneyouxiimg&key=game/gameId${this.state.id}icon`,).then((res)=>{
-    //     //console.log(res);
-    //     this.uploadQiniu({
-    //       file:fileList[0],
-    //       key:`game/gameId${this.state.id}icon`,
-    //       token:res.data.upToken,
-    //       success:function(data){
-    //         console.log(data);
-    //       }
-    //     })
-    //   });
   }
-  componentWillReceiveProps(p){
+  UNSAFE_componentWillReceiveProps(p){
     this.setState({
       visible:p.uploadBoxVision,
       id:p.id
     });
   }
   render(){
-    const { uploading } = this.state;
+    //const { uploading } = this.state;
     const props_icon = {
       onRemove: (file) => {
         //删除时候触发
@@ -230,10 +255,6 @@ class UploadBox extends React.Component{
         });
       },
       beforeUpload: (file) => {
-        // if(this.state.fileList_icon.length>0){
-        //   Message.error("只能上传一张图片");
-        //   return false;
-        // }
         this.setState(({fileList_icon})=>({
           fileList_icon: [...fileList_icon, file]
         }));
@@ -280,6 +301,25 @@ class UploadBox extends React.Component{
       },
       fileList_cut:this.state.fileList
     }
+    const props_package={
+      onRemove:(file)=>{
+        this.setState(({ fileList_package }) => {
+          const index = fileList_package.indexOf(file);
+          const newFileList = fileList_package.slice();
+          newFileList.splice(index, 1);
+          return {
+            fileList_package: newFileList,
+          };
+        });
+      },
+      beforeUpload: (file) => {
+        this.setState(({ fileList_package }) => ({
+          fileList_package: [...fileList_package, file],
+        }));
+        return false;
+      },
+      fileList_package:this.state.fileList_package
+    }
     return(
        <Modal
        visible={this.state.visible}
@@ -298,7 +338,8 @@ class UploadBox extends React.Component{
           tab="游戏图片上传"
           key="imgUpload"
         >
-          <Upload {...props_icon}>
+          <Upload {...props_icon}
+          >
              <Button>
                <Icon type="upload"/> 游戏icon(单张,192*192以上)
              </Button>
@@ -318,13 +359,11 @@ class UploadBox extends React.Component{
         tab="游戏包上传"
         key="packPageUpload"
         >
-      {
-          // <Upload {...props}>
-          //  <Button>
-          //    <Icon type="upload"/> 游戏包上传
-          //  </Button>
-          // </Upload>
-          }
+          <Upload {...props_package}>
+           <Button>
+             <Icon type="upload"/> 游戏包上传(iOS不需要传；Android后缀名为.apk)
+           </Button>
+          </Upload>
         </TabPane>
        </Tabs>
        </Modal>

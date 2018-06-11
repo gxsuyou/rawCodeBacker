@@ -1,26 +1,11 @@
 import React from "react";
-import {Select,Table,Icon,Modal,Button,Input} from 'antd';
+import {Select,Table,Button,Input} from 'antd';
 import styles from "./Recommend.scss";
 import fetchs from "../../../utils/request.js";
 import config from "../../../common/config";
+import AddBox from "../../../components/recoBox/AddBox";
 const Search =Input.Search;
 const Option = Select.Option;
-const data = [{
-  key: '1',
-  name: 'John Brown',
-  age: 32,
-  address: 'New York No. 1 Lake Park',
-}, {
-  key: '2',
-  name: 'Jim Green',
-  age: 42,
-  address: 'London No. 1 Lake Park',
-}, {
-  key: '3',
-  name: 'Joe Black',
-  age: 32,
-  address: 'Sidney No. 1 Lake Park',
-}];
 
 const selectBefore = (
   <Select defaultValue="名称" style={{ width: 80 }}>
@@ -75,7 +60,7 @@ class Recommend extends React.Component{
    pagination:{}
   }
 
- componentWillMount(){
+ UNSAFE_componentWillMount(){
    this.setState({
      loading:true
    })
@@ -143,20 +128,7 @@ class Recommend extends React.Component{
        columns={this.state.columns} dataSource={this.state.mainData}
        pagination={this.state.pagination} onChange={this.handleTableChange}
        />
-       {
-       // <Modal
-       //    title="Basic Modal"
-       //    visible={this.state.visible}
-       //    onOk={this.handleOk}
-       //    onCancel={this.handleCancel}
-       //    pagination={2}
-       //    loading={this.state.loading}
-       //  >
-       //    <p>Some contents...</p>
-       //    <p>Some contents...</p>
-       //    <p>Some contents...</p>
-       //  </Modal>
-        }
+        <AddBox />
       </div>
     )
   }

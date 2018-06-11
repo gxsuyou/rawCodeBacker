@@ -1,5 +1,5 @@
 import React from "react";
-import {Menu,Icon,Button} from 'antd';
+import {Menu,Icon} from 'antd';
 import styles from "./mainNavs.scss";
 import {Link} from "dva/router";
 const SubMenu=Menu.SubMenu;
@@ -18,7 +18,7 @@ class MainNavs extends React.Component{
       current: e.key,
     });
   }
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
       const hash=window.location.hash;
       if(hash.indexOf("game")!=-1){
         this.setState({
