@@ -19,9 +19,9 @@ class UploadBox extends React.Component{
   onCancel(){
     this.setState({
       visible:false,
-      fileList_icon:this.state.fileList_icon.splice(0,this.state.fileList_icon.length),
-      fileList_main:this.state.fileList_main.splice(0,this.state.fileList_main.length),
-      fileList_cut:this.state.fileList_cut.splice(0,this.state.fileList_cut.length)
+      fileList_icon:[],
+      fileList_main:[],
+      fileList_cut:[]
     });
     this.props.handleUploadBoxChange(false);
   }
@@ -206,11 +206,12 @@ class UploadBox extends React.Component{
             Message.success("图片上传成功");
             this.setState({
               visible:false,
-              fileList_icon:this.state.fileList_icon.splice(0,this.state.fileList_icon.length),
-              fileList_main:this.state.fileList_main.splice(0,this.state.fileList_main.length),
-              fileList_cut:this.state.fileList_cut.splice(0,this.state.fileList_cut.length)
+              fileList_icon:[],
+              fileList_main:[],
+              fileList_cut:[]
             });
             this.props.handleUploadBoxChange(false);
+            console.log("重要"+this.state.fileList_icon)
           }
         });
       }).catch(()=>{
@@ -227,7 +228,7 @@ class UploadBox extends React.Component{
 
        this.setState({
          visible:false,
-         fileList_package:this.state.fileList_package.splice(0,this.state.fileList_package.length)
+         fileList_package:[]
        });
        this.props.handleUploadBoxChange(false);
 

@@ -5,22 +5,22 @@ import fetchs from "../../../utils/request.js";
 import config from "../../../common/config";
 const Search =Input.Search;
 const Option = Select.Option;
-const data = [{
-  key: '1',
-  name: 'John Brown',
-  age: 32,
-  address: 'New York No. 1 Lake Park',
-}, {
-  key: '2',
-  name: 'Jim Green',
-  age: 42,
-  address: 'London No. 1 Lake Park',
-}, {
-  key: '3',
-  name: 'Joe Black',
-  age: 32,
-  address: 'Sidney No. 1 Lake Park',
-}];
+// const data = [{
+//   key: '1',
+//   name: 'John Brown',
+//   age: 32,
+//   address: 'New York No. 1 Lake Park',
+// }, {
+//   key: '2',
+//   name: 'Jim Green',
+//   age: 42,
+//   address: 'London No. 1 Lake Park',
+// }, {
+//   key: '3',
+//   name: 'Joe Black',
+//   age: 32,
+//   address: 'Sidney No. 1 Lake Park',
+// }];
 
 const selectBefore = (
   <Select defaultValue="名称" style={{ width: 80 }}>
@@ -50,7 +50,7 @@ class Recommend extends React.Component{
        dataIndex:'title',
      },{
        title:'排列',
-       dataIndex:"row",
+       dataIndex:"sort",
      },{
        title:'活动图片地址',
        dataIndex:'imgSrc',
@@ -79,18 +79,36 @@ class Recommend extends React.Component{
    this.setState({
      loading:true
    })
-
    fetchs(`${config.url_admin}/active?start=0`)
    .then((res)=>{
      console.log(res.data);
      var i =1;
      res.data.result.forEach((item)=>{
+
+      if(item.active!=1){
+        var status="不激活";
+      }else{
+        var status="激活";
+      }
+
+      if(item.type == '4'){
+        var recommendType="首页推荐位"
+      }else if(item.type== '1'){
+        var recommendType='首页轮播推荐位';
+      }else if(item.type == '5'){
+       var recommendType='推荐位（横向2个）';
+     }else if(item.type == '6'){
+       var recommendType='推荐位（竖排10个）';
+     }
        this.state.mainData.push({
          key:i++,
          id:item.game_id,
          imgSrc:item.active_img,
          title:item.title,
-         recommendType:item.type
+         status:status,
+         sort:item.sort,
+         active:item.name,
+         recommendType:recommendType
        });
 
      });
