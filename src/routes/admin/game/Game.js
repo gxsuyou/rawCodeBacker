@@ -225,7 +225,7 @@ class Game extends React.Component{
           gameInstallNum:item.game_install_num,
           sortIndex:item.sort,
           sortHot:item.sort2,
-          admin:item.admin
+          admin:item.comment
         });
       });
      const pagination ={...this.state.pagination};

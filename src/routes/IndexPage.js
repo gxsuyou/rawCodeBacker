@@ -17,43 +17,48 @@ class IndexPage extends React.Component{
       pwd:""
     }
   }
+;
+ componentDidMount(){
+    if(config.getCookie("user")&&config.getCookie("pwd")){
+      this.fetch_login(config.getCookie("user"),config.getCookie("pwd"));
+    }
+ }
+
   login(){
    if(this.state.user==""||this.state.pwd==""){
      message.error("用户名或密码不能为空");
      return false;
    }
-    fetch(config.url_login,
-      {method:"POST",
-      headers: {
-      'Content-Type':'application/x-www-form-urlencoded' // 指定提交方式为表单提交
-      },
-      body:`name=${this.state.user}&pwd=${this.state.pwd}`
-   }
-  )
-    .then((res)=>{
-       if(res.data.state){
-         //登录成功
-         window.location="/#/admin/game";
-         this.props.dispatch({
-           type:"adminIndex/loginToggle",
-           user:this.state.user,
-           loginTrue:true
-         })
-       }else{
-         message.error('用户名或密码错误');
-       }
-    })
-    .catch((res)=>{
-      message.error('网络错误，请重试!');
-    })
+    this.fetch_login(this.state.user,this.state.pwd);
   }
- //  componentWillUnmount(){
- //    if(this.props.adminIndex.login){
- //
- //    }else{
- //      window.location="/#/";
- //    }
- // }
+fetch_login(user,pwd){
+  fetch(config.url_login,
+    {method:"POST",
+    headers: {
+    'Content-Type':'application/x-www-form-urlencoded' // 指定提交方式为表单提交
+    },
+    body:`name=${user}&pwd=${pwd}`
+ }).then((res)=>{
+     if(res.data.state){
+       //登录成功
+       window.location="/#/admin/game";
+       this.props.dispatch({
+         type:"adminIndex/loginToggle",
+         user:user,
+         loginTrue:true
+       });
+       config.setCookie("user",user,0.5);
+       config.setCookie("pwd",pwd,0.5);
+       config.setCookie("uid",res.data.user[0].id);
+     }else{
+       message.error('用户名或密码错误');
+     }
+  })
+  .catch((res)=>{
+    message.error('网络错误，请重试!');
+  })
+
+}
   render(){
     const { getFieldDecorator } = this.props.form;
     return(
@@ -91,6 +96,7 @@ class IndexPage extends React.Component{
     )
   }
 }
+
 
 const WrapIndexPage = Form.create()(IndexPage)
 export default connect(({adminIndex})=>({

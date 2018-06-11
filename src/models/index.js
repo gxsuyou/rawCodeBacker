@@ -1,5 +1,5 @@
 if(process.env.NODE_ENV=="development"){
-  var login=true;
+  var login=false;
 }else{
   var login=false;
 }
