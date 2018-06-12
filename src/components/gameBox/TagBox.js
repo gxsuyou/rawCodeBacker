@@ -124,6 +124,7 @@ class TagBox extends react.Component{
   render(){
     return(
       <Modal
+      title="标题"
       onOk={this.onModal.bind(this)}
       onCancel={this.onCancel.bind(this)}
       visible={this.state.visible}

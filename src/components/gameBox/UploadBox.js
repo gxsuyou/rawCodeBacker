@@ -48,8 +48,8 @@ class UploadBox extends React.Component{
       error:error,
       complete:success
     },
-    observable = qiniu.upload(file, key, token, putExtra, config);
-    //subscription = observable.subscribe(subObject);
+    observable = qiniu.upload(file, key, token, putExtra, config),
+    subscription = observable.subscribe(subObject);
   }
   uploadIcon(id){
     return new Promise((resolve,reject)=>{
@@ -325,6 +325,7 @@ class UploadBox extends React.Component{
     }
     return(
        <Modal
+       title="上传数据"
        visible={this.state.visible}
        onOk={this.handleUpload.bind(this)}
        onCancel={this.onCancel.bind(this)}
@@ -341,9 +342,7 @@ class UploadBox extends React.Component{
           tab="游戏图片上传"
           key="imgUpload"
         >
-          <Upload {...props_icon}
-
-          >
+          <Upload {...props_icon}>
              <Button>
                <Icon type="upload"/> 游戏icon(单张,192*192以上)
              </Button>

@@ -214,6 +214,7 @@ class AddBox extends react.Component{
   render(){
     return (
       <Modal
+      title="添加游戏"
       visible={this.state.visible}
       onCancel={this.onCancel.bind(this)}
       onOk={this.onOk.bind(this)}

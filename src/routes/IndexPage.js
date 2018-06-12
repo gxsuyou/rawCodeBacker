@@ -19,11 +19,10 @@ class IndexPage extends React.Component{
   }
 ;
  componentDidMount(){
-    if(config.getCookie("user")&&config.getCookie("pwd")){
+    if(config.getCookie("user")!=null&&config.getCookie("pwd")!=null){
       this.fetch_login(config.getCookie("user"),config.getCookie("pwd"));
     }
  }
-
   login(){
    if(this.state.user===""||this.state.pwd===""){
      message.error("用户名或密码不能为空");

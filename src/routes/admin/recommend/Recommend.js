@@ -4,15 +4,18 @@ import styles from "./Recommend.scss";
 import fetchs from "../../../utils/request.js";
 import config from "../../../common/config";
 import AddBox from "../../../components/recoBox/AddBox";
+import EditorBox from "../../../components/recoBox/EditorBox";
+
 const Search =Input.Search;
 const Option = Select.Option;
-
 
 class Recommend extends React.Component{
   state={
     visible:false,
     loading:false,
     addBoxVision:false,
+    editorBoxVison:false,
+    editorBoxRecommendType:1,
     columns:[
       {title:'序号',
       dataIndex:'key',
@@ -44,8 +47,14 @@ class Recommend extends React.Component{
        key:'action',
        render:(text,record)=>(
         <span className={styles.button}>
-         <Button>编辑</Button>
+         <Button onClick={()=>{
+           this.setState({
+             editorBoxVison:true,
+             editorBoxRecommendType:record.recommendType
+           });
+         }}>编辑</Button>
          <Button onClick={this.deleteGame.bind(this,record.key,record.id)} type="danger">删除</Button>
+
         </span>
        )
      }
@@ -178,12 +187,16 @@ class Recommend extends React.Component{
            });
 
        });
-       //console.log(c);
       this.setState({
         mainData:c
-      })
-
-    })
+      });
+    });
+  }
+  propHandBox(e){
+    this.setState({
+      addBoxVision:e,
+      editorBoxVison:e
+    });
   }
   render(){
     return(
@@ -204,7 +217,15 @@ class Recommend extends React.Component{
        onChange={this.handleTableChange.bind(this)}
        loading={this.state.loading}
        />
-        <AddBox visible={this.state.addBoxVision} />
+        <AddBox visible={this.state.addBoxVision} propHandBox={this.propHandBox.bind(this)}
+        propsFetchs={this.fetchs_chapter.bind(this)}
+        />
+        <EditorBox
+          visible={this.state.editorBoxVison}
+          current={this.state.current}
+          type={this.state.editorBoxRecommendType}
+          propHandBox={this.propHandBox.bind(this)}
+        />
       </div>
     )
   }

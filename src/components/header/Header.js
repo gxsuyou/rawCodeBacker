@@ -2,15 +2,22 @@ import React from "react";
 import {Menu,Icon,Popover,Button} from 'antd';
 import styles from "./Header.scss";
 import {connect} from "dva";
+import config from "../../common/config";
 const { SubMenu } = Menu;
 class AdminHeader extends React.Component{
   loginOut(){
-    //退出
+
     this.props.dispatch({
       type:"adminIndex/loginToggle",
       user:"",
       loginTrue:false
-    })
+    });//退出
+    // console.log(config);
+    // return false;
+    config.delCookie("user","",-1);
+    config.delCookie("pwd","",-1);
+    config.delCookie("uid","",-1);
+
     window.location="/#/";
   }
   render(){
