@@ -98,7 +98,7 @@ class AddBox extends React.Component{
               Message.error('上传失败');
         },
         success:(res_1)=>{
-          fetchs(`${config.url_adminGame}/addGameActive?game_name=${this.state.gameName}&title=${this.state.title}&sort=${this.state.row}&active_img=${res_1.key}&active=${this.state.active}&type=${this.state.radioValue}`).then((res_3)=>{
+          fetchs(`${config.url_adminGame}/addGameActive?game_name=${this.state.gameName}&title=${this.state.title}&sort=${this.state.row}&active_img=${res_1.key}&active=${this.state.active}&type=${this.state.radioValue}&name=${this.state.activityName}`).then((res_3)=>{
             if(res_3.data.state){
               Message.success("上传成功");
               this.setState({
@@ -205,9 +205,11 @@ class AddBox extends React.Component{
          <Radio.Group onChange={(e)=>{this.setState({radioValue:e.target.value})}} value={this.state.radioValue}
          style={{marginTop:18,lineHeight:2}}>
             <Radio value={1}>首页轮播推荐位(一张图)</Radio>
-            <Radio value={4}>首页推荐位(一张图)</Radio>
-            <Radio value={5}>首页推荐游戏(两张图)</Radio>
-            <Radio value={6}>首页推荐游戏(竖排10张图)</Radio>
+            {
+            // <Radio value={4}>首页推荐位(一张图)</Radio>
+            // <Radio value={5}>首页推荐游戏(两张图)</Radio>
+            // <Radio value={6}>首页推荐游戏(竖排10张图)</Radio>
+            }
          </Radio.Group>
          <Input.Group
           className={styles.InputGroup}
@@ -245,7 +247,7 @@ class AddBox extends React.Component{
           />
 
          </Input.Group>
-
+         {
          <Upload
          {...props}
          >
@@ -253,6 +255,7 @@ class AddBox extends React.Component{
             <Icon type="upload"/> 上传图片
           </Button>
          </Upload>
+         }
         </Modal>
      )
    }

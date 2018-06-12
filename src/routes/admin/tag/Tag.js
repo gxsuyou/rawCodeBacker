@@ -1,22 +1,9 @@
 import React from "react";
 import {Input,Table,Button,Modal} from "antd";
 import styles from "./Tag.scss";
-const data = [{
-  key: '1',
-  name: 'John Brown',
-  age: 32,
-  address: 'New York No. 1 Lake Park',
-}, {
-  key: '2',
-  name: 'Jim Green',
-  age: 42,
-  address: 'London No. 1 Lake Park',
-}, {
-  key: '3',
-  name: 'Joe Black',
-  age: 32,
-  address: 'Sidney No. 1 Lake Park',
-}];
+import fetchs from "../../../utils/request.js";
+import config from "../../../common/config";
+import AddBox from "../../../components/tagBox/AddBox.js";
 class tag extends React.Component{
   state={
     columns:[
@@ -59,18 +46,63 @@ class tag extends React.Component{
          </span>
         )
       }
-    ]
+    ],
+    data:[],
+    pagination:{},
+    loadding:false,
+    addBoxVision:false
+  }
+  UNSAFE_componentWillMount(){
+    this.fetchsTag();
+  }
+  fetchsTag(){
+    this.setState({
+      loading:true
+    });
+    fetchs(`${config.url_adminGame}/getSubject`).then((res)=>{
+      var i=0;
+      const c=[];
+      var active,sys;
+
+      res.data.result.forEach((item)=>{
+        item.active?active="激活":active="未激活";
+        item.sys==2?sys="android":"ios";
+         c.push({
+           key:i++,
+           id:item.id,
+           title:item.title,
+           describle:item.detail,
+           activationState:active,
+           imgSrcAddress:item.img,
+           sys:sys
+         });
+      });
+      const pagination ={...this.state.pagination};
+      pagination.total=(res.data.totalPage)*10;
+      this.setState({
+        loading:false,
+        data:c,
+        pagination
+      });
+    })
   }
   render(){
     return (
       <div className={styles.table}>
         <div className={styles.tableOperations}>
-         <Button type="primary">添加</Button>
+         <Button onClick={()=>{
+           this.setState({
+             addBoxVision:true
+           });
+         }} type="primary">添加</Button>
         </div>
         <Table
         columns={this.state.columns}
-        dataSource={data}
+        dataSource={this.state.data}
+        pagination={this.state.pagination}
+        loading={this.state.loading}
         />
+        <AddBox  visible={this.state.addBoxVision}/>
       </div>
     )
   }

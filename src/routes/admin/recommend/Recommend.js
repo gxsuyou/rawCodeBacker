@@ -16,6 +16,13 @@ class Recommend extends React.Component{
     addBoxVision:false,
     editorBoxVison:false,
     editorBoxRecommendType:1,
+    editorGameId:"",
+    editorActivityId:"",
+    editorActivityName:"",
+    editorActivityTitle:"",
+    editorActivitySort:"",
+    editorActivityStatus:"",
+    editorActivityImgSrc:"",
     columns:[
       {title:'序号',
       dataIndex:'key',
@@ -50,8 +57,16 @@ class Recommend extends React.Component{
          <Button onClick={()=>{
            this.setState({
              editorBoxVison:true,
-             editorBoxRecommendType:record.recommendType
+             editorBoxRecommendType:record.recommendType,
+             editorGameId:record.game_id,
+             editorActivityId:record.id,
+             editorActivityName:record.active,
+             editorActivityTitle:record.title,
+             editorActivitySort:record.sort,
+             editorActivityStatus:record.status,
+             editorActivityImgSrc:record.imgSrc
            });
+           console.log(record.recommendType);
          }}>编辑</Button>
          <Button onClick={this.deleteGame.bind(this,record.key,record.id)} type="danger">删除</Button>
 
@@ -110,7 +125,8 @@ class Recommend extends React.Component{
           status:status,
           sort:item.sort,
           active:item.name,
-          recommendType:recommendType
+          recommendType:recommendType,
+          game_id:item.game_id
         });
 
       });
@@ -223,8 +239,18 @@ class Recommend extends React.Component{
         <EditorBox
           visible={this.state.editorBoxVison}
           current={this.state.current}
+          gameId={this.state.editorGameId}
+          activityId={this.state.editorActivityId}
           type={this.state.editorBoxRecommendType}
+          activityName={this.state.editorActivityName}
+          activityTitle={this.state.editorActivityTitle}
+          activitySort={this.state.editorActivitySort}
+          activityStatus={this.state.editorActivityStatus}
+          activityImgSrc={this.state.editorActivityImgSrc}
           propHandBox={this.propHandBox.bind(this)}
+          propsFetchs={this.fetchs_chapter.bind(this)
+          }
+
         />
       </div>
     )

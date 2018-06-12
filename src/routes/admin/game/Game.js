@@ -94,7 +94,7 @@ class Game extends React.Component{
   /*删除接口*/
   deleteData(key,id){
      fetchs(`${config.url_admin}/deleteGame?id=${id}`).then(res=>{
-       console.log(res.data.state);
+       //console.log(res.data.state);
        if(res.data.state==1){
          const c=[...this.state.MainData];
          c.splice(key-1,1);
@@ -245,7 +245,7 @@ class Game extends React.Component{
           gameInstallNum:item.game_install_num,
           sortIndex:item.sort,
           sortHot:item.sort2,
-          admin:item.comment,
+          admin:item.admin,
           company:company,
           version:item.game_version,
           updowm:item.activation,
