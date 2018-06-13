@@ -1,8 +1,9 @@
 import React from "react";
-import {Modal,Button,Select,Input,Upload,Radio,Icon,Message,} from "antd";
+import {Modal,Button,Select,Input,Upload,Radio,Icon,Message,Table} from "antd";
 import fetchs from "../../utils/request";
 import config from "../../common/config";
 import qiniu from "../../utils/_qiniu";
+import styles from "./AddGameBox.scss";
 const Option=Select.Option;
 
 
@@ -26,18 +27,54 @@ class AddGameBox extends React.Component{
     current:"",
     gameName:"",
     subjectId:"",
-    data:[]
+    data:[],
+    mainData:[],
+    columns:[
+      {
+        title:"序号",
+        dataIndex:'key',
+        key:'key'
+      },{
+        title:'标题',
+        dataIndex:'title',
+          key:'title'
+      },{
+        title:'游戏名',
+        dataIndex:'gameName',
+          key:'gameName'
+      },{
+        title:"操作",
+        // dataIndex:'action',
+        key:'action',
+        render:(text,record)=>{
+          return (
+            <span>
+              <Button type="danger" onClick={this.deleteGame.bind(this,record.id)}
+              >删除</Button>
+            </span>
+          )
+        }
+      }
+    ]
   }
-   handleOk=()=>{
-
+   deleteGame(id){
+     fetchs(`${config.url_adminGame}/deleteSubjectGame?id=${id}`).then((res)=>{
+       if(res.data.state){
+         Message.success("删除成功");
+         this.getSubject(this.state.subjectId)
+       }else{
+         Message.error("删除失败");
+       }
+     });
    }
    handleCancel = () => {
      this.setState({
        visible: false,
-       // radioValue:1,
-       // gameName:""
+       gameName:"",
+       data:[],
+       mainData:[]
      });
-     //this.props.propHandBox(false);
+     this.props.propHandBox(false);
    }
    autoSelectBox(value){
      this.setState({ gameName:value });
@@ -61,27 +98,57 @@ class AddGameBox extends React.Component{
        });
      });
    }
+
+
    UNSAFE_componentWillReceiveProps(e){
      this.setState({
        visible:e.visible,
        current:e.current,
        subjectId:e.subjectId
-     })
+     });
+     if(e.subjectId){
+         this.getSubject(e.subjectId);
+      }
    }
+  getSubject(subjectId){
+    var i=1;
+    var c=[];
+    fetchs(`${config.url_adminGame}/getSubjectGame?id=${subjectId}`).then((res)=>{
+       res.data.game.forEach((item)=>{
+         c.push({
+           key:i++,
+           title:item.title,
+           gameName:item.game_name,
+           id:item.relationId
+         })
+       });
+       this.setState({
+         mainData:c
+       });
+
+    });
+  }
+
    addGame=()=>{
-     // console.log(this.state.gameName,this.state.subjectId);
      if(this.state.gameName===""){
        Message.error("游戏名字必须填写");
        return false;
      }
 
      fetchs(`${config.url_adminGame}/addSubjectGame?game_name=${this.state.gameName}&subjectId=${this.state.subjectId}`).then((res)=>{
-       //console.log(res);
-       res.data.state?Message.success("上传成功"):Message.error("上传失败");
 
+       if(res.data.state){
+         Message.success("上传成功");
+         this.getSubject(this.state.subjectId)
+       }else{
+         Message.error("上传失败")
+       }
 
      })
    }
+
+
+
   render(){
     const options = this.state.data.map(d => <Option key={d.value}>{d.text}</Option>);
 
@@ -89,9 +156,9 @@ class AddGameBox extends React.Component{
      <Modal
       title="添加游戏"
       visible={this.state.visible}
-      onOk={this.handleOk}
+      onOk={this.handleCancel}
       onCancel={this.handleCancel}
-      okText="提交"
+      okText="确认"
       cancelText="取消"
      >
      <Select
@@ -106,8 +173,16 @@ class AddGameBox extends React.Component{
           onFocus={this.focusGetData.bind(this)}
       >
         {options}
-      </Select>
+      </Select >
       <Button onClick={this.addGame} style={{marginLeft:20}}>添加游戏</Button>
+      <Table
+      className={styles.table}
+      columns={this.state.columns}
+      dataSource={this.state.mainData}
+      pagination={true}
+      size={"small"}
+      style={{marginTop:20}}
+      />
      </Modal>
     )
   }
