@@ -1,9 +1,11 @@
 import React from "react";
-import {Input,Table,Button,Modal} from "antd";
+import {Input,Table,Button,Modal,Message} from "antd";
 import styles from "./Tag.scss";
 import fetchs from "../../../utils/request.js";
 import config from "../../../common/config";
 import AddBox from "../../../components/tagBox/AddBox.js";
+import AddGameBox from "../../../components/tagBox/AddGameBox";
+
 class tag extends React.Component{
   state={
     columns:[
@@ -30,7 +32,14 @@ class tag extends React.Component{
       },{
         title:'图片地址',
         dataIndex:'imgSrcAddress',
-        key:'imgSrcAddress'
+        key:'imgSrcAddress',
+        render:(text,record)=>(
+          <span>
+          <a href={record.imgSrcAddress} target="_blank">
+            {record.imgSrcAddress}
+          </a>
+          </span>
+        )
       },{
         title:'系统',
         dataIndex:'sys',
@@ -41,8 +50,8 @@ class tag extends React.Component{
         key:'action',
         render:(text,record)=>(
          <span className={styles.button}>
-          <Button>编辑</Button>
-          <Button type="danger">添加游戏</Button>
+          <Button onClick={()=>{this.setState({editorBoxVison:true,editorBoxId:record.id})}}>添加游戏</Button>
+          <Button type="danger" onClick={this.deleteTag.bind(this,record.id)}>删除</Button>
          </span>
         )
       }
@@ -50,20 +59,38 @@ class tag extends React.Component{
     data:[],
     pagination:{},
     loadding:false,
-    addBoxVision:false
+    addBoxVision:false,
+    editorBoxVison:false,
+    editorBoxId:"",
+    current:1
   }
   UNSAFE_componentWillMount(){
-    this.fetchsTag();
+    this.fetchsTag(1);
   }
-  fetchsTag(){
+  deleteTag(id){
+   fetchs(`${config.url_adminGame}/deleteSubject?subjectId=${id}`).then((res)=>{
+     if(res.data.state==1){
+       this.fetchsTag(this.state.current);
+     }else{
+       Message.error("删除失败");
+     }
+   })
+  }
+
+  propHandBox(e){
+    this.setState({
+      addBoxVision:e,
+      editorBoxVison:e
+    });
+  }
+  fetchsTag(p){
     this.setState({
       loading:true
     });
-    fetchs(`${config.url_adminGame}/getSubject`).then((res)=>{
+    fetchs(`${config.url_adminGame}/getSubject?p=${p}`).then((res)=>{
       var i=0;
       const c=[];
       var active,sys;
-
       res.data.result.forEach((item)=>{
         item.active?active="激活":active="未激活";
         item.sys==2?sys="android":"ios";
@@ -73,7 +100,7 @@ class tag extends React.Component{
            title:item.title,
            describle:item.detail,
            activationState:active,
-           imgSrcAddress:item.img,
+           imgSrcAddress:`http://img.oneyouxi.com.cn/${item.img}`,
            sys:sys
          });
       });
@@ -85,6 +112,12 @@ class tag extends React.Component{
         pagination
       });
     })
+  }
+  handleTableChange(e){
+    this.setState({
+      current:e.current
+    });
+    this.fetchs_chapter(e.current);
   }
   render(){
     return (
@@ -101,8 +134,19 @@ class tag extends React.Component{
         dataSource={this.state.data}
         pagination={this.state.pagination}
         loading={this.state.loading}
+        onChange={this.handleTableChange.bind(this)}
         />
-        <AddBox  visible={this.state.addBoxVision}/>
+        <AddBox
+          visible={this.state.addBoxVision}
+          propHandBox={this.propHandBox.bind(this)}
+          fetchTag={this.fetchsTag.bind(this)}
+        />
+        <AddGameBox
+          visible={this.state.editorBoxVison}
+          propHandBox={this.propHandBox.bind(this)}
+          current={this.state.current}
+          subjectId={this.state.editorBoxId}
+        />
       </div>
     )
   }

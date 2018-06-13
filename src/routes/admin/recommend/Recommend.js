@@ -23,11 +23,11 @@ class Recommend extends React.Component{
     editorActivitySort:"",
     editorActivityStatus:"",
     editorActivityImgSrc:"",
+    current:1,
     columns:[
       {title:'序号',
       dataIndex:'key',
       key:'key',
-      current:1,
      },{
        title:'ID',
        dataIndex:'id',
@@ -43,6 +43,13 @@ class Recommend extends React.Component{
      },{
        title:'活动图片地址',
        dataIndex:'imgSrc',
+       render:(text,record)=>(
+         <span>
+         <a href={record.imgSrc} target="_blank">
+           {record.imgSrc}
+         </a>
+         </span>
+       )
      },{
        title:'状态',
        dataIndex:'status',

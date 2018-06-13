@@ -28,12 +28,21 @@ class MainNavs extends React.Component{
         this.setState({
           current:"2"
         });
+      }else if(hash.indexOf("tag")!=-1){
+        this.setState({
+          current:"3"
+        });
+      }else if(hash.indexOf("title")!=-1){
+        this.setState({
+          current:"4"
+        });
       }
+
     }
   render(){
     return(
        <Menu
-        defaultOpenKeys={['sub1','sub2','sub3']}
+        defaultOpenKeys={['sub1','sub2','sub3','sub4']}
         mode="inline"
         inlineCollapsed={this.state.collapsed}
         style={{border:"none"}}
@@ -66,7 +75,11 @@ class MainNavs extends React.Component{
           <Menu.Item key="8">H5</Menu.Item>
         </SubMenu>
         <SubMenu key="sub4" title={<span><Icon type="setting" /><span>攻略管理</span></span>}>
-          <Menu.Item key="9">攻略</Menu.Item>
+          <Menu.Item key="9">
+            <Link to="/admin/Strategy">
+             攻略
+           </Link>
+          </Menu.Item>
         </SubMenu>
         <SubMenu key="sub5" title={<span><Icon type="setting"/><span>超级管理</span></span>}>
         </SubMenu>

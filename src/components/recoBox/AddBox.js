@@ -6,6 +6,8 @@ import styles from "./AddBox.scss";
 import z from "../../utils/_qiniu";
 const Option=Select.Option;
 
+
+
 function fake(n,callback){
   const data=[];
   fetchs(`${config.url_adminGame}/activeSearch?name=${n}`).then((res)=>{
@@ -94,7 +96,7 @@ class AddBox extends React.Component{
         file:fileList[0],
         key:key,
         token:res.data.upToken,
-        error:function () {
+        error:function(){
               Message.error('上传失败');
         },
         success:(res_1)=>{
@@ -140,7 +142,6 @@ class AddBox extends React.Component{
       return false;
     }
     fake(value,(data)=> this.setState({ data }));
-
   }
   focusGetData(){
     const c=[];
@@ -205,8 +206,8 @@ class AddBox extends React.Component{
          <Radio.Group onChange={(e)=>{this.setState({radioValue:e.target.value})}} value={this.state.radioValue}
          style={{marginTop:18,lineHeight:2}}>
             <Radio value={1}>首页轮播推荐位(一张图)</Radio>
+            <Radio value={4}>首页推荐位(一张图)</Radio>
             {
-            // <Radio value={4}>首页推荐位(一张图)</Radio>
             // <Radio value={5}>首页推荐游戏(两张图)</Radio>
             // <Radio value={6}>首页推荐游戏(竖排10张图)</Radio>
             }

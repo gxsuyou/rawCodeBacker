@@ -12,6 +12,7 @@ const config={
   url_login:`${url_1}admin/login`,
   url_getAdminGame:`${url_1}admin/gameAdmin`,
   url_admin:`${url_1}admin`,
+  url_adminStrategy:`${url_1}adminStrategy`,
   getCookie(name){
     var arr;
     var reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");

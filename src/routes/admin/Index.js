@@ -11,6 +11,7 @@ import Game from "./game/Game";
 import Recommend from "./recommend/Recommend.js";
 import Tag from "./tag/Tag";
 import Title from "./title/Title";
+import Strategy from "./strategy/Strategy";
 const { Header, Sider, Content } = Layout;
 
 class AdminIndex extends React.Component{
@@ -41,6 +42,9 @@ class AdminIndex extends React.Component{
            />
           <Route path="/admin/title"
            component={Title}
+          />
+          <Route path="/admin/Strategy"
+          component={Strategy}
           />
         </Content>
        </Layout>

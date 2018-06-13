@@ -15,6 +15,7 @@
     "qiniu-js": "^2.2.2",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
+    "react-umeditor": "^1.0.0-rc12",
     "sass": "^1.5.0"
   },
   "devDependencies": {

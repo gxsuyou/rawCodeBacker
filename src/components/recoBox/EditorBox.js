@@ -1,8 +1,11 @@
 import React from "react";
-import {Modal,Message,Icon,Upload,Input,Button} from "antd";
+import {Modal,Message,Icon,Upload,Input,Button,Tabs} from "antd";
 import qiniu from "../../utils/_qiniu";
 import config from "../../common/config";
 import fetchs from "../../utils/request";
+const TabPane = Tabs.TabPane;
+
+
 class EditorBox extends React.Component{
   state={
     visible:false,
@@ -18,9 +21,10 @@ class EditorBox extends React.Component{
     activityId:"",
     imgSrc:"",
     fileList:[],
+    tabsValue:"ediMes"
   }
   handleOk=()=>{
-    //console.log(this.state.activityId);
+    //uplImg
 
     if(this.state.activityName===""){
       Message.error("活动名不能为空");
@@ -42,7 +46,14 @@ class EditorBox extends React.Component{
       return false;
     }
     // console.log(this.state.type);
-    this.editor();
+
+    //console.log(this.state.tabsValue);
+    if(this.state.tabsValue=="uplImg"){
+      this.indexUpload(this.state.fileList);
+    }else{
+      this.editor();
+    }
+
     return false;
     switch(this.state.type){
       case 1:
@@ -76,9 +87,8 @@ class EditorBox extends React.Component{
   indexUpload(fileList){
    if(fileList.length!=1){
     Message.error("首页轮播推荐位只放置一张图");
+    return false;
    }
-   //console.log("成功!"+this.state.type);
-   //qiniu
    const key =`activity/activityType${this.state.type}/gameId${this.state.gameId}`;
 
   fetchs(`${config.url_admin}/getUptokenByMsg?scope=oneyouxiimg&key=${key}`).then((res)=>{
@@ -176,50 +186,60 @@ class EditorBox extends React.Component{
        okText="提交"
        cancelText="取消"
       >
-      <Input.Group
-      >
-       <Input
-       addonBefore="活动名字"
-       value={this.state.activityName}
-       placeholder="输入活动名字"
-       onChange={(e)=>{this.setState({activityName:e.target.value})}}
-       style={{width:400,display:"block"}}
-       />
+      <Tabs defaultActiveKey="ediMes"
+      onChange={(e)=>{
+        this.setState({
+          tabsValue:e
+        });
+      }}>
+          <TabPane tab="编辑信息" key="ediMes"
+          >  <Input.Group
 
-       <Input
-       addonBefore="标题"
-       value={this.state.title}
-       placeholder="输入标题"
-       onChange={(e)=>{this.setState({title:e.target.value})}}
-       style={{width:400,display:"block",marginTop:15}}
-       />
+            >
+             <Input
+             addonBefore="活动名字"
+             value={this.state.activityName}
+             placeholder="输入活动名字"
+             onChange={(e)=>{this.setState({activityName:e.target.value})}}
+             style={{width:400,display:"block",marginTop:10}}
+             />
 
-       <Input
-       addonBefore="排序"
-       value={this.state.row}
-       placeholder="输入排序(必须为数字)"
-       onChange={(e)=>{this.setState({row:e.target.value})}}
-       style={{width:400,display:"block",marginTop:15}}
-       />
+             <Input
+             addonBefore="标题"
+             value={this.state.title}
+             placeholder="输入标题"
+             onChange={(e)=>{this.setState({title:e.target.value})}}
+             style={{width:400,display:"block",marginTop:15}}
+             />
 
-       <Input
-       addonBefore="激活状态"
-       value={this.state.active}
-       placeholder="激活状态，1激活，0不激活(必须为数字)"
-       onChange={(e)=>{this.setState({active:e.target.value})}}
-       style={{width:400,display:"block",marginTop:15}}
-       />
+             <Input
+             addonBefore="排序"
+             value={this.state.row}
+             placeholder="输入排序(必须为数字)"
+             onChange={(e)=>{this.setState({row:e.target.value})}}
+             style={{width:400,display:"block",marginTop:15}}
+             />
 
-      </Input.Group>
-      {
-      // <Upload
-      // {...props}
-      // >
-      //  <Button style={{marginTop:15}}>
-      //    <Icon type="upload"/> 上传图片
-      //  </Button>
-      // </Upload>
-      }
+             <Input
+             addonBefore="激活状态"
+             value={this.state.active}
+             placeholder="激活状态，1激活，0不激活(必须为数字)"
+             onChange={(e)=>{this.setState({active:e.target.value})}}
+             style={{width:400,display:"block",marginTop:15,marginButtom:10}}
+             />
+
+            </Input.Group>
+            </TabPane>
+          <TabPane tab="上传图片" key="uplImg">
+          <Upload
+          {...props}
+          >
+           <Button style={{marginTop:15,marginButtom:15}}>
+             <Icon type="upload"/> 上传图片
+           </Button>
+          </Upload>
+          </TabPane>
+        </Tabs>
       </Modal>
     )
   }

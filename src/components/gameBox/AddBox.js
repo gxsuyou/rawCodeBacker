@@ -6,7 +6,7 @@ import fetchs from "../../utils/request";
 import styles from "./AddBox.scss";
 const Option =Select.Option;
 const TabPane = Tabs.TabPane;
-
+const {TextArea}=Input;
 class AddBox extends react.Component{
   state={
     visible:false,
@@ -17,6 +17,7 @@ class AddBox extends react.Component{
     gamePackagename:"",
     type:"alone",
     sys:2,
+    tabsValue:"",
     plainOptions_alone:[
       {
         label:"射击",
@@ -241,7 +242,9 @@ class AddBox extends react.Component{
           onChange={(e)=>{this.setState({gamePackagename :e.target.value})}}
          />
          </Input.Group>
+         <TextArea  style={{marginTop:5}} placeholder="输入游戏简介" autosize={{ minRows: 4, maxRows: 6 }} />
        </Input.Group >
+
        <Tabs className={styles.tab} defaultActiveKey="alone" onChange={this.tabsType.bind(this)}>
          <TabPane tab="单机" key="alone">
            <Checkbox.Group

@@ -1,0 +1,132 @@
+import React from "react";
+import {Input,Table,Button,Modal,Message} from "antd";
+import fetchs from "../../../utils/request.js";
+import config from "../../../common/config";
+import styles from "./Strategy.scss";
+import AddBox from "../../../components/strategyBox/AddBox";
+class Strategy extends React.Component{
+  state={
+    columns:[{
+      title: '序号',
+      dataIndex:'key',
+    },{
+      title: '用户',
+      dataIndex:'user',
+    },{
+      title: '游戏',
+      dataIndex:'game',
+    },{
+      title: '标题',
+      dataIndex:'title',
+    },{
+      title:"操作",
+      dataIndex:"action",
+      render:(text,record)=>(
+        <span className={styles.button}>
+          <Button onClick={this.essenceHand.bind(this,record.id,record.essence)}>{record.essenceName}</Button>
+          <Button onClick={this.deleteStrategy.bind(this,record.id)}>删除</Button>
+        </span>
+      )
+    }],
+    data:[],
+    pagination:{},
+    current:1,
+    loadding:false,
+    addBoxVisible:false
+  }
+  UNSAFE_componentWillMount=()=>{
+    this.fetchsStrategy(1);
+  }
+
+  handleTableChange=(pagination,filters,sorter)=>{
+    this.setState({
+      current:pagination.current
+    })
+    this.fetchsStrategy(pagination.current);
+  }
+
+ deleteStrategy(id){
+   fetchs(`${config.url_adminStrategy}/deleteStrategy?strategyId=${id}`).then((res)=>{
+     if(res.data.state){
+       Message.success("删除成功");
+       this.fetchsStrategy(this.state.curcurrent);
+     }else{
+       Message.error("删除失败");
+     }
+   })
+ }
+ essenceHand(id,i){
+   fetchs(`${config.url_adminStrategy}/essence?strategyId=${id}&essence=${i}`).then((res)=>{
+      if(res.data.state){
+        Message.success("修改成功");
+        this.fetchsStrategy(this.state.curcurrent);
+      }else{
+        Message.error("修改失败");
+      }
+   });
+ }
+
+  fetchsStrategy=(p)=>{
+    //http://192.168.0.104:8878/adminStrategy/getStrategyByMsgPage?msg=&page=1
+    this.setState({
+      loading:true
+    })
+    fetchs(`${config.url_adminStrategy}/getStrategyByMsgPage?msg=&page=${p}`).then((res)=>{
+      console.log(res.data);
+      var i=1,essence;
+      var c=[];
+
+      res.data.result.forEach((item)=>{
+        item.essence?essence="精华":essence="取消";
+        c.push({
+          key:i++,
+          user:item.nick_name,
+          game:item.game,
+          title:item.title,
+          essenceName:essence,
+          essence:item.essence,
+          id:item.id
+        });
+        const pagination ={...this.state.pagination};
+        pagination.total=(res.data.totalPage)*10;
+        this.setState({
+          data:c,
+          loading:false,
+          pagination
+        });
+
+      });
+    });
+  }
+  handBox(e){
+    this.setState({
+       addBoxVisible:e
+    });
+  }
+  render(){
+    return (
+      <div className={styles.table}>
+        <div className={styles.tableOperations}>
+         <Button onClick={()=>{
+           this.setState({
+             addBoxVisible:true
+           })
+         }} type="primary">添加</Button>
+        </div>
+        <Table
+        columns={this.state.columns}
+        dataSource={this.state.data}
+        pagination={this.state.pagination}
+        onChange={this.handleTableChange}
+        loading={this.state.loading}
+        ></Table>
+        <AddBox
+        visible={this.state.addBoxVisible}
+         handBox={this.handBox.bind(this)}
+                 />
+      </div>
+    )
+  }
+}
+
+export default Strategy;
