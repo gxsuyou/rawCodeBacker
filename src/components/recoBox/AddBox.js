@@ -98,7 +98,7 @@ class AddBox extends React.Component{
               Message.error('上传失败');
         },
         success:(res_1)=>{
-          fetchs(`${config.url_adminGame}/addGameActive?game_name=${this.state.gameName}&title=${this.state.title}&sort=${this.state.row}&active_img=${res_1.key}&active=${this.state.active}&type=${this.state.radioValue}`).then((res_3)=>{
+          fetchs(`${config.url_adminGame}/addGameActive?game_name=${this.state.gameName}&title=${this.state.title}&sort=${this.state.row}&active_img=${res_1.key}&active=${this.state.active}&type=${this.state.radioValue}&name=${this.state.activityName}`).then((res_3)=>{
             if(res_3.data.state){
               Message.success("上传成功");
               this.setState({
@@ -140,7 +140,6 @@ class AddBox extends React.Component{
       return false;
     }
     fake(value,(data)=> this.setState({ data }));
-
   }
   focusGetData(){
     const c=[];
