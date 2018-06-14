@@ -36,6 +36,14 @@ class MainNavs extends React.Component{
         this.setState({
           current:"4"
         });
+      }else if(hash.indexOf("HeadBox")!=-1){
+        this.setState({
+          current:"6"
+        });
+      }else if(hash.indexOf("SliderGame")!=-1){
+        this.setState({
+          current:"7"
+        });
       }
 
     }
@@ -68,11 +76,27 @@ class MainNavs extends React.Component{
          </SubMenu>
          <SubMenu key="sub2" title={<span><Icon type="setting" /><span>咨询管理</span></span>}>
           <Menu.Item key="5">资讯</Menu.Item>
-          <Menu.Item key="6">头部游戏设置</Menu.Item>
-          <Menu.Item key="7">横向游戏设置</Menu.Item>
+          <Menu.Item key="6">
+             <Link to="/admin/HeadBox">
+              头部游戏设置
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="7">
+            <Link to="/admin/SliderGame">
+              横向游戏设置
+            </Link>
+          </Menu.Item>
         </SubMenu>
-        <SubMenu key="sub3" title={<span><Icon type="setting" /><span>H5游戏管理</span></span>}>
-          <Menu.Item key="8">H5</Menu.Item>
+        <SubMenu key="sub3" title={<span><Icon type="setting" />
+        <span>
+        H5游戏管理</span>
+        </span>
+      }>
+          <Menu.Item key="8">
+          <Link to="/admin/h5">
+             H5
+          </Link>
+          </Menu.Item>
         </SubMenu>
         <SubMenu key="sub4" title={<span><Icon type="setting" /><span>攻略管理</span></span>}>
           <Menu.Item key="9">

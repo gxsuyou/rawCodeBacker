@@ -1,0 +1,36 @@
+.table{
+  margin:20px;
+  margin-top:40px;
+  background-color:#fff;
+  padding:12px;
+}
+.table tr{
+  height:60px;
+  text-align:center;
+}
+.table thead th{
+  text-align:center;
+}
+
+.tableOperations{
+  margin-top:12px;
+  margin-bottom:12px;
+  display:flex;
+  justify-content:flex-end;
+}
+.tableOperations button{
+  margin-right:30px;
+  margin-left:30px;
+}
+
+.button{
+  line-height:3;
+}
+
+.button Button{
+  margin:0 3px;
+}
+
+.InputGroup>span{
+  margin:10px 0;
+}

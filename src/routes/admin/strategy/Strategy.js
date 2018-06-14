@@ -10,14 +10,14 @@ class Strategy extends React.Component{
       title: '序号',
       dataIndex:'key',
     },{
-      title: '用户',
-      dataIndex:'user',
+      title: '标题',
+      dataIndex:'title'
     },{
       title: '游戏',
       dataIndex:'game',
     },{
-      title: '标题',
-      dataIndex:'title',
+      title: '上传用户',
+      dataIndex:'user'
     },{
       title:"操作",
       dataIndex:"action",
@@ -80,8 +80,8 @@ class Strategy extends React.Component{
         item.essence?essence="精华":essence="取消";
         c.push({
           key:i++,
-          user:item.nick_name,
-          game:item.game,
+          user:item.admin_comment,
+          game:item.game_name,
           title:item.title,
           essenceName:essence,
           essence:item.essence,
@@ -123,7 +123,7 @@ class Strategy extends React.Component{
         <AddBox
         visible={this.state.addBoxVisible}
          handBox={this.handBox.bind(this)}
-                 />
+         fetchsStrategy={this.fetchsStrategy}/>
       </div>
     )
   }

@@ -86,6 +86,7 @@ class AddBox extends React.Component{
                      gameName:""
                    });
                     this.props.handBox(false);
+                    this.props.fetchsStrategy(1);
                  }else{
                    Message.error("添加文章成功");
                  }
@@ -99,12 +100,6 @@ class AddBox extends React.Component{
 
   }
 
-
-
-
-
-
-
   getQiniuUploader(){
   		return {
   			url:'http://up-z2.qiniup.com/strategy/',
@@ -117,7 +112,6 @@ class AddBox extends React.Component{
   					AK:"Uusbv77fI10iNTVF3n7EZWbksckUrKYwUpAype4i",
   					SK:"dEDgtx_QEJxfs2GltCUVgDIqyqiR6tKjStQEnBVq"
   				},
-         // key:`strategy/${new Date().getFullYear()}-${new Date().getMonth()}-${new Date().getDate()}-${new Date().getHours()}-${new Date().getMinutes()}`,
           domain:"http://img.oneyouxi.com.cn",
           genKey(options){
               return "strategy/"+options.file.type + "-" + options.file.size + "-" + options.file.lastModifiedDate.valueOf() + "-" + new Date().valueOf() + "-" + options.file.name;

@@ -12,6 +12,9 @@ import Recommend from "./recommend/Recommend.js";
 import Tag from "./tag/Tag";
 import Title from "./title/Title";
 import Strategy from "./strategy/Strategy";
+import SliderGame from "./sliderGame/SliderGame";
+import HeadBox from "./headGame/HeadGame";
+import H5 from "./h5/H5";
 const { Header, Sider, Content } = Layout;
 
 class AdminIndex extends React.Component{
@@ -46,6 +49,15 @@ class AdminIndex extends React.Component{
           <Route path="/admin/Strategy"
           component={Strategy}
           />
+          <Route path="/admin/SliderGame"
+           component={SliderGame}
+          />
+          <Route path="/admin/HeadBox"
+           component={HeadBox}
+          />
+          <Route path="/admin/h5"
+           component={H5}
+          />
         </Content>
        </Layout>
       </Layout>
@@ -58,6 +70,3 @@ class AdminIndex extends React.Component{
 export default connect(({adminIndex})=>({
    adminIndex
 }))(AdminIndex);
-
-// return false;
-// export default Products;

@@ -1,7 +1,7 @@
 if(process.env.NODE_ENV==="development"){
   // var url_1="http://192.168.0.104:8878/";
-   var url_1="http://192.168.2.117:8878/";
-  //  var url_1="http://127.0.0.1:8878/";
+    var url_1="http://192.168.2.117:8878/";
+    // var url_1="http://127.0.0.1:8878/";
 }else{
   url_1="http://182.61.26.179:8878/";
 }
@@ -14,6 +14,8 @@ const config={
   url_getAdminGame:`${url_1}admin/gameAdmin`,
   url_admin:`${url_1}admin`,
   url_adminStrategy:`${url_1}adminStrategy`,
+  url_adminNews:`${url_1}adminNews`,
+  url_adminH5:`${url_1}adminH5`,
   getCookie(name){
     var arr;
     var reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");

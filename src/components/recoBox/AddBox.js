@@ -179,7 +179,6 @@ class AddBox extends React.Component{
        },
        fileList:this.state.fileList
      }
-
      return(
        <Modal
           title="添加推荐位"
@@ -246,9 +245,7 @@ class AddBox extends React.Component{
           onChange={(e)=>{this.setState({active:e.target.value})}}
           style={{width:400,display:"block",marginTop:15}}
           />
-
          </Input.Group>
-         {
          <Upload
          {...props}
          >
@@ -256,7 +253,6 @@ class AddBox extends React.Component{
             <Icon type="upload"/> 上传图片
           </Button>
          </Upload>
-         }
         </Modal>
      )
    }
