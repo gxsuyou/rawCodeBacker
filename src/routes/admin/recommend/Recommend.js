@@ -76,7 +76,6 @@ class Recommend extends React.Component{
            console.log(record.recommendType);
          }}>编辑</Button>
          <Button onClick={this.deleteGame.bind(this,record.key,record.id)} type="danger">删除</Button>
-
         </span>
        )
      }

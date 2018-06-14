@@ -26,11 +26,8 @@ class AddBox extends React.Component{
     optionData:[],
     title:"",
     chapterData:"",
-    form_data:{
-      text:"",
-      editor:""
-    },
-    content:""
+    content:"",
+    gameName:""
   }
   UNSAFE_componentWillReceiveProps(e){
     this.setState({
@@ -38,12 +35,17 @@ class AddBox extends React.Component{
     });
   }
   handleOk=()=>{
-    console.log(this.state.content);
+  //  console.log(this.state.content,this.state.title);
+    //if()
+    console.log(this.state.gameName);
+    if(this.state.gameName==""){
+      Message.error("用户名为空");
+      return false;
+    }
   }
   getQiniuUploader(){
-    var title=this.state.title;
   		return {
-  			url:'http://up-z2.qiniup.com',
+  			url:'http://up-z2.qiniup.com/strategy/',
   			type:'qiniu',
   			name:"file",
   			request:"image_src",//图片src需要的路径
@@ -53,12 +55,11 @@ class AddBox extends React.Component{
   					AK:"Uusbv77fI10iNTVF3n7EZWbksckUrKYwUpAype4i",
   					SK:"dEDgtx_QEJxfs2GltCUVgDIqyqiR6tKjStQEnBVq"
   				},
-              domain:"http://img.oneyouxi.com.cn",
-              genKey(options){
-                //var i=1;
-                  return "strategy/${title}"+options.file.type +"-"+ options.file.size + new Date().valueOf()+"-"+options.file.name;
-                 //return `strategy/${title}/${i++}`;
-              }
+         // key:`strategy/${new Date().getFullYear()}-${new Date().getMonth()}-${new Date().getDate()}-${new Date().getHours()}-${new Date().getMinutes()}`,
+          domain:"http://img.oneyouxi.com.cn",
+          genKey(options){
+              return "strategy/"+options.file.type + "-" + options.file.size + "-" + options.file.lastModifiedDate.valueOf() + "-" + new Date().valueOf() + "-" + options.file.name;
+          }
   			}
   		}
   	}
@@ -108,7 +109,6 @@ class AddBox extends React.Component{
   render(){
     const options = this.state.optionData.map(d => <Option key={d.value}>{d.text}</Option>);
     var icons=this.getIcons();
-  //var plugins=this.getPlugins();
     let form_data = this.state.form_data;
     let uploader = this.getQiniuUploader();
     let plugins = {
@@ -141,8 +141,9 @@ class AddBox extends React.Component{
       visible={this.state.visible}
       onOk={this.handleOk}
       onCancel={this.handleCancel}
-      width={680}
-      >
+      width={780}
+      okText="提交"
+      cancelText="取消">
       <Select
          mode="combobox"
          value={this.state.gameName}
@@ -155,8 +156,7 @@ class AddBox extends React.Component{
          onFocus={this.focusGetData.bind(this)}>
        {options}
      </Select>
-      <Input.Group className={styles.InputGroup}
-      >
+      <Input.Group className={styles.InputGroup}>
         <Input
         addonBefore="文章标题"
         value={this.state.title}
@@ -173,16 +173,14 @@ class AddBox extends React.Component{
         </Upload>
       </Input.Group>
       <Editor
-      styles={{marginTop:10}}
+      className={styles.editorBox}
       ref="editor"
       plugins={plugins}
-
-       value={this.state.content}
-
+      value={this.state.content}
       onChange={(e)=>{
         this.setState({
           content:e
-        })
+        });
       }}
        icon={icons}/>
       </Modal>

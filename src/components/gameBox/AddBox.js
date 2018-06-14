@@ -18,6 +18,7 @@ class AddBox extends react.Component{
     type:"alone",
     sys:2,
     tabsValue:"",
+    brief:"",
     plainOptions_alone:[
       {
         label:"射击",
@@ -167,13 +168,14 @@ class AddBox extends react.Component{
     this.props.handleAddBoxChange(false);
   }
   onOk(){
+     //console.log(this.state.brief);
     if(this.state.gameName===""){
       Message.error("不能为空");
       return false;
     }
    const cls=this.state.defaultOption.join(",");
    const uid=config.getCookie("uid");
-   fetchs(`${config.url_adminGame}/addGameMsg?gameName=${this.state.gameName}&gameVersion=${this.state.gameVersion}&gamePackagename=${this.state.gamePackagename}&gameRecommend=${this.state.gameRecommend}&type=${this.state.type}&cls=${cls}&gameCompany=${this.state.gameCompany}&sys=${this.state.sys}&admin=${uid}`)
+   fetchs(`${config.url_adminGame}/addGameMsg?gameName=${this.state.gameName}&gameVersion=${this.state.gameVersion}&gamePackagename=${this.state.gamePackagename}&gameRecommend=${this.state.gameRecommend}&type=${this.state.type}&cls=${cls}&gameCompany=${this.state.gameCompany}&sys=${this.state.sys}&admin=${uid}&gameRecommend=${this.state.brief}`)
    .then((res)=>{
      if(res.data.state===1){
         this.setState({
@@ -242,7 +244,17 @@ class AddBox extends react.Component{
           onChange={(e)=>{this.setState({gamePackagename :e.target.value})}}
          />
          </Input.Group>
-         <TextArea  style={{marginTop:5}} placeholder="输入游戏简介" autosize={{ minRows: 4, maxRows: 6 }} />
+         <TextArea
+         style={{marginTop:5}}
+         placeholder="输入游戏简介"
+         autosize={{ minRows: 4, maxRows: 6 }}
+         value={this.state.brief}
+         onChange={(e)=>{
+           this.setState({
+             brief:e.target.value
+           });
+         }}
+         />
        </Input.Group >
 
        <Tabs className={styles.tab} defaultActiveKey="alone" onChange={this.tabsType.bind(this)}>
