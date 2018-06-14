@@ -64,6 +64,8 @@ class EditorBox extends React.Component{
   }
 
   editor(){
+    // console.log(this.state.imgSrc);
+    // return false;
     fetchs(`${config.url_adminGame}/setGameActive?id=${this.state.activityId}&name=${this.state.activityName}&title=${this.state.title}&sort=${this.state.row}&active_img=${this.state.imgSrc}&active=${this.state.active}&game_id=${this.state.gameId}&type=${this.state.type}`).then((res_2)=>{
       if(res_2.data.state){
         Message.success("上传成功");

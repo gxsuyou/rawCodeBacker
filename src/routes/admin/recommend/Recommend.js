@@ -71,7 +71,7 @@ class Recommend extends React.Component{
              editorActivityTitle:record.title,
              editorActivitySort:record.sort,
              editorActivityStatus:record.status,
-             editorActivityImgSrc:record.imgSrc
+             editorActivityImgSrc:record.img
            });
            console.log(record.recommendType);
          }}>编辑</Button>
@@ -127,6 +127,7 @@ class Recommend extends React.Component{
           key:i++,
           id:item.id,
           imgSrc:imgSrc,
+          img:item.active_img,
           title:item.title,
           status:status,
           sort:item.sort,
@@ -174,7 +175,7 @@ class Recommend extends React.Component{
     .then((res)=>{
       var i=1;
       var c=[];
-       res.data.game.forEach((item)=>{
+       res.data.result.forEach((item)=>{
 
          if(item.active!=1){
            var status="不激活";
@@ -200,7 +201,8 @@ class Recommend extends React.Component{
            c.push({
             key:i++,
             id:item.id,
-            imgSrc:imgSrc,
+           imgSrc:imgSrc,
+           img:item.active_img,
            title:item.title,
            status:status,
            sort:item.sort,

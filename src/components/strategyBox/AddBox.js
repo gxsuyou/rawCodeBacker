@@ -37,7 +37,7 @@ class AddBox extends React.Component{
   handleOk=()=>{
 
 
-    return false;
+    //return false;
     if(this.state.gameName==""){
       Message.error("游戏名不能为空");
       return false;
@@ -50,7 +50,7 @@ class AddBox extends React.Component{
       Message.error("文章头图是一张图");
       return false;
     }
-   if(this.state.his.state.content==""){
+   if(this.state.content==""){
      Message.error("文章内容不能为空");
      return false;
    }
@@ -68,9 +68,29 @@ class AddBox extends React.Component{
           },
           success:(res_1)=>{
             console.log("上传成功");
-            // fetchs(`${config.url_adminStrategy}/addStrategy?adminId=${uid}&game_name=${this.state.gameName}`).then((res)=>{
-            //
-            // })
+            fetchs(`${config.url_adminStrategy}/addStrategy`,{
+              method:"POST",
+              headers: {
+              'Content-Type':'application/x-www-form-urlencoded' // 指定提交方式为表单提交
+              },
+              body:`admin=${uid}&game_name=${this.state.gameName}&title=${this.state.title}&detail=${this.state.content}&img_src=${res_1.key}`
+          }).then((res)=>{
+                 if(res.data.state==1){
+                   Message.success("添加文章成功");
+                   this.setState({
+                     visible:false,
+                     fileList:[],
+                     optionData:[],
+                     title:"",
+                     chapterData:"",
+                     gameName:""
+                   });
+                    this.props.handBox(false);
+                 }else{
+                   Message.error("添加文章成功");
+                 }
+
+            });
           }
        });
 
