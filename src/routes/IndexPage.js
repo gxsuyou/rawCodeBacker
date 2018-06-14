@@ -19,6 +19,7 @@ class IndexPage extends React.Component{
   }
 ;
  componentDidMount(){
+
     if(config.getCookie("user")!=null&&config.getCookie("pwd")!=null){
       this.fetch_login(config.getCookie("user"),config.getCookie("pwd"));
     }

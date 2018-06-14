@@ -46,6 +46,7 @@ class HeadGame extends React.Component{
 
  componentWillMount(){
   this.fetchs_chapter(1);
+  config.setCookie("path","HeadBox",0.05);
  }
  handleTableChange(e){
    this.setState({

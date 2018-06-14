@@ -71,7 +71,7 @@ class Game extends React.Component{
            <Button  onClick={this.showModalEditorMessage.bind(this,record.id,record.game_name,record.company,record.version,record.updowm,record.size,record.sortIndex,record.sortHot,record.gameInstallNum)}>编辑信息</Button>
            <Button  onClick={this.UploadVision.bind(this,record.id)}>上传数据</Button>
            <Button onClick={this.tagBoxVision.bind(this,record.id)}>标签</Button>
-           <Button onClick={this.deleteData.bind(this,record.key,record.id)} type="danger" >删除</Button>
+           <Button onClick={this.deleteData.bind(this,record.key,record.id)} type="danger">删除</Button>
           </span>
         )
       }],
@@ -106,6 +106,10 @@ class Game extends React.Component{
          message.error("删除失败");
        }
      });
+  }
+
+  componentDidMount(){
+    config.setCookie("path","game",0.05);
   }
 
   /* 打开编辑弹框初始化数据 */
@@ -155,13 +159,15 @@ class Game extends React.Component{
       message.error("必须输入数字!");
       return false;
     }
-     var uid=config.getCookie("uid");
+
     fetchs(`${config.url_adminGame}/SetGameMsg`,{
     method:"POST",
     headers: {
       'Content-Type':'application/x-www-form-urlencoded' // 指定提交方式为表单提交
     },
-    body:`name=${  this.state.editorMessageGameName}&activation=${this.state.editorMessageUp}&company=${this.state.editorMessageCompanyName}&version=${this.state.editorMessageVision}&download_num=${this.state.editorMessageDownloadNum}&sort=${this.state.editorMessageIndexPriority}&sort2=${this.state.editorMessageHotPriority}&size=${this.state.editorMessageGameSize}&id=${this.state.editorMessageId}&up_admin=${uid}`}).then((res)=>{
+    body:`name=${  this.state.editorMessageGameName}&activation=${this.state.editorMessageUp}&company=${this.state.editorMessageCompanyName}&version=${this.state.editorMessageVision}&download_num=${this.state.editorMessageDownloadNum}&sort=${this.state.editorMessageIndexPriority}&sort2=${this.state.editorMessageHotPriority}&size=${this.state.editorMessageGameSize}&id=${this.state.editorMessageId}`
+     })
+    .then((res)=>{
       if(res.data.state){
          this.setState({
            editorMessageVisible:false,

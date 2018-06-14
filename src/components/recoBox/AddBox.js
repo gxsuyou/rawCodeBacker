@@ -72,10 +72,13 @@ class AddBox extends React.Component{
     }
 
 
-    switch(this.state.radioValue){
-      case 1:
-       this.indexUpload(this.state.fileList);
-      break;
+     switch(this.state.radioValue){
+       case 1:
+         this.indexUpload(this.state.fileList);
+       break;
+       case 4:
+         this.indexUpload(this.state.fileList);
+       break;
     }
   }
 
@@ -85,10 +88,6 @@ class AddBox extends React.Component{
      return false;
    }
    const id=this.state.data[0].id;
-
-   // console.error(this.state.gameName);
-   // return false;
-
   const key =`activity/activityType${this.state.radioValue}/gameId${id}`;
   fetchs(`${config.url_admin}/getUptokenByMsg?scope=oneyouxiimg&key=${key}`).then((res)=>{
     if(res.data.state){
@@ -187,8 +186,7 @@ class AddBox extends React.Component{
           onCancel={this.handleCancel}
           loading={this.state.loading}
           okText="提交"
-          cancelText="取消"
-        >
+          cancelText="取消">
           <Select
              mode="combobox"
              value={this.state.gameName}

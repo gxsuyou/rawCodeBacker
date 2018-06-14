@@ -23,6 +23,7 @@ class Recommend extends React.Component{
     editorActivitySort:"",
     editorActivityStatus:"",
     editorActivityImgSrc:"",
+    editorActivityImgType:"",
     current:1,
     columns:[
       {title:'序号',
@@ -71,9 +72,8 @@ class Recommend extends React.Component{
              editorActivityTitle:record.title,
              editorActivitySort:record.sort,
              editorActivityStatus:record.status,
-             editorActivityImgSrc:record.img
+             editorActivityImgSrc:record.img,
            });
-           console.log(record.recommendType);
          }}>编辑</Button>
          <Button onClick={this.deleteGame.bind(this,record.key,record.id)} type="danger">删除</Button>
         </span>
@@ -84,8 +84,10 @@ class Recommend extends React.Component{
    pagination:{}
   }
 
+
  componentWillMount(){
   this.fetchs_chapter(1);
+  config.setCookie("path","recommend",0.05);
  }
  handleTableChange(e){
    this.setState({
@@ -120,7 +122,7 @@ class Recommend extends React.Component{
      if(item.active_img==""){
        var imgSrc="暂无数据";
      }else{
-       var imgSrc=`http://img.oneyouxi.com.cn/${item.active_img}`
+       var imgSrc=`http://img.oneyouxi.com.cn/${item.active_img}`;
      }
 
         this.state.mainData.push({
@@ -257,6 +259,7 @@ class Recommend extends React.Component{
           activityImgSrc={this.state.editorActivityImgSrc}
           propHandBox={this.propHandBox.bind(this)}
           propsFetchs={this.fetchs_chapter.bind(this)
+
           }
 
         />

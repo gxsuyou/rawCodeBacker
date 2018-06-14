@@ -58,8 +58,9 @@ class Title extends React.Component{
     this.fetchsTitle(pagination.current);
   }
 
-  UNSAFE_componentWillMount(){
+  componentDidMount(){
      this.fetchsTitle(1);
+     config.setCookie("path","title",0.05);
   }
   fetchsTitle(p){
     this.setState({

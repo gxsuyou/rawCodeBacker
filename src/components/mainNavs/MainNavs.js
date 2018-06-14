@@ -2,6 +2,8 @@ import React from "react";
 import {Menu,Icon} from 'antd';
 import styles from "./mainNavs.scss";
 import {Link} from "dva/router";
+import config from "../../common/config";
+import {connect} from 'dva';
 const SubMenu=Menu.SubMenu;
 class MainNavs extends React.Component{
   state={
@@ -18,7 +20,19 @@ class MainNavs extends React.Component{
       current: e.key,
     });
   }
-  UNSAFE_componentWillMount() {
+  componentWillMount(){
+    if(this.props.adminIndex.login){
+
+    }else{
+      window.location="/#/";
+      return false;
+    }
+    const path=config.getCookie("path");
+    if(path!==null){
+      window.location.href=`/#/admin/${path}`;
+    }
+  }
+  componentDidMount(){
       const hash=window.location.hash;
       if(hash.indexOf("game")!=-1){
         this.setState({
@@ -43,6 +57,18 @@ class MainNavs extends React.Component{
       }else if(hash.indexOf("SliderGame")!=-1){
         this.setState({
           current:"7"
+        });
+      }else if(hash.indexOf("h5")!=-1){
+        this.setState({
+          current:"8"
+        });
+      }else if(hash.indexOf("Strategy")!=-1){
+        this.setState({
+          current:"9"
+        });
+      }else if(hash.indexOf("News")!=-1){
+        this.setState({
+          current:"5"
         });
       }
 
@@ -75,7 +101,11 @@ class MainNavs extends React.Component{
            </Menu.Item>
          </SubMenu>
          <SubMenu key="sub2" title={<span><Icon type="setting" /><span>咨询管理</span></span>}>
-          <Menu.Item key="5">资讯</Menu.Item>
+          <Menu.Item key="5">
+           <Link to="/admin/news">
+             资讯
+            </Link>
+          </Menu.Item>
           <Menu.Item key="6">
              <Link to="/admin/HeadBox">
               头部游戏设置
@@ -105,11 +135,16 @@ class MainNavs extends React.Component{
            </Link>
           </Menu.Item>
         </SubMenu>
-        <SubMenu key="sub5" title={<span><Icon type="setting"/><span>超级管理</span></span>}>
-        </SubMenu>
+        {
+        // <SubMenu key="sub5" title={<span><Icon type="setting"/><span>超级管理</span></span>}>
+        // </SubMenu>
+        }
        </Menu>
     )
   }
 }
 
-export default MainNavs;
+//export default MainNavs;
+export default connect(({adminIndex})=>({
+   adminIndex
+}))(MainNavs);

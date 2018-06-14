@@ -46,6 +46,7 @@ class SliderGame extends React.Component{
 
  componentWillMount(){
   this.fetchs_chapter(1);
+  config.setCookie("path","SliderGame",0.05);
  }
  handleTableChange(e){
    this.setState({

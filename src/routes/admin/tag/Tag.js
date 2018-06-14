@@ -66,6 +66,7 @@ class tag extends React.Component{
   }
   UNSAFE_componentWillMount(){
     this.fetchsTag(1);
+    config.setCookie("path","tag",0.05);
   }
   deleteTag(id){
    fetchs(`${config.url_adminGame}/deleteSubject?subjectId=${id}`).then((res)=>{

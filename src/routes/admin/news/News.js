@@ -2,9 +2,9 @@ import React from "react";
 import {Input,Table,Button,Modal,Message} from "antd";
 import fetchs from "../../../utils/request.js";
 import config from "../../../common/config";
-import styles from "./Strategy.scss";
-import AddBox from "../../../components/strategyBox/AddBox";
-class Strategy extends React.Component{
+import styles from "./News.scss";
+import AddBox from "../../../components/newsBox/AddBox";
+class News extends React.Component{
   state={
     columns:[{
       title: '序号',
@@ -24,7 +24,7 @@ class Strategy extends React.Component{
       render:(text,record)=>(
         <span className={styles.button}>
           <Button onClick={this.essenceHand.bind(this,record.id,record.essence)}>{record.essenceName}</Button>
-          <Button onClick={this.deleteStrategy.bind(this,record.id)}>删除</Button>
+          <Button onClick={this.deleteNews.bind(this,record.id)}>删除</Button>
         </span>
       )
     }],
@@ -35,40 +35,39 @@ class Strategy extends React.Component{
     addBoxVisible:false
   }
   UNSAFE_componentWillMount=()=>{
-    this.fetchsStrategy(1);
-    config.setCookie("path","Strategy",0.05);
+    this.fetchsNews(1);
+    config.setCookie("path","News",0.05);
   }
 
   handleTableChange=(pagination,filters,sorter)=>{
     this.setState({
       current:pagination.current
     });
-    this.fetchsStrategy(pagination.current);
+    this.fetchsNews(pagination.current);
   }
 
- deleteStrategy(id){
-   fetchs(`${config.url_adminStrategy}/deleteStrategy?strategyId=${id}`).then((res)=>{
+ deleteNews(id){
+   fetchs(`${config.url_adminNews}/deleteNews?strategyId=${id}`).then((res)=>{
      if(res.data.state){
        Message.success("删除成功");
-       this.fetchsStrategy(this.state.curcurrent);
+       this.fetchsNews(this.state.curcurrent);
      }else{
        Message.error("删除失败");
      }
    })
  }
  essenceHand(id,i){
-   fetchs(`${config.url_adminStrategy}/essence?strategyId=${id}&essence=${i}`).then((res)=>{
+   fetchs(`${config.url_adminNews}/essence?strategyId=${id}&essence=${i}`).then((res)=>{
       if(res.data.state){
         Message.success("修改成功");
-        this.fetchsStrategy(this.state.curcurrent);
+        this.fetchsNews(this.state.curcurrent);
       }else{
         Message.error("修改失败");
       }
    });
  }
 
-  fetchsStrategy=(p)=>{
-    //http://192.168.0.104:8878/adminStrategy/getStrategyByMsgPage?msg=&page=1
+  fetchsNews=(p)=>{
     this.setState({
       loading:true
     })
@@ -124,10 +123,10 @@ class Strategy extends React.Component{
         <AddBox
         visible={this.state.addBoxVisible}
          handBox={this.handBox.bind(this)}
-         fetchsStrategy={this.fetchsStrategy}/>
+         fetchsNews={this.fetchsNews}/>
       </div>
     )
   }
 }
 
-export default Strategy;
+export default News;

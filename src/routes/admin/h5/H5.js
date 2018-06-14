@@ -56,8 +56,9 @@ class H5 extends React.Component{
     editorBoxId:"",
     current:1
   }
-  UNSAFE_componentWillMount(){
+  componentWillMount(){
     this.fetchsH5(1);
+    config.setCookie("path","h5",0.05);
   }
   deleteH5(id,name){
    fetchs(`${config.url_adminH5}/deleteH5?id=${id}&name=${name}`).then((res)=>{

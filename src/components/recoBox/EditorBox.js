@@ -141,6 +141,15 @@ class EditorBox extends React.Component{
      case "首页轮播推荐位":
        var type=1;
        break;
+     case  "首页推荐位":
+       var type=4;
+       break;
+      case "推荐位（横向2个）":
+       var type=5;
+      break;
+      case "推荐位（竖排10个）":
+       var type=6;
+      break;
    }
    var active;
    e.activityStatus==="激活"?active=1:active=0;

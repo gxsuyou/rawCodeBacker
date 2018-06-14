@@ -15,17 +15,10 @@ import Strategy from "./strategy/Strategy";
 import SliderGame from "./sliderGame/SliderGame";
 import HeadBox from "./headGame/HeadGame";
 import H5 from "./h5/H5";
+import News from "./news/News.js";
 const { Header, Sider, Content } = Layout;
 
 class AdminIndex extends React.Component{
-  UNSAFE_componentWillMount(){
-    console.log(this.props.adminIndex.login);
-    if(this.props.adminIndex.login){
-
-    }else{
-      window.location="/#/";
-    }
-  }
   render(){
     return (
       <Layout style={{ minHeight:'100vh'}}>
@@ -57,6 +50,9 @@ class AdminIndex extends React.Component{
           />
           <Route path="/admin/h5"
            component={H5}
+          />
+          <Route path="/admin/news"
+           component={News}
           />
         </Content>
        </Layout>
