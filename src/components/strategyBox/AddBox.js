@@ -35,14 +35,55 @@ class AddBox extends React.Component{
     });
   }
   handleOk=()=>{
-  //  console.log(this.state.content,this.state.title);
-    //if()
-    console.log(this.state.gameName);
+
+
+    return false;
     if(this.state.gameName==""){
-      Message.error("用户名为空");
+      Message.error("游戏名不能为空");
       return false;
     }
+    if(this.state.title==""){
+      Message.error("标题不能为空");
+      return false;
+    }
+    if(this.state.fileList.length!==1){
+      Message.error("文章头图是一张图");
+      return false;
+    }
+   if(this.state.his.state.content==""){
+     Message.error("文章内容不能为空");
+     return false;
+   }
+
+   var key =`strategy/strategyName=${this.state.title}`;
+   var uid =config.getCookie('uid');
+   fetchs(`${config.url_admin}/getUptokenByMsg?scope=oneyouxiimg&key=${key}`).then((res)=>{
+     if(res.data.state){
+       qiniu.upload({
+          file:this.state.fileList[0],
+          key:key,
+          token:res.data.upToken,
+          error:function(){
+                Message.error('上传失败');
+          },
+          success:(res_1)=>{
+            fetchs(`${config.url_adminStrategy}/addStrategy?adminId=${uid}&game_name=${this.state.gameName}`).then((res)=>{
+
+            })
+          }
+       });
+
+    }
+   });
+
   }
+
+
+
+
+
+
+
   getQiniuUploader(){
   		return {
   			url:'http://up-z2.qiniup.com/strategy/',

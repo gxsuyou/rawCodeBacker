@@ -175,7 +175,7 @@ class AddBox extends react.Component{
     }
    const cls=this.state.defaultOption.join(",");
    const uid=config.getCookie("uid");
-   fetchs(`${config.url_adminGame}/addGameMsg?gameName=${this.state.gameName}&gameVersion=${this.state.gameVersion}&gamePackagename=${this.state.gamePackagename}&gameRecommend=${this.state.gameRecommend}&type=${this.state.type}&cls=${cls}&gameCompany=${this.state.gameCompany}&sys=${this.state.sys}&admin=${uid}&gameRecommend=${this.state.brief}`)
+   fetchs(`${config.url_adminGame}/addGameMsg?gameName=${this.state.gameName}&gameVersion=${this.state.gameVersion}&gamePackagename=${this.state.gamePackagename}&gameRecommend=${this.state.gameRecommend}&type=${this.state.type}&cls=${cls}&gameCompany=${this.state.gameCompany}&sys=${this.state.sys}&admin=${uid}&gameDetail=${this.state.brief}`)
    .then((res)=>{
      if(res.data.state===1){
         this.setState({
@@ -187,6 +187,7 @@ class AddBox extends react.Component{
           gamePackagename:"",
           type:"alone",
           sys:2,
+          brief:""
        });
       this.state.defaultOption.splice(0,this.state.defaultOption.length);
        this.props.handleAddBoxChange(false);
