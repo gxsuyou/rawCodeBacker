@@ -67,9 +67,10 @@ class AddBox extends React.Component{
                 Message.error('上传失败');
           },
           success:(res_1)=>{
-            fetchs(`${config.url_adminStrategy}/addStrategy?adminId=${uid}&game_name=${this.state.gameName}`).then((res)=>{
-
-            })
+            console.log("上传成功");
+            // fetchs(`${config.url_adminStrategy}/addStrategy?adminId=${uid}&game_name=${this.state.gameName}`).then((res)=>{
+            //
+            // })
           }
        });
 
