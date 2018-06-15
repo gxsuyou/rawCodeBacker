@@ -12,7 +12,10 @@ class Game extends React.Component{
   state={
       checkAll:true,
       loading:false,
-      pagination:{},
+      pagination:{
+        total:1,
+        current:1
+      },
       currentPagination:1,
       editorMessageVisible:false,
       editorMessageGameName:"",
@@ -235,7 +238,6 @@ class Game extends React.Component{
            company=item.game_company;
         }
 
-
         item.activation?up="是":up="否";
         item.sys==2?sys="Android":sys="ios";
         c.push({
@@ -258,6 +260,7 @@ class Game extends React.Component{
       });
      const pagination ={...this.state.pagination};
      pagination.total=(res.data.totalPage)*10;
+     pagination.current=res.data.nowPage;
       this.setState({
         loading:false,
         MainData:c,
@@ -267,7 +270,6 @@ class Game extends React.Component{
   }
   searchName(e){
     if(e==""){
-      //message.error("选择框不能为空");
       this.fetch(1);
       return false;
     }

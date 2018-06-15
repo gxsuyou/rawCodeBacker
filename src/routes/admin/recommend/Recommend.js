@@ -81,7 +81,10 @@ class Recommend extends React.Component{
      }
    ],
    mainData:[],
-   pagination:{}
+   pagination:{
+     total:1,
+     current:1
+   }
   }
 
 
@@ -141,6 +144,7 @@ class Recommend extends React.Component{
       });
       const pagination={...this.state.pagination};
       pagination.total=res.data.totalPage*10;
+      pagination.current=res.data.nowPage;
       this.setState({
         loading:false,
         pagination

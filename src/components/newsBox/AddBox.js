@@ -35,9 +35,7 @@ class AddBox extends React.Component{
     });
   }
   handleOk=()=>{
-
-
-    //return false;
+    // console.log(this.state.optionData);
     if(this.state.gameName==""){
       Message.error("游戏名不能为空");
       return false;
@@ -55,7 +53,7 @@ class AddBox extends React.Component{
      return false;
    }
 
-   var key =`strategy/strategyName=${this.state.title}`;
+   var key =`News/newsName=${this.state.title}`;
    var uid =config.getCookie('uid');
    fetchs(`${config.url_admin}/getUptokenByMsg?scope=oneyouxiimg&key=${key}`).then((res)=>{
      if(res.data.state){
@@ -68,27 +66,19 @@ class AddBox extends React.Component{
           },
           success:(res_1)=>{
             console.log("上传成功");
-            fetchs(`${config.url_adminStrategy}/addStrategy`,{
+            fetchs(`${config.url_adminNews}/addNews`,{
               method:"POST",
               headers: {
               'Content-Type':'application/x-www-form-urlencoded' // 指定提交方式为表单提交
               },
-              body:`admin=${uid}&game_name=${this.state.gameName}&title=${this.state.title}&detail=${this.state.content}&img_src=${res_1.key}`
+              body:`admin=${uid}&game_id=${this.state.optionData[0].id}&title=${this.state.title}&detail=${this.state.content}&img=${res_1.key}`
           }).then((res)=>{
                  if(res.data.state==1){
                    Message.success("添加文章成功");
-                   this.setState({
-                     visible:false,
-                     fileList:[],
-                     optionData:[],
-                     title:"",
-                     chapterData:"",
-                     gameName:""
-                   });
-                    this.props.handBox(false);
-                    this.props.fetchsStrategy(1);
+                   this.handleCancel();
+                    this.props.fetchsNews(1);
                  }else{
-                   Message.error("添加文章成功");
+                   Message.error("添加文章失败");
                  }
 
             });
@@ -126,7 +116,8 @@ class AddBox extends React.Component{
       optionData:[],
       title:"",
       chapterData:"",
-      gameName:""
+      gameName:"",
+      content:""
     });
     this.props.handBox(false);
   }
@@ -135,7 +126,9 @@ class AddBox extends React.Component{
     if(value===""){
       return false;
     }
-    fake(value,(data)=> this.setState({ data }));
+    fake(value,(data)=>this.setState({
+      optionData:data
+    }));
   }
   focusGetData(){
     const c=[];

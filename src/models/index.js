@@ -1,5 +1,5 @@
 if(process.env.NODE_ENV==="development"){
-  var login=false;
+  var login=true;
 }else{
    login=false;
 }
@@ -7,7 +7,7 @@ const c= {
   namespace:'adminIndex',
   state:{
     age:10,
-    login:false,
+    login:login,
     user:null,
   },
   reducers:{

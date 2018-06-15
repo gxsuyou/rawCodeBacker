@@ -41,7 +41,10 @@ class SliderGame extends React.Component{
      }
    ],
    mainData:[],
-   pagination:{}
+   pagination:{
+     total:1,
+     current:1
+    }
   }
 
  componentWillMount(){
@@ -71,6 +74,7 @@ class SliderGame extends React.Component{
       });
       const pagination={...this.state.pagination};
       pagination.total=res.data.totalPage*10;
+      pagination.current=res.data.nowPage;
       this.setState({
         loading:false,
         pagination
@@ -107,7 +111,9 @@ class SliderGame extends React.Component{
     return(
       <div className={styles.table}>
        <div className={styles.tableOperations}>
-        <Button onClick={()=>{this.setState({addBoxVision:true})}} type="primary">添加</Button>
+        <Button onClick={()=>{
+          this.setState({addBoxVision:true})}
+        } type="primary">添加</Button>
        </div>
        <Table
        columns={this.state.columns}
@@ -115,6 +121,7 @@ class SliderGame extends React.Component{
        pagination={this.state.pagination}
        onChange={this.handleTableChange.bind(this)}
        loading={this.state.loading}
+       defaultCurrent={2}
        />
         <AddBox visible={this.state.addBoxVision} propHandBox={this.propHandBox.bind(this)}
         propsFetchs={this.fetchs_chapter.bind(this)}

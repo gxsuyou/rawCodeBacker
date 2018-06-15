@@ -66,7 +66,7 @@ class MainNavs extends React.Component{
         this.setState({
           current:"9"
         });
-      }else if(hash.indexOf("News")!=-1){
+      }else if(hash.indexOf("news")!=-1){
         this.setState({
           current:"5"
         });

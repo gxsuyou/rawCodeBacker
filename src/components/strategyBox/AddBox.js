@@ -135,7 +135,7 @@ class AddBox extends React.Component{
     if(value===""){
       return false;
     }
-    fake(value,(data)=> this.setState({ data }));
+    fake(value,(data)=> this.setState({ optionData:data }));
   }
   focusGetData(){
     const c=[];
