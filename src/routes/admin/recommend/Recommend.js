@@ -106,7 +106,14 @@ class Recommend extends React.Component{
     fetchs(`${config.url_admin}/active?p=${p}`)
     .then((res)=>{
       var i =1;
+      var sort,title,active;
       res.data.result.forEach((item)=>{
+        if(item.sort==null){
+          var sort="无"
+        }else{
+          var sort=item.sort
+        }
+
        if(item.active!=1){
          var status="不激活";
        }else{
@@ -122,8 +129,20 @@ class Recommend extends React.Component{
         var recommendType='推荐位（竖排10个）';
       }
 
-     if(item.active_img==""){
-       var imgSrc="暂无数据";
+      if(item.title==null){
+         title="无";
+      }else{
+        title=item.title;
+      }
+
+      if(item.name==null){
+        active="无";
+      }else{
+        active=item.name;
+      }
+
+     if(item.active_img==null){
+       var imgSrc="无";
      }else{
        var imgSrc=`http://img.oneyouxi.com.cn/${item.active_img}`;
      }
@@ -133,10 +152,10 @@ class Recommend extends React.Component{
           id:item.id,
           imgSrc:imgSrc,
           img:item.active_img,
-          title:item.title,
+          title:title,
           status:status,
-          sort:item.sort,
-          active:item.name,
+          sort:sort,
+          active:active,
           recommendType:recommendType,
           game_id:item.game_id
         });
@@ -177,12 +196,11 @@ class Recommend extends React.Component{
       this.fetchs_chapter(1);
       return false;
     }
-    fetchs(`${config.url_adminGame}/activeSearch?name=${v}`)
+    fetchs(`${config.url_adminGame}/getActiveSearch?name=${v}`)
     .then((res)=>{
       var i=1;
       var c=[];
        res.data.result.forEach((item)=>{
-
          if(item.active!=1){
            var status="不激活";
          }else{
@@ -198,12 +216,13 @@ class Recommend extends React.Component{
           var recommendType='推荐位（竖排10个）';
         }
 
+
+
        if(item.active_img==""){
          var imgSrc="暂无数据";
        }else{
          var imgSrc=`http://img.oneyouxi.com.cn/${item.active_img}`
        }
-
            c.push({
             key:i++,
             id:item.id,
@@ -215,7 +234,6 @@ class Recommend extends React.Component{
            active:item.name,
            recommendType:recommendType
            });
-
        });
       this.setState({
         mainData:c

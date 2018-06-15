@@ -26,7 +26,10 @@ class Title extends React.Component{
       )
     }],
     data:[],
-    pagination:{},
+    pagination:{
+      total:1,
+      current:1
+    },
     loading:false,
     current:1,
     addBoxVision:false,
@@ -82,6 +85,7 @@ class Title extends React.Component{
       });
      const pagination ={...this.state.pagination};
       pagination.total=(res.data.totalPage)*10;
+      pagination.current=res.data.nowPage;
        this.setState({
          loading:false,
          data:c,

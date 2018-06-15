@@ -27,7 +27,8 @@ class AddBox extends React.Component{
     title:"",
     chapterData:"",
     content:"",
-    gameName:""
+    gameName:"",
+    toggleInput:true
   }
   UNSAFE_componentWillReceiveProps(e){
     this.setState({
@@ -35,7 +36,6 @@ class AddBox extends React.Component{
     });
   }
   handleOk=()=>{
-    // console.log(this.state.optionData);
     if(this.state.gameName==""){
       Message.error("游戏名不能为空");
       return false;
@@ -53,6 +53,16 @@ class AddBox extends React.Component{
      return false;
    }
 
+   if(this.state.toggleInput==false){
+     Message.error("正在加载中");
+     return false;
+
+   }
+   this.setState({
+     toggleInput:false
+   });
+
+
    var key =`News/newsName=${this.state.title}`;
    var uid =config.getCookie('uid');
    fetchs(`${config.url_admin}/getUptokenByMsg?scope=oneyouxiimg&key=${key}`).then((res)=>{
@@ -65,7 +75,7 @@ class AddBox extends React.Component{
                 Message.error('上传失败');
           },
           success:(res_1)=>{
-            console.log("上传成功");
+            //console.log("上传成功");
             fetchs(`${config.url_adminNews}/addNews`,{
               method:"POST",
               headers: {
@@ -75,9 +85,22 @@ class AddBox extends React.Component{
           }).then((res)=>{
                  if(res.data.state==1){
                    Message.success("添加文章成功");
-                   this.handleCancel();
-                    this.props.fetchsNews(1);
+                   this.setState({
+                     visible:false,
+                     fileList:[],
+                     optionData:[],
+                     title:"",
+                     chapterData:"",
+                     gameName:"",
+                     content:"",
+                     toggleInput:true
+                   });
+                   this.props.handBox(false);
+                   this.props.fetchsNews(1);
                  }else{
+                   this.setState({
+                      toggleInput:true
+                   });
                    Message.error("添加文章失败");
                  }
 
@@ -112,12 +135,12 @@ class AddBox extends React.Component{
   handleCancel=()=>{
     this.setState({
       visible:false,
-      fileList:[],
+      //fileList:[],
       optionData:[],
-      title:"",
-      chapterData:"",
-      gameName:"",
-      content:""
+      // title:"",
+      // chapterData:"",
+      // gameName:"",
+      // content:""
     });
     this.props.handBox(false);
   }

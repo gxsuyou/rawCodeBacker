@@ -21,11 +21,10 @@ class EditorBox extends React.Component{
     activityId:"",
     imgSrc:"",
     fileList:[],
-    tabsValue:"ediMes"
+    tabsValue:"ediMes",
+    inputToggle:false
   }
   handleOk=()=>{
-    //uplImg
-
     if(this.state.activityName===""){
       Message.error("活动名不能为空");
       return false;
@@ -64,9 +63,14 @@ class EditorBox extends React.Component{
   }
 
   editor(){
-    // console.log(this.state.imgSrc);
-    // return false;
-    fetchs(`${config.url_adminGame}/setGameActive?id=${this.state.activityId}&name=${this.state.activityName}&title=${this.state.title}&sort=${this.state.row}&active_img=${this.state.imgSrc}&active=${this.state.active}&game_id=${this.state.gameId}&type=${this.state.type}`).then((res_2)=>{
+    var row;
+    if(this.state.row=="无"){
+      row=null;
+    }else{
+      row=this.state.row;
+    }
+
+    fetchs(`${config.url_adminGame}/setGameActive?id=${this.state.activityId}&name=${this.state.activityName}&title=${this.state.title}&sort=${row}&active_img=${this.state.imgSrc}&active=${this.state.active}&game_id=${this.state.gameId}&type=${this.state.type}`).then((res_2)=>{
       if(res_2.data.state){
         Message.success("上传成功");
 
@@ -154,6 +158,17 @@ class EditorBox extends React.Component{
    var active;
    e.activityStatus==="激活"?active=1:active=0;
 
+     if(type==5||type==6){
+      this.setState({
+        inputToggle:true
+      });
+    }else{
+      this.setState({
+        inputToggle:false
+      });
+    }
+
+
     this.setState({
       visible:e.visible,
       current:e.current,
@@ -213,6 +228,7 @@ class EditorBox extends React.Component{
              placeholder="输入活动名字"
              onChange={(e)=>{this.setState({activityName:e.target.value})}}
              style={{width:400,display:"block",marginTop:10}}
+             disabled={this.state.inputToggle}
              />
 
              <Input
@@ -221,6 +237,7 @@ class EditorBox extends React.Component{
              placeholder="输入标题"
              onChange={(e)=>{this.setState({title:e.target.value})}}
              style={{width:400,display:"block",marginTop:15}}
+             disabled={this.state.inputToggle}
              />
 
              <Input
@@ -229,6 +246,7 @@ class EditorBox extends React.Component{
              placeholder="输入排序(必须为数字)"
              onChange={(e)=>{this.setState({row:e.target.value})}}
              style={{width:400,display:"block",marginTop:15}}
+             disabled={this.state.inputToggle}
              />
 
              <Input
@@ -245,7 +263,7 @@ class EditorBox extends React.Component{
           <Upload
           {...props}
           >
-           <Button style={{marginTop:15,marginButtom:15}}>
+           <Button disabled={this.state.inputToggle} style={{marginTop:15,marginButtom:15}}>
              <Icon type="upload"/> 上传图片
            </Button>
           </Upload>

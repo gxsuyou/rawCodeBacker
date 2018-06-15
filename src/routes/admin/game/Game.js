@@ -280,7 +280,7 @@ class Game extends React.Component{
         });
         var i=1;
         var up,sys;
-        res.data.game.forEach((item)=>{
+        res.data.forEach((item)=>{
           item.activation?up="是":up="否";
           item.sys==2?sys="Android":sys="ios";
            this.state.MainData.push({

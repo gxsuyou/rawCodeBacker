@@ -120,6 +120,7 @@ showEditorBox(id){
         });
         const pagination ={...this.state.pagination};
         pagination.total=(res.data.totalPage)*10;
+        pagination.current=res.data.nowPage;
         this.setState({
           data:c,
           loading:false,

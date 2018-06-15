@@ -27,7 +27,8 @@ class AddBox extends React.Component{
     title:"",
     chapterData:"",
     content:"",
-    gameName:""
+    gameName:"",
+    toggleInput:true
   }
   UNSAFE_componentWillReceiveProps(e){
     this.setState({
@@ -36,8 +37,6 @@ class AddBox extends React.Component{
   }
   handleOk=()=>{
 
-
-    //return false;
     if(this.state.gameName==""){
       Message.error("游戏名不能为空");
       return false;
@@ -54,6 +53,14 @@ class AddBox extends React.Component{
      Message.error("文章内容不能为空");
      return false;
    }
+   if(this.state.toggleInput==false){
+     Message.error("正在加载中");
+     return false;
+
+   }
+   this.setState({
+     toggleInput:false
+   });
 
    var key =`strategy/strategyName=${this.state.title}`;
    var uid =config.getCookie('uid');
@@ -67,7 +74,6 @@ class AddBox extends React.Component{
                 Message.error('上传失败');
           },
           success:(res_1)=>{
-            console.log("上传成功");
             fetchs(`${config.url_adminStrategy}/addStrategy`,{
               method:"POST",
               headers: {
@@ -83,12 +89,17 @@ class AddBox extends React.Component{
                      optionData:[],
                      title:"",
                      chapterData:"",
-                     gameName:""
+                     gameName:"",
+                     content:"",
+                     toggleInput:true
                    });
                     this.props.handBox(false);
                     this.props.fetchsStrategy(1);
                  }else{
-                   Message.error("添加文章成功");
+                   this.setState({
+                      toggleInput:true
+                   });
+                   Message.error("添加文章失败");
                  }
 
             });
@@ -122,11 +133,11 @@ class AddBox extends React.Component{
   handleCancel=()=>{
     this.setState({
       visible:false,
-      fileList:[],
+      // fileList:[],
       optionData:[],
-      title:"",
-      chapterData:"",
-      gameName:""
+      // title:"",
+      // chapterData:"",
+      // gameName:""
     });
     this.props.handBox(false);
   }

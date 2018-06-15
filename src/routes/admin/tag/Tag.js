@@ -6,7 +6,7 @@ import config from "../../../common/config";
 import AddBox from "../../../components/tagBox/AddBox.js";
 import AddGameBox from "../../../components/tagBox/AddGameBox";
 
-class tag extends React.Component{
+class Tag extends React.Component{
   state={
     columns:[
       {
@@ -57,7 +57,10 @@ class tag extends React.Component{
       }
     ],
     data:[],
-    pagination:{},
+    pagination:{
+      total:1,
+      current:1
+    },
     loadding:false,
     addBoxVision:false,
     editorBoxVison:false,
@@ -107,6 +110,7 @@ class tag extends React.Component{
       });
       const pagination ={...this.state.pagination};
       pagination.total=(res.data.totalPage)*10;
+      pagination.current=res.data.nowPage;
       this.setState({
         loading:false,
         data:c,
@@ -153,4 +157,4 @@ class tag extends React.Component{
   }
 }
 
-export default tag;
+export default Tag;

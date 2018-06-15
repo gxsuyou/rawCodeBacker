@@ -29,7 +29,10 @@ class Strategy extends React.Component{
       )
     }],
     data:[],
-    pagination:{},
+    pagination:{
+      total:1,
+      current:1
+    },
     current:1,
     loadding:false,
     addBoxVisible:false
@@ -68,7 +71,6 @@ class Strategy extends React.Component{
  }
 
   fetchsStrategy=(p)=>{
-    //http://192.168.0.104:8878/adminStrategy/getStrategyByMsgPage?msg=&page=1
     this.setState({
       loading:true
     })
@@ -90,6 +92,7 @@ class Strategy extends React.Component{
         });
         const pagination ={...this.state.pagination};
         pagination.total=(res.data.totalPage)*10;
+        pagination.current=res.data.nowPage;
         this.setState({
           data:c,
           loading:false,

@@ -32,7 +32,8 @@ class AddBox extends React.Component{
     active:"",//激活状态
     gameName:"",
     title:"",
-    row:""
+    row:"",
+    inputToggle:false
   }
   handleCancel = (e) => {
     this.setState({
@@ -43,6 +44,7 @@ class AddBox extends React.Component{
     this.props.propHandBox(false);
   }
   handleOk = () => {
+
     if(this.state.gameName==""){
       Message.error("游戏名不能为空");
       return false;
@@ -53,8 +55,13 @@ class AddBox extends React.Component{
           return false;
         }
       });
-
     }
+
+    if(this.state.radioValue==5||this.state.radioValue==6){
+      this.restUpload();
+      return false;
+    }
+
 
      if(this.state.activityName==""){
        Message.error("活动名不能为空");
@@ -71,7 +78,6 @@ class AddBox extends React.Component{
        return false;
     }
 
-
      switch(this.state.radioValue){
        case 1:
          this.indexUpload(this.state.fileList);
@@ -82,12 +88,32 @@ class AddBox extends React.Component{
     }
   }
 
+ restUpload(){
+   fetchs(`${config.url_adminGame}/addGameActive?type=${this.state.radioValue}&game_name=${this.state.gameName}`).then((res)=>{
+     Message.success("上传成功");
+     this.setState({
+        visible:false,
+        radioValue:1,
+        activityName:"",
+        active:"",//激活状态
+        gameName:"",
+        title:"",
+        row:"",
+        data:[]
+     });
+     this.props.propHandBox(false);
+     this.props.propsFetchs(1);
+   })
+ }
+
+
+
  indexUpload(fileList){
    if(fileList.length!==1){
      Message.error("首页轮播推荐位只放置一张图");
      return false;
    }
-   const id=this.state.data[0].id;
+  const id=this.state.data[0].id;
   const key =`activity/activityType${this.state.radioValue}/gameId${id}`;
   fetchs(`${config.url_admin}/getUptokenByMsg?scope=oneyouxiimg&key=${key}`).then((res)=>{
     if(res.data.state){
@@ -157,6 +183,19 @@ class AddBox extends React.Component{
       });
     });
   }
+
+  radioChange(e){
+      this.setState({radioValue:e.target.value});
+      if(e.target.value==5||e.target.value==6){
+        this.setState({
+          inputToggle:true
+        });
+      }else{
+        this.setState({
+          inputToggle:false
+        });
+      }
+  }
    render(){
      const options = this.state.data.map(d => <Option key={d.value}>{d.text}</Option>);
      const props={
@@ -200,14 +239,12 @@ class AddBox extends React.Component{
           >
            {options}
          </Select>
-         <Radio.Group onChange={(e)=>{this.setState({radioValue:e.target.value})}} value={this.state.radioValue}
+         <Radio.Group onChange={this.radioChange.bind(this)} value={this.state.radioValue}
          style={{marginTop:18,lineHeight:2}}>
             <Radio value={1}>首页轮播推荐位(一张图)</Radio>
             <Radio value={4}>首页推荐位(一张图)</Radio>
-            {
-            // <Radio value={5}>首页推荐游戏(两张图)</Radio>
-            // <Radio value={6}>首页推荐游戏(竖排10张图)</Radio>
-            }
+            <Radio value={5}>首页推荐游戏(两张图)</Radio>
+            <Radio value={6}>首页推荐游戏(竖排10张图)</Radio>
          </Radio.Group>
          <Input.Group
           className={styles.InputGroup}
@@ -215,6 +252,7 @@ class AddBox extends React.Component{
           <Input
           addonBefore="活动名字"
           value={this.state.activityName}
+          disabled={this.state.inputToggle}
           placeholder="输入活动名字"
           onChange={(e)=>{this.setState({activityName:e.target.value})}}
           style={{width:400,display:"block"}}
@@ -226,6 +264,7 @@ class AddBox extends React.Component{
           placeholder="输入标题"
           onChange={(e)=>{this.setState({title:e.target.value})}}
           style={{width:400,display:"block",marginTop:15}}
+          disabled={this.state.inputToggle}
           />
 
           <Input
@@ -234,6 +273,7 @@ class AddBox extends React.Component{
           placeholder="输入排序(必须为数字)"
           onChange={(e)=>{this.setState({row:e.target.value})}}
           style={{width:400,display:"block",marginTop:15}}
+          disabled={this.state.inputToggle}
           />
 
           <Input
@@ -242,12 +282,15 @@ class AddBox extends React.Component{
           placeholder="激活状态，1激活，0不激活(必须为数字)"
           onChange={(e)=>{this.setState({active:e.target.value})}}
           style={{width:400,display:"block",marginTop:15}}
+          disabled={this.state.inputToggle}
           />
          </Input.Group>
          <Upload
          {...props}
          >
-          <Button style={{marginTop:15}}>
+          <Button style={{marginTop:15}}
+            disabled={this.state.inputToggle}
+          >
             <Icon type="upload"/> 上传图片
           </Button>
          </Upload>
