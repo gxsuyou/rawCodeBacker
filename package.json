@@ -16,7 +16,8 @@
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-umeditor": "^1.0.0-rc12",
-    "sass": "^1.5.0"
+    "sass": "^1.5.0",
+    "wangeditor": "^3.1.1"
   },
   "devDependencies": {
     "babel-plugin-dva-hmr": "^0.3.2",

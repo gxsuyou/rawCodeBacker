@@ -131,7 +131,7 @@ class AddBox extends React.Component{
          }));
          return false;
        },
-       fileList_icon:this.state.fileList_icon
+       fileList:this.state.fileList_icon
      }
      const props_headGame={
        onRemove:(file)=>{
@@ -150,7 +150,7 @@ class AddBox extends React.Component{
          }));
          return false;
        },
-       fileList_headGame:this.state.fileList_headGame
+       fileList:this.state.fileList_headGame
      }
      return (
        <Modal

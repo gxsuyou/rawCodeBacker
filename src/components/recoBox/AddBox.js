@@ -39,7 +39,8 @@ class AddBox extends React.Component{
     this.setState({
       visible: false,
       radioValue:1,
-      gameName:""
+      gameName:"",
+      fileList:[]
     });
     this.props.propHandBox(false);
   }
@@ -77,6 +78,24 @@ class AddBox extends React.Component{
        Message.error("排序不能为空");
        return false;
     }
+     const row=Number(this.state.row);
+     if(Object.is(row,NaN)){
+       Message.error("排序必须为数字");
+       return false;
+     }
+    //active
+
+    if(this.state.active==""){
+      Message.error("激活状态不能为空");
+      return false;
+    }
+    const active=Number(this.state.active);
+
+     if(Object.is(active,NaN)){
+       Message.error("激活状态必须为数字");
+       return false;
+     }
+
 
      switch(this.state.radioValue){
        case 1:
@@ -99,7 +118,8 @@ class AddBox extends React.Component{
         gameName:"",
         title:"",
         row:"",
-        data:[]
+        data:[],
+        fileList:[]
      });
      this.props.propHandBox(false);
      this.props.propsFetchs(1);

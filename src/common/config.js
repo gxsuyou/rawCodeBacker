@@ -1,6 +1,6 @@
 if(process.env.NODE_ENV==="development"){
-  // var url_1="http://192.168.0.104:8878/";
-     var url_1="http://192.168.2.117:8878/";
+   var url_1="http://192.168.0.104:8878/";
+     // var url_1="http://192.168.2.117:8878/";
      // var url_1="http://127.0.0.1:8878/";
 }else{
   url_1="http://182.61.26.179:8878/";

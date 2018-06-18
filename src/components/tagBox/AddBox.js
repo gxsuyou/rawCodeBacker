@@ -27,7 +27,13 @@ class AddBox extends React.Component{
     }
 
     if(this.state.active==""){
-       Message.error("标题不能为空");
+       Message.error("激活不能为空");
+       return false;
+    }
+    const active=Number(this.state.active);
+
+    if(Object.is(active,NaN)){
+       Message.error("激活必须为数字");
        return false;
     }
 
@@ -102,11 +108,13 @@ class AddBox extends React.Component{
          });
        },
        beforeUpload: (file) => {
+
          this.setState(({ fileList }) => ({
            fileList: [...fileList, file],
          }));
          return false;
        },
+       listType:'text',
        fileList:this.state.fileList
      }
      return (

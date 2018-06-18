@@ -14,7 +14,7 @@ class UploadBox extends React.Component{
     fileList_cut:[],
     fileList_package:[],
     id:"",
-    tabActive:"imgUpload"
+    tabActive:"imgUpload",
   }
   onCancel(){
     this.setState({
@@ -23,8 +23,11 @@ class UploadBox extends React.Component{
       fileList_main:[],
       fileList_cut:[],
       fileList_package:[],
+      m:false
     });
     this.props.handleUploadBoxChange(false);
+    // console.log(this.state.fileList_icon[0]);
+    //this.onRemove_icon(this.state.fileList_icon[0]);
   }
   uploadQiniu(options){
     var file=options.file||null,
@@ -238,32 +241,31 @@ class UploadBox extends React.Component{
   UNSAFE_componentWillReceiveProps(p){
     this.setState({
       visible:p.uploadBoxVision,
-      id:p.id
+      id:p.id,
+      //m:true
+    });
+  }
+  onRemove_icon(file){
+    this.setState(({ fileList_icon }) => {
+      // console.log(file);
+      const newFileList = fileList_icon.slice();
+      newFileList.splice(-1, 1);
+      return {
+        fileList_icon: newFileList,
+      };
     });
   }
   render(){
     const props_icon = {
-      onRemove: (file) => {
-        //删除时候触发
-        this.setState(({ fileList_icon }) => {
-          const index = fileList_icon.indexOf(file);
-          const newFileList = fileList_icon.slice();
-          newFileList.splice(index, 1);
-          return {
-            fileList_icon: newFileList,
-          };
-        });
-      },
+      onRemove:this.onRemove_icon.bind(this),
       beforeUpload: (file) => {
         this.setState(({fileList_icon})=>({
           fileList_icon: [...fileList_icon, file]
         }));
         return false;
       },
-      fileList_icon: this.state.fileList_icon,
-      //showUploadList:{showPreviewIcon:true,showRemoveIcon:true}
-      // showPreviewIcon:{false}
-      // showRemoveIcon:{false}
+      listType:'text',
+      fileList:this.state.fileList_icon
     };
     const props_main = {
       onRemove: (file) => {
@@ -283,7 +285,8 @@ class UploadBox extends React.Component{
         }));
         return false;
       },
-      fileList_main: this.state.fileList_main,
+      fileList:this.state.fileList_main,
+      listType:'text',
     };
     const props_cut={
       onRemove:(file)=>{
@@ -302,7 +305,8 @@ class UploadBox extends React.Component{
         }));
         return false;
       },
-      fileList_cut:this.state.fileList
+      fileList:this.state.fileList_cut,
+      listType:'text'
     }
     const props_package={
       onRemove:(file)=>{
@@ -321,7 +325,7 @@ class UploadBox extends React.Component{
         }));
         return false;
       },
-      fileList_package:this.state.fileList_package
+      fileList:this.state.fileList_package
     }
     return(
        <Modal
@@ -352,7 +356,7 @@ class UploadBox extends React.Component{
                <Icon type="upload"/> 游戏头图(单张,1280*720以上)
              </Button>
            </Upload>
-           <Upload {...props_cut}>
+           <Upload {...props_cut}  multiple={true}>
             <Button>
               <Icon type="upload"/> 游戏截图(最少3张,最多8张横竖图不限制)
             </Button>

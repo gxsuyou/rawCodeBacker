@@ -4,7 +4,7 @@ import fetchs from "../../utils/request";
 import config from "../../common/config";
 import qiniu from "../../utils/_qiniu";
 import styles from "./AddBox.scss";
-import Editor from 'react-umeditor';
+import E from 'wangeditor';
 const Option=Select.Option;
 function fake(n,callback){
   const data=[];
@@ -113,29 +113,11 @@ class AddBox extends React.Component{
 
   }
 
-  getQiniuUploader(){
-  		return {
-  			url:'http://up-z2.qiniup.com/strategy/',
-  			type:'qiniu',
-  			name:"file",
-  			request:"image_src",//图片src需要的路径
-  			qiniu:{
-  				app:{
-  					Bucket:"oneyouxiimg",
-  					AK:"Uusbv77fI10iNTVF3n7EZWbksckUrKYwUpAype4i",
-  					SK:"dEDgtx_QEJxfs2GltCUVgDIqyqiR6tKjStQEnBVq"
-  				},
-          domain:"http://img.oneyouxi.com.cn",
-          genKey(options){
-              return "strategy/"+options.file.type + "-" + options.file.size + "-" + options.file.lastModifiedDate.valueOf() + "-" + new Date().valueOf() + "-" + options.file.name;
-          }
-  			}
-  		}
-  	}
+
   handleCancel=()=>{
     this.setState({
       visible:false,
-      //fileList:[],
+      // fileList:[],
       optionData:[],
       // title:"",
       // chapterData:"",
@@ -168,26 +150,39 @@ class AddBox extends React.Component{
       });
     });
   }
-  getIcons(){
-        var icons = [
-            "source | undo redo | bold italic underline strikethrough fontborder emphasis | ",
-            "paragraph fontfamily fontsize | superscript subscript | ",
-            "forecolor backcolor | removeformat | insertorderedlist insertunorderedlist | selectall | ",
-            "cleardoc  | indent outdent | justifyleft justifycenter justifyright | touppercase tolowercase | ",
-            "horizontal date time  | image emotion spechars | inserttable"
-        ]
-        return icons;
-}
+  initEditor(e){
+    if(this.state.toggleEditor){
+      return false;
+    }
+    this.setState({
+      toggleEditor:true
+    });
+    const editor = new E(e);
+    editor.customConfig.onchange = html => {
+      this.setState({
+        content:html
+      })
+    }
+    editor.customConfig.uploadImgServer = config.url_adminStrategy+'/img?title=News&url='+config.url_1;
+    editor.create();
+  }
+  info(){
+    Modal.info({
+      title:"预览",
+      content: (
+        <div dangerouslySetInnerHTML={{__html:this.state.content}}>
+
+        </div>
+      ),
+      onOk() {},
+      width:680,
+      okText:"确认",
+      className:styles.see
+    });
+  }
   render(){
     const options = this.state.optionData.map(d => <Option key={d.value}>{d.text}</Option>);
-    var icons=this.getIcons();
-    let form_data = this.state.form_data;
-    let uploader = this.getQiniuUploader();
-    let plugins = {
-      image:{
-        uploader:uploader
-      }
-    }
+
     const props={
       onRemove:(file)=>{
         this.setState(({ fileList }) => {
@@ -214,6 +209,7 @@ class AddBox extends React.Component{
       onOk={this.handleOk}
       onCancel={this.handleCancel}
       width={780}
+      maskClosable={false}
       okText="提交"
       cancelText="取消">
       <Select
@@ -235,26 +231,19 @@ class AddBox extends React.Component{
         placeholder="输入文章标题(不超过20个字)"
         onChange={(e)=>{this.setState({title:e.target.value})}}
         />
+      </Input.Group>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:15}}>
         <Upload
         {...props}
         >
-         <Button style={{marginTop:5}}>
+         <Button>
            <Icon type="upload"/> 上传文章头图
            (单张,295(高)*768(宽))
          </Button>
         </Upload>
-      </Input.Group>
-      <Editor
-      className={styles.editorBox}
-      ref="editor"
-      plugins={plugins}
-      value={this.state.content}
-      onChange={(e)=>{
-        this.setState({
-          content:e
-        });
-      }}
-       icon={icons}/>
+        <Button  onClick={this.info.bind(this)}>预览</Button>
+      </div>
+      <div ref={this.initEditor.bind(this)} style={{textAlign:'left'}} ></div>
       </Modal>
     )
   }

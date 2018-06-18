@@ -182,7 +182,7 @@ class AddBox extends React.Component{
           <Upload
           {...props}>
            <Button style={{marginTop:15}}>
-             <Icon type="upload"/> 游戏展示图(单张，4(宽)比3(高))
+             <Icon type="upload"/> 游戏展示图(单张，4(宽)比3(高)
            </Button>
           </Upload>
         </Modal>

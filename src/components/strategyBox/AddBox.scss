@@ -4,8 +4,14 @@
 .InputGroup{
   margin-top:5px;
   width:400px;
-  margin-bottom:15px;
+  margin-bottom:0px;
 }
 .editorBox{
   height:500px !important;
+}
+
+
+.see>div>div>div>div:first-child{
+  height:780px;
+  overflow-y:scroll;
 }

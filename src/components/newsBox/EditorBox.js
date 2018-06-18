@@ -34,9 +34,20 @@ class EditorBox extends React.Component{
       Message.error("浏览数不能为空");
       return false;
     }
+     const browse=Number(this.state.browse);
+    if(Object.is(browse,NaN)){
+      Message.error("浏览数必须为数字");
+      return false;
+    }
 
     if(this.state.agress===""){
       Message.error("点赞数不能为空");
+      return false;
+    }
+
+    const agress=Number(this.state.agress);
+    if(Object.is(agress,NaN)){
+      Message.error("点赞数必须为数字");
       return false;
     }
 
@@ -45,12 +56,16 @@ class EditorBox extends React.Component{
       return false;
     }
 
+    const comment=Number(this.state.comment);
+    if(Object.is(comment,NaN)){
+      Message.error("评论数必须为数字");
+      return false;
+    }
+
     if(this.state.date===""){
       Message.error("发表时间不能为空");
       return false;
     }
-    // console.log(this.state.current);
-    // return false;
     this.editor();
   }
 
