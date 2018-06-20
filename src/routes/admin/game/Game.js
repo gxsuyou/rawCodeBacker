@@ -246,7 +246,7 @@ class Game extends React.Component{
           sys:sys,
           addTime:item.add_time,
           gameDetail:`游戏公司:${company} 版本:${item.game_version} 大小:${size}mb`,
-          gameInstallNum:item.game_install_num,
+          gameInstallNum:item.game_download_num,
           sortIndex:item.sort,
           sortHot:item.sort2,
           admin:item.comment,
@@ -278,7 +278,7 @@ class Game extends React.Component{
         });
         var i=1;
         var up,sys;
-        res.data.game.forEach((item)=>{
+        res.data.forEach((item)=>{
           item.activation?up="是":up="否";
           item.sys==2?sys="Android":sys="ios";
            this.state.MainData.push({

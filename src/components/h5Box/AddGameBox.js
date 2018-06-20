@@ -1,8 +1,7 @@
 import React from "react";
-import {Modal,Button,Select,Input,Upload,Radio,Icon,Message,Table} from "antd";
+import {Modal,Button,Select,Message,Table} from "antd";
 import fetchs from "../../utils/request";
 import config from "../../common/config";
-import qiniu from "../../utils/_qiniu";
 import styles from "./AddGameBox.scss";
 const Option=Select.Option;
 

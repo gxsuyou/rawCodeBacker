@@ -40,6 +40,7 @@ class AddBox extends React.Component{
     });
   }
   handleOk=()=>{
+
     if(this.state.gameName==""){
       Message.error("游戏名不能为空");
       return false;
@@ -64,8 +65,7 @@ class AddBox extends React.Component{
    this.setState({
      toggleInput:false
    });
-
-   var key =`strategy/strategyName=${this.state.title}`;
+   var key =`strategy/strategyTitle${this.state.title}`;
    var uid =config.getCookie('uid');
    fetchs(`${config.url_admin}/getUptokenByMsg?scope=oneyouxiimg&key=${key}`).then((res)=>{
      if(res.data.state){

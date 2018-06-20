@@ -7,7 +7,6 @@ import fetchs from "../../utils/request";
 const { SubMenu } = Menu;
 class AdminHeader extends React.Component{
   loginOut(){
-
     this.props.dispatch({
       type:"adminIndex/loginToggle",
       user:"",
@@ -16,28 +15,44 @@ class AdminHeader extends React.Component{
     config.delCookie("user","",-1);
     config.delCookie("pwd","",-1);
     config.delCookie("uid","",-1);
+    config.delCookie("nikeName","",-1);
     window.location="/#/";
   }
   state={
     visible:false,
     user:"",
+    nickName:"",
     oldPwd:"",
     newPwd:"",
-    confPwd:"",
+    confPwd:""
   }
   onCancel=()=>{
     this.setState({
       visible:false,
-      user:"",
       oldPwd:"",
       newPwd:"",
       confPwd:"",
     });
   }
+  componentDidMount(){
+    const user=config.getCookie("user");
+    var nickName=config.getCookie("nickName");
+    if(nickName==null){
+      nickName="";
+    }
+    this.setState({
+      user:user,
+      nickName:nickName
+    });
+  }
   onOK=()=>{
-
    if(this.state.user===""){
      Message.error("用户名不能为空");
+     return false;
+   }
+
+   if(this.state.nickName===""){
+     Message.error("别名不能为空");
      return false;
    }
 
@@ -68,13 +83,13 @@ class AdminHeader extends React.Component{
     headers:{
       'Content-Type':'application/x-www-form-urlencoded'
     },
-    body:`id=${uid}&pwd=${this.state.confPwd}&oldPwd=${this.state.oldPwd}`
+    body:`id=${uid}&pwd=${this.state.confPwd}&oldPwd=${this.state.oldPwd}&nike_name=${this.state.nickName}`
   }).then((res)=>{
     if(res.data.state){
       Message.success("密码修改成功");
       this.setState({
         visible:false,
-        user:"",
+        nickName:this.state.nickName,
         oldPwd:"",
         newPwd:"",
         confPwd:"",
@@ -83,9 +98,6 @@ class AdminHeader extends React.Component{
       Message.error("密码修改失败");
     }
   })
-
-
-
   }
   render(){
     return (
@@ -114,11 +126,18 @@ class AdminHeader extends React.Component{
              <Input
                addonBefore="用户名"
                placeholder="输入您的名字"
+               disabled={true}
                value={this.state.user}
                onChange={(e)=>{
                  this.setState({user:e.target.value})
-               }}
-             />
+               }}/>
+             <Input
+               addonBefore="别名"
+               placeholder="输入您的别名"
+               value={this.state.nickName}
+               onChange={(e)=>{
+                 this.setState({nickName:e.target.value})
+               }}/>
              <Input
                addonBefore="旧密码"
                placeholder="输入您的旧密码"

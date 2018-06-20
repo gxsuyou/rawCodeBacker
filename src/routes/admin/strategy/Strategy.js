@@ -1,5 +1,5 @@
 import React from "react";
-import {Input,Table,Button,Modal,Message} from "antd";
+import {Table,Button,Message} from "antd";
 import fetchs from "../../../utils/request.js";
 import config from "../../../common/config";
 import styles from "./Strategy.scss";
@@ -75,7 +75,6 @@ class Strategy extends React.Component{
       loading:true
     })
     fetchs(`${config.url_adminStrategy}/getStrategyByMsgPage?msg=&page=${p}`).then((res)=>{
-      console.log(res.data);
       var i=1,essence;
       var c=[];
 

@@ -44,22 +44,12 @@ class EditorBox extends React.Component{
       Message.error("激活状态不能为空");
       return false;
     }
-    // console.log(this.state.type);
-
-    //console.log(this.state.tabsValue);
     if(this.state.tabsValue=="uplImg"){
       this.indexUpload(this.state.fileList);
     }else{
       this.editor();
     }
 
-    return false;
-    switch(this.state.type){
-      case 1:
-
-      //this.indexUpload(this.state.fileList);
-      break;
-    }
   }
 
   editor(){
@@ -228,7 +218,6 @@ class EditorBox extends React.Component{
              placeholder="输入活动名字"
              onChange={(e)=>{this.setState({activityName:e.target.value})}}
              style={{width:400,display:"block",marginTop:10}}
-             disabled={this.state.inputToggle}
              />
 
              <Input

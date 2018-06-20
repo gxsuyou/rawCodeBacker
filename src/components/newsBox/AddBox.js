@@ -23,7 +23,13 @@ class AddBox extends React.Component{
   state={
     visible:false,
     fileList:[],
-    optionData:[],
+    optionData:[
+      {
+        value:null,
+        text:null,
+        id:null
+      }
+    ],
     title:"",
     chapterData:"",
     content:"",
@@ -36,10 +42,6 @@ class AddBox extends React.Component{
     });
   }
   handleOk=()=>{
-    if(this.state.gameName==""){
-      Message.error("游戏名不能为空");
-      return false;
-    }
     if(this.state.title==""){
       Message.error("标题不能为空");
       return false;
@@ -75,7 +77,6 @@ class AddBox extends React.Component{
                 Message.error('上传失败');
           },
           success:(res_1)=>{
-            //console.log("上传成功");
             fetchs(`${config.url_adminNews}/addNews`,{
               method:"POST",
               headers: {
@@ -93,7 +94,8 @@ class AddBox extends React.Component{
                      chapterData:"",
                      gameName:"",
                      content:"",
-                     toggleInput:true
+                     toggleInput:true,
+                     content:""
                    });
                    this.props.handBox(false);
                    this.props.fetchsNews(1);
@@ -117,12 +119,7 @@ class AddBox extends React.Component{
   handleCancel=()=>{
     this.setState({
       visible:false,
-      // fileList:[],
-      optionData:[],
-      // title:"",
-      // chapterData:"",
-      // gameName:"",
-      // content:""
+      optionData:[]
     });
     this.props.handBox(false);
   }
@@ -215,7 +212,7 @@ class AddBox extends React.Component{
       <Select
          mode="combobox"
          value={this.state.gameName}
-         placeholder={"输入游戏名称进行查询"}
+         placeholder={"输入游戏名称进行查询(可设置为空)"}
          style={{width:400,marginTop:5}}
          defaultActiveFirstOption={false}
          showArrow={false}

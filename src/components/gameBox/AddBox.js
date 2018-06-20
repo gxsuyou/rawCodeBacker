@@ -168,15 +168,15 @@ class AddBox extends react.Component{
     this.props.handleAddBoxChange(false);
   }
   onOk(){
-     //console.log(this.state.brief);
+     // alert(this.state.brief);
+     //return false;
     if(this.state.gameName===""){
       Message.error("不能为空");
       return false;
     }
    const cls=this.state.defaultOption.join(",");
    const uid=config.getCookie("uid");
-   fetchs(`${config.url_adminGame}/addGameMsg?gameName=${this.state.gameName}&gameVersion=${this.state.gameVersion}&gamePackagename=${this.state.gamePackagename}&gameRecommend=${this.state.gameRecommend}&type=${this.state.type}&cls=${cls}&gameCompany=${this.state.gameCompany}&sys=${this.state.sys}&admin=${uid}&gameDetail=${this.state.brief}`)
-   .then((res)=>{
+   fetchs(`${config.url_adminGame}/addGameMsg?gameName=${this.state.gameName}&gameVersion=${this.state.gameVersion}&gamePackagename=${this.state.gamePackagename}&gameRecommend=${this.state.gameRecommend}&type=${this.state.type}&cls=${cls}&gameCompany=${this.state.gameCompany}&sys=${this.state.sys}&admin=${uid}&gameDetail=${this.state.brief}`).then((res)=>{
      if(res.data.state===1){
         this.setState({
           visible:false,

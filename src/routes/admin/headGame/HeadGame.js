@@ -4,9 +4,6 @@ import styles from "./HeadGame.scss";
 import fetchs from "../../../utils/request.js";
 import config from "../../../common/config";
 import AddBox from "../../../components/headGameBox/AddBox";
-import EditorBox from "../../../components/headGameBox/EditorBox";
-const Search =Input.Search;
-const Option = Select.Option;
 
 class HeadGame extends React.Component{
   state={

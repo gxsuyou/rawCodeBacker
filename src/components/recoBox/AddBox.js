@@ -7,7 +7,6 @@ import z from "../../utils/_qiniu";
 const Option=Select.Option;
 
 
-
 function fake(n,callback){
   const data=[];
   fetchs(`${config.url_adminGame}/activeSearch?name=${n}`).then((res)=>{
@@ -58,16 +57,17 @@ class AddBox extends React.Component{
       });
     }
 
-    if(this.state.radioValue==5||this.state.radioValue==6){
-      this.restUpload();
-      return false;
-    }
-
 
      if(this.state.activityName==""){
        Message.error("活动名不能为空");
        return false;
      }
+
+     if(this.state.radioValue==5||this.state.radioValue==6){
+       this.restUpload();
+       return false;
+     }
+
 
     if(this.state.title==""){
        Message.error("标题不能为空");
@@ -108,7 +108,7 @@ class AddBox extends React.Component{
   }
 
  restUpload(){
-   fetchs(`${config.url_adminGame}/addGameActive?type=${this.state.radioValue}&game_name=${this.state.gameName}`).then((res)=>{
+   fetchs(`${config.url_adminGame}/addGameActive?type=${this.state.radioValue}&game_name=${this.state.gameName}&name=${this.state.activityName}`).then((res)=>{
      Message.success("上传成功");
      this.setState({
         visible:false,
@@ -272,7 +272,6 @@ class AddBox extends React.Component{
           <Input
           addonBefore="活动名字"
           value={this.state.activityName}
-          disabled={this.state.inputToggle}
           placeholder="输入活动名字"
           onChange={(e)=>{this.setState({activityName:e.target.value})}}
           style={{width:400,display:"block"}}

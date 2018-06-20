@@ -50,6 +50,7 @@ fetch_login(user,pwd){
        config.setCookie("user",user,0.5);
        config.setCookie("pwd",pwd,0.5);
        config.setCookie("uid",res.data.user[0].id);
+       config.setCookie("nickName",res.data.user[0].nike_name);
      }else{
        message.error('用户名或密码错误');
      }

@@ -5,7 +5,6 @@ import fetchs from "../../../utils/request.js";
 import config from "../../../common/config";
 import AddBox from "../../../components/recoBox/AddBox";
 import EditorBox from "../../../components/recoBox/EditorBox";
-
 const Search =Input.Search;
 const Option = Select.Option;
 

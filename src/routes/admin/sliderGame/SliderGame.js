@@ -4,7 +4,7 @@ import styles from "./SliderGame.scss";
 import fetchs from "../../../utils/request.js";
 import config from "../../../common/config";
 import AddBox from "../../../components/sliderGameBox/AddBox";
-import EditorBox from "../../../components/sliderGameBox/EditorBox";
+// import EditorBox from "../../../components/sliderGameBox/EditorBox";
 const Search =Input.Search;
 const Option = Select.Option;
 
