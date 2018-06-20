@@ -74,15 +74,15 @@ class Strategy extends React.Component{
     this.setState({
       loading:true
     })
-    fetchs(`${config.url_adminStrategy}/getStrategyByMsgPage?msg=&page=${p}`).then((res)=>{
-      var i=1,essence;
+    fetchs(`${config.url_adminStrategy}/getStrategyByMsgPage?msg=&p=${p}`).then((res)=>{
+      var i=1,essence,admin_comment;
       var c=[];
-
       res.data.result.forEach((item)=>{
         item.essence?essence="精华":essence="取消";
+        item.admin?admin_comment=`后台上传 : ${item.admin_comment}`:admin_comment=`App客户端上传`;
         c.push({
           key:i++,
-          user:item.admin_comment,
+          user:admin_comment,
           game:item.game_name,
           title:item.title,
           essenceName:essence,
