@@ -23,7 +23,6 @@ class AddBox extends React.Component{
   state={
     visible:false,
     fileList:[],
-    fileList_icon:[],
     optionData:[
       {
         value:null,
@@ -52,10 +51,6 @@ class AddBox extends React.Component{
       return false;
     }
 
-    if(this.state.fileList_icon.lengh!==1){
-      Message.error("icon只上传一张图");
-      return false;
-    }
 
     if(this.state.fileList.length!==1){
       Message.error("文章只能上传一张图");
@@ -194,25 +189,6 @@ class AddBox extends React.Component{
   render(){
     const options = this.state.optionData.map(d => <Option key={d.value}>{d.text}</Option>);
 
-    const props_icon={
-      onRemove:(file)=>{
-        this.setState(({ fileList_icon }) => {
-          const index = fileList_icon.indexOf(file);
-          const newFileList = fileList_icon.slice();
-          newFileList.splice(index, 1);
-          return {
-            fileList_icon: newFileList,
-          };
-        });
-      },
-      beforeUpload: (file) => {
-        this.setState(({ fileList_icon }) => ({
-          fileList_icon:[...fileList_icon, file],
-        }));
-        return false;
-      },
-      fileList:this.state.fileList_icon
-    }
 
     const props={
       onRemove:(file)=>{
@@ -262,12 +238,6 @@ class AddBox extends React.Component{
         placeholder="输入文章标题(不超过20个字)"
         onChange={(e)=>{this.setState({title:e.target.value})}}
         />
-        <Upload  {...props_icon}>
-          <Button>
-            <Icon type="upload"/> 上传icon
-            (单张,295(高)*768(宽))
-          </Button>
-        </Upload>
       </Input.Group>
 
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:15}}>
