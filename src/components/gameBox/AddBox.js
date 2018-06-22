@@ -1,12 +1,13 @@
 import react from "react";
 import {Modal,Checkbox,Input,Select
-,Tabs,Message} from "antd";
+,Tabs,Message,Radio,Divider} from "antd";
 import config from "../../common/config";
 import fetchs from "../../utils/request";
 import styles from "./AddBox.scss";
 const Option =Select.Option;
 const TabPane = Tabs.TabPane;
 const {TextArea}=Input;
+const RadioGroup = Radio.Group;
 class AddBox extends react.Component{
   state={
     visible:false,
@@ -155,6 +156,7 @@ class AddBox extends react.Component{
         key:"24"
       }],
     defaultOption:[],
+    strategyTopGame:0
   }
   componentWillReceiveProps(p){
     this.setState({
@@ -168,15 +170,13 @@ class AddBox extends react.Component{
     this.props.handleAddBoxChange(false);
   }
   onOk(){
-     // alert(this.state.brief);
-     //return false;
     if(this.state.gameName===""){
       Message.error("不能为空");
       return false;
     }
    const cls=this.state.defaultOption.join(",");
    const uid=config.getCookie("uid");
-   fetchs(`${config.url_adminGame}/addGameMsg?gameName=${this.state.gameName}&gameVersion=${this.state.gameVersion}&gamePackagename=${this.state.gamePackagename}&gameRecommend=${this.state.gameRecommend}&type=${this.state.type}&cls=${cls}&gameCompany=${this.state.gameCompany}&sys=${this.state.sys}&admin=${uid}&gameDetail=${this.state.brief}`).then((res)=>{
+   fetchs(`${config.url_adminGame}/addGameMsg?gameName=${this.state.gameName}&gameVersion=${this.state.gameVersion}&gamePackagename=${this.state.gamePackagename}&gameRecommend=${this.state.gameRecommend}&type=${this.state.type}&cls=${cls}&gameCompany=${this.state.gameCompany}&sys=${this.state.sys}&admin=${uid}&gameDetail=${this.state.brief}&strategy_head=${this.state.strategyTopGame}`).then((res)=>{
      if(res.data.state===1){
         this.setState({
           visible:false,
@@ -223,8 +223,7 @@ class AddBox extends react.Component{
       onCancel={this.onCancel.bind(this)}
       onOk={this.onOk.bind(this)}
       okText="提交"
-      cancelText="取消"
-      >
+      cancelText="取消">
        <Input.Group className={styles.InputGroup}>
          <Input addonBefore="游戏名" placeholder="游戏名字" value={this.state.gameName} onChange={(e)=>{this.setState({gameName:e.target.value})}} />
          <Input addonBefore="游戏版本号" placeholder="游戏版本号"
@@ -254,10 +253,19 @@ class AddBox extends react.Component{
            this.setState({
              brief:e.target.value
            });
-         }}
-         />
-       </Input.Group >
-
+         }}/>
+       </Input.Group>
+       <RadioGroup
+       onChange={(e)=>{
+         this.setState({
+           strategyTopGame:e.target.value
+         });
+       }}
+       value={this.state.strategyTopGame}>
+        <Divider orientation="left">攻略顶部的游戏推荐</Divider>
+        <Radio value={0}>取消</Radio>
+        <Radio value={1}>推荐</Radio>
+      </RadioGroup>
        <Tabs className={styles.tab} defaultActiveKey="alone" onChange={this.tabsType.bind(this)}>
          <TabPane tab="单机" key="alone">
            <Checkbox.Group

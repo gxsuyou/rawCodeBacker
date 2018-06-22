@@ -5,6 +5,7 @@ import config from "../../common/config";
 import qiniu from "../../utils/_qiniu";
 import styles from "./AddBox.scss";
 import E from 'wangeditor';
+
 const Option=Select.Option;
 function fake(n,callback){
   const data=[];
@@ -34,7 +35,8 @@ class AddBox extends React.Component{
     chapterData:"",
     content:"",
     gameName:"",
-    toggleInput:true
+    toggleInput:true,
+    editor:null
   }
   UNSAFE_componentWillReceiveProps(e){
     this.setState({
@@ -42,10 +44,8 @@ class AddBox extends React.Component{
     });
   }
   handleOk=()=>{
-
-   console.log(this.state.fileList_icon);
-
-
+   var content=this.state.content.replace(/&nbsp;/g,"<span> </span>");
+   content=content.replace(/&quot;/g,"");
     if(this.state.title==""){
       Message.error("标题不能为空");
       return false;
@@ -58,7 +58,7 @@ class AddBox extends React.Component{
     }
 
 
-   if(this.state.content==""){
+   if(content==""){
      Message.error("文章内容不能为空");
      return false;
    }
@@ -66,7 +66,6 @@ class AddBox extends React.Component{
    if(this.state.toggleInput==false){
      Message.error("正在加载中");
      return false;
-
    }
    this.setState({
      toggleInput:false
@@ -90,24 +89,31 @@ class AddBox extends React.Component{
               headers: {
               'Content-Type':'application/x-www-form-urlencoded' // 指定提交方式为表单提交
               },
-              body:`admin=${uid}&game_id=${this.state.optionData[0].id}&title=${this.state.title}&detail=${this.state.content}&img=${res_1.key}`
+              body:`admin=${uid}&game_id=${this.state.optionData[0].id}&title=${this.state.title}&detail=${content}&img=${res_1.key}`
           }).then((res)=>{
                  if(res.data.state==1){
                    Message.success("添加文章成功");
                    this.setState({
                      visible:false,
                      fileList:[],
-                     optionData:[],
+                     optionData:[
+                       {
+                         value:null,
+                         text:null,
+                         id:null
+                       }
+                     ],
                      title:"",
                      chapterData:"",
                      gameName:"",
                      content:"",
                      toggleInput:true,
                      content:"",
-                     fileList_icon:[]
+                     fileList_icon:[],
                    });
                    this.props.handBox(false);
                    this.props.fetchsNews(1);
+                   this.state.editor.txt.clear();
                  }else{
                    this.setState({
                       toggleInput:true
@@ -128,7 +134,14 @@ class AddBox extends React.Component{
   handleCancel=()=>{
     this.setState({
       visible:false,
-      optionData:[]
+      toggleInput:true,
+      optionData:[
+        {
+          value:null,
+          text:null,
+          id:null
+        }
+      ]
     });
     this.props.handBox(false);
   }
@@ -160,10 +173,13 @@ class AddBox extends React.Component{
     if(this.state.toggleEditor){
       return false;
     }
+    var editor = new E(e);
+
     this.setState({
-      toggleEditor:true
+      toggleEditor:true,
+      editor:editor
     });
-    const editor = new E(e);
+
     editor.customConfig.onchange = html => {
       this.setState({
         content:html
@@ -171,6 +187,7 @@ class AddBox extends React.Component{
     }
     editor.customConfig.uploadImgServer = config.url_adminStrategy+'/img?title=News&url='+config.url_1;
     editor.create();
+
   }
   info(){
     Modal.info({
@@ -188,8 +205,6 @@ class AddBox extends React.Component{
   }
   render(){
     const options = this.state.optionData.map(d => <Option key={d.value}>{d.text}</Option>);
-
-
     const props={
       onRemove:(file)=>{
         this.setState(({ fileList }) => {
