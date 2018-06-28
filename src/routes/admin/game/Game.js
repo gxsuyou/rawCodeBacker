@@ -53,7 +53,7 @@ class Game extends React.Component{
         title:"游戏详情",
         render:(text,record)=>(
           <div style={{lineHeight:0.5}}>
-           <p>
+           <p style={{lineHeight:1.2}}>
            游戏公司:
            {record.game_company}
            </p>
