@@ -20,56 +20,20 @@ class EditorBox extends React.Component{
     gameId:"",
     activityId:"",
     imgSrc:"",
-    comment:"",
-    date:"",
     id:"",
     current:1,
     toggleEditor:false,
     editor:null,
     content:"",
-    initContent:""
+    initContent:"",
+    gameName:"",
   }
   handleOk=()=>{
     if(this.state.title===""){
       Message.error("标题不能为空");
       return false;
     }
-    if(this.state.browse===""){
-      Message.error("浏览数不能为空");
-      return false;
-    }
-     const browse=Number(this.state.browse);
-    if(Object.is(browse,NaN)){
-      Message.error("浏览数必须为数字");
-      return false;
-    }
 
-    if(this.state.agress===""){
-      Message.error("点赞数不能为空");
-      return false;
-    }
-
-    const agress=Number(this.state.agress);
-    if(Object.is(agress,NaN)){
-      Message.error("点赞数必须为数字");
-      return false;
-    }
-
-    if(this.state.comment===""){
-      Message.error("评论数不能为空");
-      return false;
-    }
-
-    const comment=Number(this.state.comment);
-    if(Object.is(comment,NaN)){
-      Message.error("评论数必须为数字");
-      return false;
-    }
-
-    if(this.state.date===""){
-      Message.error("发表时间不能为空");
-      return false;
-    }
     if(this.state.content===""){
       Message.error("发表内容不能为空");
       return false;
@@ -80,17 +44,17 @@ class EditorBox extends React.Component{
   editor(){
     var content=this.state.content.replace(/&nbsp;/g,"<span> </span>");
     content=content.replace(/&quot;/g,"");
-    fetchs(`${config.url_adminNews}/setNewsById`,{
+    fetchs(`${config.url_adminStrategy}/setStrategy`,{
       method:"POST",
       headers: {
       'Content-Type':'application/x-www-form-urlencoded'
       },
-      body:`id=${this.state.id}&title=${this.state.title}&browse=${this.state.browse}&agree=${this.state.agress}&comment=${this.state.comment}&detail=${content}`
+      body:`id=${this.state.id}&title=${this.state.title}&detail=${content}`
     }).then((res_2)=>{
       if(res_2.data.state){
         Message.success("上传成功");
         this.handleCancel();
-        this.props.fetchsNews(this.state.current);
+        this.props.fetchsStrategy(this.state.current);
       }
     });
   }
@@ -145,21 +109,18 @@ class EditorBox extends React.Component{
    this.initData(e.id);
   }
    initData(id){
-    fetchs(`${config.url_adminNews}/getNewsByMsg?id=${id}`).then((res)=>{
+    fetchs(`${config.url_adminStrategy}/getStrategy?id=${id}`).then((res)=>{
       this.setState({
-        // title:res.data[0].title,
-        // browse:res.data[0].browse,
-        // agress:res.data[0].agree,
-        // comment:res.data[0].comment,
-        // date:res.data[0].add_time,
-        // initContent:res.data[0].detail
+        gameName:res.data[0].game_name,
+        title:res.data[0].title,
+        content:res.data[0].detail,
+        initContent:res.data[0].detail
       });
       if(this.state.editor!==null){
         this.state.editor.txt.clear();
         this.state.editor.txt.html(res.data[0].detail);
       }
     });
-
    }
 
    initEditor(e){
@@ -210,42 +171,20 @@ class EditorBox extends React.Component{
        width={780}
       >
      <Input.Group>
+            <Input
+              addonBefore="游戏名"
+              value={this.state.gameName}
+              placeholder="输入游戏名"
+              onChange={(e)=>{this.setState({gameName:e.target.value})}}
+              style={{width:400,display:"block",marginTop:15}}
+              disabled={true}
+            />
              <Input
              addonBefore="标题"
              value={this.state.title}
              placeholder="输入标题"
              onChange={(e)=>{this.setState({title:e.target.value})}}
-             style={{width:400,display:"block",marginTop:15}}
-             />
-
-             <Input
-             addonBefore="浏览数"
-             value={this.state.browse}
-             placeholder="输入浏览数(必须为数字)"
-             onChange={(e)=>{this.setState({browse:e.target.value})}}
-             style={{width:400,display:"block",marginTop:15}}
-             />
-
-             <Input
-             addonBefore="点赞数"
-             value={this.state.agress}
-             placeholder="请输入点赞数(必须为数字)"
-             onChange={(e)=>{this.setState({agress:e.target.value})}}
-             style={{width:400,display:"block",marginTop:15,marginButtom:10}}
-             />
-             <Input
-             addonBefore="评论数"
-             value={this.state.comment}
-             placeholder="请输入评论数(必须为数字)"
-             onChange={(e)=>{this.setState({comment:e.target.value})}}
-             style={{width:400,display:"block",marginTop:15,marginButtom:10}}
-             />
-             <Input
-             addonBefore="发表日期"
-             value={this.state.date}
-             placeholder="请输入发表日期"
-             onChange={(e)=>{this.setState({date:e.target.value})}}
-             style={{width:400,display:"block",marginTop:15,marginButtom:10,float:"left"}}
+             style={{width:400,display:"block",marginTop:15,float:"left"}}
              />
              <Button
              onClick={this.info.bind(this)}

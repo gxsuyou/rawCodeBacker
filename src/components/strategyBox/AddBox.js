@@ -111,10 +111,8 @@ class AddBox extends React.Component{
             });
           }
        });
-
     }
    });
-
   }
 
   handleCancel=()=>{

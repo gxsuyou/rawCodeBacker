@@ -27,7 +27,8 @@ class Strategy extends React.Component{
           <Button onClick={this.essenceHand.bind(this,record.id,record.essence)}>{record.essenceName}</Button>
           <Button onClick={()=>{
             this.setState({
-              editorBoxVisible:true
+              editorBoxVisible:true,
+              editorBoxId:record.id
             });
           }}>
           编辑</Button>
@@ -43,7 +44,8 @@ class Strategy extends React.Component{
     current:1,
     loadding:false,
     addBoxVisible:false,
-    editorBoxVisible:false
+    editorBoxVisible:false,
+    editorBoxId:""
   }
   UNSAFE_componentWillMount=()=>{
     this.fetchsStrategy(1);
@@ -138,6 +140,9 @@ class Strategy extends React.Component{
         fetchsStrategy={this.fetchsStrategy}/>
         <EditorBox
           visible={this.state.editorBoxVisible}
+          id={this.state.editorBoxId}
+          current={this.state.current}
+          fetchsStrategy={this.fetchsStrategy}
           handBox={this.handBox.bind(this)}
           fetchsStrategy={this.fetchsStrategy}
         />
