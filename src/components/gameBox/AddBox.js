@@ -75,41 +75,6 @@ class AddBox extends react.Component{
         key:"9"
       }
     ],
-    plainOptions_online:[
-      {
-        label:"益智",
-        value:"28",
-        key:"28"
-      },{
-        label:"角色扮演",
-        value:"29",
-        key:"29"
-      },{
-        label:"棋牌",
-        value:"30",
-        key:"30"
-      },{
-        label:"射击",
-        value:"36",
-        key:"36"
-      },{
-        label:"休闲",
-        value:"32",
-        key:"32"
-      },{
-        label:"经营养成",
-        value:"33",
-        key:"33"
-      },{
-        label:"其他游戏",
-        value:"35",
-        key:"35"
-      },{
-        label:"策略",
-        value:"34",
-        key:"34"
-      }
-    ],
     plainOptions_application:[{
         label:"网上购物",
         value:"10",
@@ -267,18 +232,11 @@ class AddBox extends react.Component{
         <Radio value={1}>推荐</Radio>
       </RadioGroup>
        <Tabs className={styles.tab} defaultActiveKey="alone" onChange={this.tabsType.bind(this)}>
-         <TabPane tab="单机" key="alone">
+         <TabPane tab="游戏" key="alone">
            <Checkbox.Group
              options={this.state.plainOptions_alone}
              onChange={this.onChange.bind(this)}
            ></Checkbox.Group>
-         </TabPane>
-         <TabPane tab="网游" key="online">
-           <Checkbox.Group
-            options={this.state.plainOptions_online}
-            onChange={this.onChange.bind(this)}
-           >
-           </Checkbox.Group>
          </TabPane>
          <TabPane tab="应用" key="application">
          <Checkbox.Group
