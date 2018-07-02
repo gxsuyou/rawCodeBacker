@@ -4,6 +4,7 @@ import fetchs from "../../../utils/request.js";
 import config from "../../../common/config";
 import styles from "./Strategy.scss";
 import AddBox from "../../../components/strategyBox/AddBox";
+import EditorBox from "../../../components/strategyBox/EditorBox";
 class Strategy extends React.Component{
   state={
     columns:[{
@@ -24,6 +25,12 @@ class Strategy extends React.Component{
       render:(text,record)=>(
         <span className={styles.button}>
           <Button onClick={this.essenceHand.bind(this,record.id,record.essence)}>{record.essenceName}</Button>
+          <Button onClick={()=>{
+            this.setState({
+              editorBoxVisible:true
+            });
+          }}>
+          编辑</Button>
           <Button onClick={this.deleteStrategy.bind(this,record.id)}>删除</Button>
         </span>
       )
@@ -35,7 +42,8 @@ class Strategy extends React.Component{
     },
     current:1,
     loadding:false,
-    addBoxVisible:false
+    addBoxVisible:false,
+    editorBoxVisible:false
   }
   UNSAFE_componentWillMount=()=>{
     this.fetchsStrategy(1);
@@ -103,7 +111,8 @@ class Strategy extends React.Component{
   }
   handBox(e){
     this.setState({
-       addBoxVisible:e
+       addBoxVisible:e,
+       editorBoxVisible:e
     });
   }
   render(){
@@ -125,8 +134,13 @@ class Strategy extends React.Component{
         ></Table>
         <AddBox
         visible={this.state.addBoxVisible}
-         handBox={this.handBox.bind(this)}
-         fetchsStrategy={this.fetchsStrategy}/>
+        handBox={this.handBox.bind(this)}
+        fetchsStrategy={this.fetchsStrategy}/>
+        <EditorBox
+          visible={this.state.editorBoxVisible}
+          handBox={this.handBox.bind(this)}
+          fetchsStrategy={this.fetchsStrategy}
+        />
       </div>
     )
   }

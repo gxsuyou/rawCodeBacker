@@ -26,8 +26,6 @@ class UploadBox extends React.Component{
       m:false
     });
     this.props.handleUploadBoxChange(false);
-    // console.log(this.state.fileList_icon[0]);
-    //this.onRemove_icon(this.state.fileList_icon[0]);
   }
   uploadQiniu(options){
     var file=options.file||null,
@@ -368,7 +366,7 @@ class UploadBox extends React.Component{
         >
           <Upload {...props_package}>
            <Button>
-             <Icon type="upload"/> 游戏包上传(iOS不需要传；Android后缀名为.apk)
+             <Icon type="upload"/> 游戏包上传(iOS正式包不需要传；Android后缀名为.apk)
            </Button>
           </Upload>
         </TabPane>

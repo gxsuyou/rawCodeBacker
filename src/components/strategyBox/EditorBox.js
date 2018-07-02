@@ -147,12 +147,12 @@ class EditorBox extends React.Component{
    initData(id){
     fetchs(`${config.url_adminNews}/getNewsByMsg?id=${id}`).then((res)=>{
       this.setState({
-        title:res.data[0].title,
-        browse:res.data[0].browse,
-        agress:res.data[0].agree,
-        comment:res.data[0].comment,
-        date:res.data[0].add_time,
-        initContent:res.data[0].detail
+        // title:res.data[0].title,
+        // browse:res.data[0].browse,
+        // agress:res.data[0].agree,
+        // comment:res.data[0].comment,
+        // date:res.data[0].add_time,
+        // initContent:res.data[0].detail
       });
       if(this.state.editor!==null){
         this.state.editor.txt.clear();

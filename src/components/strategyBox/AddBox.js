@@ -29,7 +29,8 @@ class AddBox extends React.Component{
     content:"",
     gameName:"",
     toggleInput:true,
-    toggleEditor:false
+    toggleEditor:false,
+    editor:null
   }
   componentWillReceiveProps(e){
     if(e.visible===false){
@@ -40,7 +41,8 @@ class AddBox extends React.Component{
     });
   }
   handleOk=()=>{
-
+    var content=this.state.content.replace(/&nbsp;/g,"<span> </span>");
+    content=content.replace(/&quot;/g,"");
     if(this.state.gameName==""){
       Message.error("游戏名不能为空");
       return false;
@@ -53,7 +55,7 @@ class AddBox extends React.Component{
       Message.error("文章头图是一张图");
       return false;
     }
-   if(this.state.content==""){
+   if(content==""){
      Message.error("文章内容不能为空");
      return false;
    }
@@ -82,7 +84,7 @@ class AddBox extends React.Component{
               headers: {
               'Content-Type':'application/x-www-form-urlencoded' // 指定提交方式为表单提交
               },
-              body:`admin=${uid}&game_name=${this.state.gameName}&title=${this.state.title}&detail=${this.state.content}&img_src=${res_1.key}`
+              body:`admin=${uid}&game_name=${this.state.gameName}&title=${this.state.title}&detail=${content}&img_src=${res_1.key}`
           }).then((res)=>{
                  if(res.data.state==1){
                    Message.success("添加文章成功");
@@ -98,6 +100,7 @@ class AddBox extends React.Component{
                    });
                     this.props.handBox(false);
                     this.props.fetchsStrategy(1);
+                    this.state.editor.txt.clear();
                  }else{
                    this.setState({
                       toggleInput:true
@@ -117,11 +120,8 @@ class AddBox extends React.Component{
   handleCancel=()=>{
     this.setState({
       visible:false,
-      // fileList:[],
+      toggleInput:true,
       optionData:[],
-      // title:"",
-      // chapterData:"",
-      // gameName:""
     });
     this.props.handBox(false);
   }
@@ -152,10 +152,12 @@ class AddBox extends React.Component{
      if(this.state.toggleEditor){
        return false;
      }
-     this.setState({
-       toggleEditor:true
-     });
      const editor = new E(e);
+     this.setState({
+       toggleEditor:true,
+       editor:editor
+     });
+
      editor.customConfig.onchange = html => {
        this.setState({
          content:html

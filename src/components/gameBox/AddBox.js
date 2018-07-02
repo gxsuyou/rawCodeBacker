@@ -1,12 +1,13 @@
 import react from "react";
 import {Modal,Checkbox,Input,Select
-,Tabs,Message} from "antd";
+,Tabs,Message,Radio,Divider} from "antd";
 import config from "../../common/config";
 import fetchs from "../../utils/request";
 import styles from "./AddBox.scss";
 const Option =Select.Option;
 const TabPane = Tabs.TabPane;
 const {TextArea}=Input;
+const RadioGroup = Radio.Group;
 class AddBox extends react.Component{
   state={
     visible:false,
@@ -19,6 +20,8 @@ class AddBox extends react.Component{
     sys:2,
     tabsValue:"",
     brief:"",
+    sysDownInput:true,
+    iosDownHref:null,
     plainOptions_alone:[
       {
         label:"射击",
@@ -74,41 +77,6 @@ class AddBox extends react.Component{
         key:"9"
       }
     ],
-    plainOptions_online:[
-      {
-        label:"益智",
-        value:"28",
-        key:"28"
-      },{
-        label:"角色扮演",
-        value:"29",
-        key:"29"
-      },{
-        label:"棋牌",
-        value:"30",
-        key:"30"
-      },{
-        label:"射击",
-        value:"36",
-        key:"36"
-      },{
-        label:"休闲",
-        value:"32",
-        key:"32"
-      },{
-        label:"经营养成",
-        value:"33",
-        key:"33"
-      },{
-        label:"其他游戏",
-        value:"35",
-        key:"35"
-      },{
-        label:"策略",
-        value:"34",
-        key:"34"
-      }
-    ],
     plainOptions_application:[{
         label:"网上购物",
         value:"10",
@@ -155,6 +123,7 @@ class AddBox extends react.Component{
         key:"24"
       }],
     defaultOption:[],
+    strategyTopGame:0
   }
   componentWillReceiveProps(p){
     this.setState({
@@ -168,15 +137,18 @@ class AddBox extends react.Component{
     this.props.handleAddBoxChange(false);
   }
   onOk(){
-     // alert(this.state.brief);
-     //return false;
     if(this.state.gameName===""){
-      Message.error("不能为空");
+      Message.error("游戏名不能为空");
+      return false;
+    }
+
+    if(this.state.defaultOption.length===0){
+      Message.error("分类不能为空");
       return false;
     }
    const cls=this.state.defaultOption.join(",");
    const uid=config.getCookie("uid");
-   fetchs(`${config.url_adminGame}/addGameMsg?gameName=${this.state.gameName}&gameVersion=${this.state.gameVersion}&gamePackagename=${this.state.gamePackagename}&gameRecommend=${this.state.gameRecommend}&type=${this.state.type}&cls=${cls}&gameCompany=${this.state.gameCompany}&sys=${this.state.sys}&admin=${uid}&gameDetail=${this.state.brief}`).then((res)=>{
+   fetchs(`${config.url_adminGame}/addGameMsg?gameName=${this.state.gameName}&gameVersion=${this.state.gameVersion}&gamePackagename=${this.state.gamePackagename}&gameRecommend=${this.state.gameRecommend}&type=${this.state.type}&cls=${cls}&gameCompany=${this.state.gameCompany}&sys=${this.state.sys}&admin=${uid}&gameDetail=${this.state.brief}&strategy_head=${this.state.strategyTopGame}&gameDownloadIos=${this.state.iosDownHref}`).then((res)=>{
      if(res.data.state===1){
         this.setState({
           visible:false,
@@ -194,7 +166,6 @@ class AddBox extends react.Component{
        //更新页表
        this.props.fetch(1);
        Message.error(res.data.info);
-
      }else{
        Message.error(res.data.info);
      }
@@ -204,11 +175,6 @@ class AddBox extends react.Component{
      this.setState({
        [`defaultOption`]:c
      });
-  }
-  selectSys(value){
-    this.setState({
-      sys:value
-    });
   }
   tabsType(activeKey){
     this.setState({
@@ -223,8 +189,7 @@ class AddBox extends react.Component{
       onCancel={this.onCancel.bind(this)}
       onOk={this.onOk.bind(this)}
       okText="提交"
-      cancelText="取消"
-      >
+      cancelText="取消">
        <Input.Group className={styles.InputGroup}>
          <Input addonBefore="游戏名" placeholder="游戏名字" value={this.state.gameName} onChange={(e)=>{this.setState({gameName:e.target.value})}} />
          <Input addonBefore="游戏版本号" placeholder="游戏版本号"
@@ -236,7 +201,20 @@ class AddBox extends react.Component{
          <Input addonBefore="游戏简介" placeholder="游戏公司"
          value={this.state.gameRecommend} onChange={(e)=>{this.setState({gameRecommend:e.target.value})}} />
          <Input.Group compact>
-         <Select defaultValue="2" onChange={this.selectSys.bind(this)}>
+         <Select defaultValue="2" onChange={(value)=>{
+           if(value==1){
+             this.setState({
+               sys:value,
+               sysDownInput:false
+             });
+           }else{
+             this.setState({
+               sys:value,
+               sysDownInput:true
+             });
+           }
+
+         }}>
            <Option value="2">android</Option>
            <Option value="1">ios</Option>
          </Select>
@@ -245,6 +223,12 @@ class AddBox extends react.Component{
           onChange={(e)=>{this.setState({gamePackagename :e.target.value})}}
          />
          </Input.Group>
+         <Input  addonBefore="ios下载链接"
+          placeholder="填写appStore下载链接(非必填)"
+          disabled={this.state.sysDownInput}
+          value={this.state.iosDownHref}
+          onChange={(e)=>{this.setState({iosDownHref :e.target.value})}}
+         />
          <TextArea
          style={{marginTop:5}}
          placeholder="输入游戏简介"
@@ -254,23 +238,25 @@ class AddBox extends react.Component{
            this.setState({
              brief:e.target.value
            });
-         }}
-         />
-       </Input.Group >
-
+         }}/>
+       </Input.Group>
+       <RadioGroup
+       onChange={(e)=>{
+         this.setState({
+           strategyTopGame:e.target.value
+         });
+       }}
+       value={this.state.strategyTopGame}>
+        <Divider orientation="left">攻略顶部的游戏推荐</Divider>
+        <Radio value={0}>取消</Radio>
+        <Radio value={1}>推荐</Radio>
+      </RadioGroup>
        <Tabs className={styles.tab} defaultActiveKey="alone" onChange={this.tabsType.bind(this)}>
-         <TabPane tab="单机" key="alone">
+         <TabPane tab="游戏" key="alone">
            <Checkbox.Group
              options={this.state.plainOptions_alone}
              onChange={this.onChange.bind(this)}
            ></Checkbox.Group>
-         </TabPane>
-         <TabPane tab="网游" key="online">
-           <Checkbox.Group
-            options={this.state.plainOptions_online}
-            onChange={this.onChange.bind(this)}
-           >
-           </Checkbox.Group>
          </TabPane>
          <TabPane tab="应用" key="application">
          <Checkbox.Group
