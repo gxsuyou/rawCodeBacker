@@ -194,7 +194,6 @@ class AddBox extends React.Component{
       title:"预览",
       content: (
         <div dangerouslySetInnerHTML={{__html:this.state.content}}>
-
         </div>
       ),
       onOk() {},
@@ -254,7 +253,6 @@ class AddBox extends React.Component{
         onChange={(e)=>{this.setState({title:e.target.value})}}
         />
       </Input.Group>
-
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:15}}>
         <Upload
         {...props}

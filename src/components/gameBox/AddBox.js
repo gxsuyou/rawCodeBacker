@@ -20,6 +20,8 @@ class AddBox extends react.Component{
     sys:2,
     tabsValue:"",
     brief:"",
+    sysDownInput:true,
+    iosDownHref:null,
     plainOptions_alone:[
       {
         label:"射击",
@@ -136,12 +138,17 @@ class AddBox extends react.Component{
   }
   onOk(){
     if(this.state.gameName===""){
-      Message.error("不能为空");
+      Message.error("游戏名不能为空");
+      return false;
+    }
+
+    if(this.state.defaultOption.length===0){
+      Message.error("分类不能为空");
       return false;
     }
    const cls=this.state.defaultOption.join(",");
    const uid=config.getCookie("uid");
-   fetchs(`${config.url_adminGame}/addGameMsg?gameName=${this.state.gameName}&gameVersion=${this.state.gameVersion}&gamePackagename=${this.state.gamePackagename}&gameRecommend=${this.state.gameRecommend}&type=${this.state.type}&cls=${cls}&gameCompany=${this.state.gameCompany}&sys=${this.state.sys}&admin=${uid}&gameDetail=${this.state.brief}&strategy_head=${this.state.strategyTopGame}`).then((res)=>{
+   fetchs(`${config.url_adminGame}/addGameMsg?gameName=${this.state.gameName}&gameVersion=${this.state.gameVersion}&gamePackagename=${this.state.gamePackagename}&gameRecommend=${this.state.gameRecommend}&type=${this.state.type}&cls=${cls}&gameCompany=${this.state.gameCompany}&sys=${this.state.sys}&admin=${uid}&gameDetail=${this.state.brief}&strategy_head=${this.state.strategyTopGame}&gameDownloadIos=${this.state.iosDownHref}`).then((res)=>{
      if(res.data.state===1){
         this.setState({
           visible:false,
@@ -159,7 +166,6 @@ class AddBox extends react.Component{
        //更新页表
        this.props.fetch(1);
        Message.error(res.data.info);
-
      }else{
        Message.error(res.data.info);
      }
@@ -169,11 +175,6 @@ class AddBox extends react.Component{
      this.setState({
        [`defaultOption`]:c
      });
-  }
-  selectSys(value){
-    this.setState({
-      sys:value
-    });
   }
   tabsType(activeKey){
     this.setState({
@@ -200,7 +201,20 @@ class AddBox extends react.Component{
          <Input addonBefore="游戏简介" placeholder="游戏公司"
          value={this.state.gameRecommend} onChange={(e)=>{this.setState({gameRecommend:e.target.value})}} />
          <Input.Group compact>
-         <Select defaultValue="2" onChange={this.selectSys.bind(this)}>
+         <Select defaultValue="2" onChange={(value)=>{
+           if(value==1){
+             this.setState({
+               sys:value,
+               sysDownInput:false
+             });
+           }else{
+             this.setState({
+               sys:value,
+               sysDownInput:true
+             });
+           }
+
+         }}>
            <Option value="2">android</Option>
            <Option value="1">ios</Option>
          </Select>
@@ -209,6 +223,12 @@ class AddBox extends react.Component{
           onChange={(e)=>{this.setState({gamePackagename :e.target.value})}}
          />
          </Input.Group>
+         <Input  addonBefore="ios下载链接"
+          placeholder="填写appStore下载链接(非必填)"
+          disabled={this.state.sysDownInput}
+          value={this.state.iosDownHref}
+          onChange={(e)=>{this.setState({iosDownHref :e.target.value})}}
+         />
          <TextArea
          style={{marginTop:5}}
          placeholder="输入游戏简介"

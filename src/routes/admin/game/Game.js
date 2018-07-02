@@ -27,6 +27,8 @@ class Game extends React.Component{
       editorMessageId:"",
       editorMessageGameStrategy:"",
       editorMessageBrief:"",
+      editorMessageSys:2,
+      editorMessageIosDownHref:"",
       //tagBox
       tagBoxVision:false,
       //addBox
@@ -87,7 +89,8 @@ class Game extends React.Component{
         dataIndex:"action",
         render:(text,record)=>(
           <span className={styles.button}>
-           <Button  onClick={this.showModalEditorMessage.bind(this,record.id,record.game_name,record.company,record.version,record.updowm,record.size,record.sortIndex,record.sortHot,record.gameInstallNum,record.strategyGame,record.gameRecommend)}>编辑信息</Button>
+           <Button  onClick={this.showModalEditorMessage.bind(this,record.id,record.game_name,record.company,record.version,record.updowm,record.size,record.sortIndex,record.sortHot,record.gameInstallNum,record.strategyGame,record.gameRecommend,record.gameDownLoaderHref,
+           record.sys)}>编辑信息</Button>
            <Button  onClick={this.UploadVision.bind(this,record.id)}>上传数据</Button>
            <Button onClick={this.tagBoxVision.bind(this,record.id)}>标签</Button>
            <Button onClick={this.deleteData.bind(this,record.key,record.id)} type="danger">删除</Button>
@@ -131,7 +134,13 @@ class Game extends React.Component{
   }
 
   /* 打开编辑弹框初始化数据 */
-  showModalEditorMessage(id,gameName,company,version,activation,size,sort,sort2,gameInstallNum,strategyGame,gameRecommend){
+  showModalEditorMessage(id,gameName,company,version,activation,size,sort,sort2,gameInstallNum,strategyGame,gameRecommend,gameDownLoaderHref,sys){
+
+    if(sys=="ios"){
+      sys=1;
+    }else{
+      sys=2;
+    }
      this.setState({
        editorMessageId:id,
        editorMessageVisible:true,
@@ -145,10 +154,14 @@ class Game extends React.Component{
        editorMessageDownloadNum:gameInstallNum,
        editorMessageGameStrategy:strategyGame,
        editorMessageBrief:gameRecommend,
+       editorMessageIosDownHref:gameDownLoaderHref,
+       editorMessageSys:sys,
        tagBoxVision:false
      });
   }
   handleOk(){
+  //alert(this.state.editorMessageIosDownHref);
+  // return false;
   const loadNum=this.state.editorMessageDownloadNum,
   up=this.state.editorMessageUp,
   IndexPriority=this.state.editorMessageIndexPriority,
@@ -187,7 +200,7 @@ class Game extends React.Component{
     headers: {
       'Content-Type':'application/x-www-form-urlencoded' // 指定提交方式为表单提交
     },
-    body:`name=${  this.state.editorMessageGameName}&activation=${this.state.editorMessageUp}&company=${this.state.editorMessageCompanyName}&version=${this.state.editorMessageVision}&download_num=${this.state.editorMessageDownloadNum}&sort=${this.state.editorMessageIndexPriority}&sort2=${this.state.editorMessageHotPriority}&size=${this.state.editorMessageGameSize}&id=${this.state.editorMessageId}&strategy_head=${this.state.editorMessageGameStrategy}&game_recommend=${brief}`}).then((res)=>{
+    body:`name=${this.state.editorMessageGameName}&activation=${this.state.editorMessageUp}&company=${this.state.editorMessageCompanyName}&version=${this.state.editorMessageVision}&download_num=${this.state.editorMessageDownloadNum}&sort=${this.state.editorMessageIndexPriority}&sort2=${this.state.editorMessageHotPriority}&size=${this.state.editorMessageGameSize}&id=${this.state.editorMessageId}&strategy_head=${this.state.editorMessageGameStrategy}&game_recommend=${brief}&gameDownloadIos=${this.state.editorMessageIosDownHref}`}).then((res)=>{
       if(res.data.state){
          this.setState({
            editorMessageVisible:false,
@@ -268,7 +281,8 @@ class Game extends React.Component{
           size:size,
           game_company:item.game_company,
           game_version:item.game_version,
-          gameRecommend:item.game_recommend
+          gameRecommend:item.game_recommend,
+          gameDownLoaderHref:item.game_download_ios
         });
       });
      const pagination ={...this.state.pagination};
@@ -324,7 +338,8 @@ class Game extends React.Component{
              size:size,
              game_company:item.game_company,
              game_version:item.game_version,
-             gameRecommend:item.game_recommend
+             gameRecommend:item.game_recommend,
+             gameDownLoaderHref:item.game_download_ios
            })
         });
         const pagination ={...this.state.pagination};
@@ -388,6 +403,19 @@ class Game extends React.Component{
          <Input addonBefore="游戏大小" onChange={this.EditorMessageOnChange.bind(this,"GameSize")}
          value={this.state.editorMessageGameSize}
          placeholder="输入游戏大小" />
+
+          {
+            this.state.editorMessageSys==1?(
+              <Input addonBefore="ios下载链接"
+              onChange={this.EditorMessageOnChange.bind(this,"IosDownHref")}
+              value={this.state.editorMessageIosDownHref}
+              placeholder="填写appStore下载链接(非必填)"
+              />
+            ):(
+              null
+            )
+          }
+
          <Input
            value={this.state.editorMessageGameStrategy}
            onChange={this.EditorMessageOnChange.bind(this,"GameStrategy")}
