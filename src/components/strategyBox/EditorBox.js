@@ -109,17 +109,21 @@ class EditorBox extends React.Component{
    this.initData(e.id);
   }
    initData(id){
-    fetchs(`${config.url_adminStrategy}/getStrategy?id=${id}`).then((res)=>{
+    fetchs(`${config.url_adminStrategy}/setStrategy?id=${id}`).then((res)=>{
+      if(res.data.state){
       this.setState({
-        gameName:res.data[0].game_name,
-        title:res.data[0].title,
-        content:res.data[0].detail,
-        initContent:res.data[0].detail
+        gameName:res.data.result.game_name,
+        title:res.data.result.title,
+        content:res.data.result.detail,
+        initContent:res.data.result.detail
       });
       if(this.state.editor!==null){
         this.state.editor.txt.clear();
-        this.state.editor.txt.html(res.data[0].detail);
+        this.state.editor.txt.html(res.data.result.detail);
       }
+    }else{
+      Message.success("查询失败，请稍后重试。");
+    }
     });
    }
 
