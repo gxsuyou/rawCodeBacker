@@ -51,14 +51,12 @@ class Strategy extends React.Component{
     this.fetchsStrategy(1);
     config.setCookie("path","Strategy",0.05);
   }
-
   handleTableChange=(pagination,filters,sorter)=>{
     this.setState({
       current:pagination.current
     });
     this.fetchsStrategy(pagination.current);
   }
-
  deleteStrategy(id){
    fetchs(`${config.url_adminStrategy}/deleteStrategy?strategyId=${id}`).then((res)=>{
      if(res.data.state){

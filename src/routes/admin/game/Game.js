@@ -29,6 +29,8 @@ class Game extends React.Component{
       editorMessageBrief:"",
       editorMessageSys:2,
       editorMessageIosDownHref:"",
+      editorMessagelotBrief:"",
+      editorMessageGameDetail:"",
       //tagBox
       tagBoxVision:false,
       //addBox
@@ -90,7 +92,7 @@ class Game extends React.Component{
         render:(text,record)=>(
           <span className={styles.button}>
            <Button  onClick={this.showModalEditorMessage.bind(this,record.id,record.game_name,record.company,record.version,record.updowm,record.size,record.sortIndex,record.sortHot,record.gameInstallNum,record.strategyGame,record.gameRecommend,record.gameDownLoaderHref,
-           record.sys)}>编辑信息</Button>
+           record.sys,record.gameDetail)}>编辑信息</Button>
            <Button  onClick={this.UploadVision.bind(this,record.id)}>上传数据</Button>
            <Button onClick={this.tagBoxVision.bind(this,record.id)}>标签</Button>
            <Button onClick={this.deleteData.bind(this,record.key,record.id)} type="danger">删除</Button>
@@ -134,12 +136,15 @@ class Game extends React.Component{
   }
 
   /* 打开编辑弹框初始化数据 */
-  showModalEditorMessage(id,gameName,company,version,activation,size,sort,sort2,gameInstallNum,strategyGame,gameRecommend,gameDownLoaderHref,sys){
+  showModalEditorMessage(id,gameName,company,version,activation,size,sort,sort2,gameInstallNum,strategyGame,gameRecommend,gameDownLoaderHref,sys,gameDetail){
 
     if(sys=="ios"){
       sys=1;
     }else{
       sys=2;
+    }
+    if(String(gameRecommend)=="null"){
+      gameRecommend="";
     }
      this.setState({
        editorMessageId:id,
@@ -156,12 +161,12 @@ class Game extends React.Component{
        editorMessageBrief:gameRecommend,
        editorMessageIosDownHref:gameDownLoaderHref,
        editorMessageSys:sys,
+       editorMessageGameDetail:gameDetail,
        tagBoxVision:false
      });
   }
   handleOk(){
-  //alert(this.state.editorMessageIosDownHref);
-  // return false;
+
   const loadNum=this.state.editorMessageDownloadNum,
   up=this.state.editorMessageUp,
   IndexPriority=this.state.editorMessageIndexPriority,
@@ -169,7 +174,8 @@ class Game extends React.Component{
   GameSize=this.state.editorMessageGameSize,
   GameName=this.state.editorMessageGameName,
   MessageVision=this.state.editorMessageVision,
-  brief=this.state.editorMessageBrief;
+  brief=this.state.editorMessageBrief,
+  gameDetail=this.state.editorMessageGameDetail;
  if(
      MessageVision===""||
      GameName===""||
@@ -200,7 +206,7 @@ class Game extends React.Component{
     headers: {
       'Content-Type':'application/x-www-form-urlencoded' // 指定提交方式为表单提交
     },
-    body:`name=${this.state.editorMessageGameName}&activation=${this.state.editorMessageUp}&company=${this.state.editorMessageCompanyName}&version=${this.state.editorMessageVision}&download_num=${this.state.editorMessageDownloadNum}&sort=${this.state.editorMessageIndexPriority}&sort2=${this.state.editorMessageHotPriority}&size=${this.state.editorMessageGameSize}&id=${this.state.editorMessageId}&strategy_head=${this.state.editorMessageGameStrategy}&game_recommend=${brief}&gameDownloadIos=${this.state.editorMessageIosDownHref}`}).then((res)=>{
+    body:`name=${this.state.editorMessageGameName}&activation=${this.state.editorMessageUp}&company=${this.state.editorMessageCompanyName}&version=${this.state.editorMessageVision}&download_num=${this.state.editorMessageDownloadNum}&sort=${this.state.editorMessageIndexPriority}&sort2=${this.state.editorMessageHotPriority}&size=${this.state.editorMessageGameSize}&id=${this.state.editorMessageId}&strategy_head=${this.state.editorMessageGameStrategy}&game_recommend=${brief}&gameDownloadIos=${this.state.editorMessageIosDownHref}&game_detail=${gameDetail}`}).then((res)=>{
       if(res.data.state){
          this.setState({
            editorMessageVisible:false,
@@ -259,8 +265,6 @@ class Game extends React.Component{
         }else{
            company=item.game_company;
         }
-
-
         item.activation?up="是":up="否";
         item.sys==2?sys="Android":sys="ios";
         c.push({
@@ -282,7 +286,8 @@ class Game extends React.Component{
           game_company:item.game_company,
           game_version:item.game_version,
           gameRecommend:item.game_recommend,
-          gameDownLoaderHref:item.game_download_ios
+          gameDownLoaderHref:item.game_download_ios,
+          gameDetail:item.game_detail
         });
       });
      const pagination ={...this.state.pagination};
@@ -296,7 +301,6 @@ class Game extends React.Component{
   }
   searchName(e){
     if(e==""){
-      //message.error("选择框不能为空");
       this.fetch(1);
       return false;
     }
@@ -339,7 +343,8 @@ class Game extends React.Component{
              game_company:item.game_company,
              game_version:item.game_version,
              gameRecommend:item.game_recommend,
-             gameDownLoaderHref:item.game_download_ios
+             gameDownLoaderHref:item.game_download_ios,
+             gameDetail:item.game_detail
            })
         });
         const pagination ={...this.state.pagination};
@@ -404,6 +409,10 @@ class Game extends React.Component{
          value={this.state.editorMessageGameSize}
          placeholder="输入游戏大小" />
 
+         <Input addonBefore="游戏10字简介" onChange={this.EditorMessageOnChange.bind(this,"Brief")}
+         value={this.state.editorMessageBrief}
+         placeholder="游戏10字简介" />
+
           {
             this.state.editorMessageSys==1?(
               <Input addonBefore="ios下载链接"
@@ -415,7 +424,6 @@ class Game extends React.Component{
               null
             )
           }
-
          <Input
            value={this.state.editorMessageGameStrategy}
            onChange={this.EditorMessageOnChange.bind(this,"GameStrategy")}
@@ -427,12 +435,9 @@ class Game extends React.Component{
        style={{marginTop:5}}
        placeholder="输入游戏简介"
        autosize={{ minRows: 4, maxRows: 6 }}
-       value={this.state.editorMessageBrief}
-       onChange={(e)=>{
-         this.setState({
-           editorMessageBrief:e.target.value
-         });
-       }}/>
+       value={this.state.editorMessageGameDetail}
+       onChange={this.EditorMessageOnChange.bind(this,"GameDetail")}
+       />
       </Modal>
       <TagBox tagBoxVision={this.state.tagBoxVision} id={this.state.editorMessageId} handleTagBoxChange={this.handleTagBoxChange.bind(this)}/>
       {

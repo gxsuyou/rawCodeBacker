@@ -13,10 +13,6 @@ class EditorBox extends React.Component{
     visible:false,
     current:1,
     typeName:"首页轮播推荐位",
-    type:"",
-    agress:"",//点赞数
-    title:"",
-    browse:"",
     gameId:"",
     activityId:"",
     imgSrc:"",
@@ -59,37 +55,37 @@ class EditorBox extends React.Component{
     });
   }
 
-  indexUpload(fileList){
-   if(fileList.length!=1){
-    Message.error("首页轮播推荐位只放置一张图");
-    return false;
-   }
-   const key =`activity/activityType${this.state.type}/gameId${this.state.gameId}`;
-
-  fetchs(`${config.url_admin}/getUptokenByMsg?scope=oneyouxiimg&key=${key}`).then((res)=>{
-    qiniu.upload({
-      file:fileList[0],
-      key:key,
-      token:res.data.upToken,
-      error:function () {
-            Message.error('上传失败');
-      },
-      success:(res_1)=>{
-        fetchs(`${config.url_adminGame}/setGameActive?id=${this.state.activityId}&name=${this.state.activityName}&title=${this.state.title}&sort=${this.state.row}&active_img=${res_1.key}&active=${this.state.active}&game_id=${this.state.gameId}&type=${this.state.type}`).then((res_2)=>{
-          if(res_2.data.state){
-            Message.success("上传成功");
-            this.handleCancel();
-            this.props.fetchsNews(this.state.current);
-          }
-        });
-
-      }
-    });
-
-
-  });
-
-  }
+  // indexUpload(fileList){
+  //  if(fileList.length!=1){
+  //   Message.error("首页轮播推荐位只放置一张图");
+  //   return false;
+  //  }
+  //  const key =`activity/activityType${this.state.type}/gameId${this.state.gameId}`;
+  //
+  // fetchs(`${config.url_admin}/getUptokenByMsg?scope=oneyouxiimg&key=${key}`).then((res)=>{
+  //   qiniu.upload({
+  //     file:fileList[0],
+  //     key:key,
+  //     token:res.data.upToken,
+  //     error:function () {
+  //           Message.error('上传失败');
+  //     },
+  //     success:(res_1)=>{
+  //       fetchs(`${config.url_adminGame}/setGameActive?id=${this.state.activityId}&name=${this.state.activityName}&title=${this.state.title}&sort=${this.state.row}&active_img=${res_1.key}&active=${this.state.active}&game_id=${this.state.gameId}&type=${this.state.type}`).then((res_2)=>{
+  //         if(res_2.data.state){
+  //           Message.success("上传成功");
+  //           this.handleCancel();
+  //           this.props.fetchsNews(this.state.current);
+  //         }
+  //       });
+  //
+  //     }
+  //   });
+  //
+  //
+  // });
+  //
+  // }
 
   handleCancel=()=>{
     this.setState({
@@ -122,7 +118,7 @@ class EditorBox extends React.Component{
         this.state.editor.txt.html(res.data.result.detail);
       }
     }else{
-      Message.success("查询失败，请稍后重试。");
+      Message.error("查询失败，请稍后重试。");
     }
     });
    }
