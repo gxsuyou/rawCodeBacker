@@ -27,6 +27,7 @@ class AddGameBox extends React.Component{
     gameName:"",
     subjectId:"",
     data:[],
+    os:2,
     mainData:[],
     columns:[
       {
@@ -43,7 +44,6 @@ class AddGameBox extends React.Component{
           key:'gameName'
       },{
         title:"操作",
-        // dataIndex:'action',
         key:'action',
         render:(text,record)=>{
           return (
@@ -103,7 +103,8 @@ class AddGameBox extends React.Component{
      this.setState({
        visible:e.visible,
        current:e.current,
-       subjectId:e.subjectId
+       subjectId:e.subjectId,
+       os:e.os
      });
      if(e.subjectId){
          this.getSubject(e.subjectId);
@@ -124,7 +125,6 @@ class AddGameBox extends React.Component{
        this.setState({
          mainData:c
        });
-
     });
   }
 
@@ -134,7 +134,7 @@ class AddGameBox extends React.Component{
        return false;
      }
 
-     fetchs(`${config.url_adminGame}/addSubjectGame?game_name=${this.state.gameName}&subjectId=${this.state.subjectId}`).then((res)=>{
+     fetchs(`${config.url_adminGame}/addSubjectGame?game_name=${this.state.gameName}&subjectId=${this.state.subjectId}&sys=${this.state.os}`).then((res)=>{
 
        if(res.data.state){
          Message.success("上传成功");

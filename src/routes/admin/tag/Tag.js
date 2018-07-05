@@ -50,7 +50,7 @@ class Tag extends React.Component{
         key:'action',
         render:(text,record)=>(
          <span className={styles.button}>
-          <Button onClick={()=>{this.setState({editorBoxVison:true,editorBoxId:record.id})}}>添加游戏</Button>
+          <Button onClick={()=>{this.setState({editorBoxVison:true,editorBoxId:record.id,editorBoxOs:record.os})}}>添加游戏</Button>
           <Button type="danger" onClick={this.deleteTag.bind(this,record.id)}>删除</Button>
          </span>
         )
@@ -65,6 +65,7 @@ class Tag extends React.Component{
     addBoxVision:false,
     editorBoxVison:false,
     editorBoxId:"",
+    editorBoxOs:2,
     current:1
   }
   UNSAFE_componentWillMount(){
@@ -105,7 +106,8 @@ class Tag extends React.Component{
            describle:item.detail,
            activationState:active,
            imgSrcAddress:`http://img.oneyouxi.com.cn/${item.img}`,
-           sys:sys
+           sys:sys,
+           os:item.sys
          });
       });
       const pagination ={...this.state.pagination};
@@ -151,6 +153,7 @@ class Tag extends React.Component{
           propHandBox={this.propHandBox.bind(this)}
           current={this.state.current}
           subjectId={this.state.editorBoxId}
+          os={this.state.editorBoxOs}
         />
       </div>
     )
