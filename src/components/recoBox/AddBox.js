@@ -32,6 +32,7 @@ class AddBox extends React.Component{
     gameName:"",
     title:"",
     row:"",
+    os:2,
     inputToggle:false
   }
   handleCancel = (e) => {
@@ -39,12 +40,12 @@ class AddBox extends React.Component{
       visible: false,
       radioValue:1,
       gameName:"",
-      fileList:[]
+      fileList:[],
+      os:2
     });
     this.props.propHandBox(false);
   }
   handleOk = () => {
-
     if(this.state.gameName==""){
       Message.error("游戏名不能为空");
       return false;
@@ -108,7 +109,7 @@ class AddBox extends React.Component{
   }
 
  restUpload(){
-   fetchs(`${config.url_adminGame}/addGameActive?type=${this.state.radioValue}&game_name=${this.state.gameName}&name=${this.state.activityName}`).then((res)=>{
+   fetchs(`${config.url_adminGame}/addGameActive?type=${this.state.radioValue}&game_name=${this.state.gameName}&name=${this.state.activityName}&sys=${this.state.os}`).then((res)=>{
      Message.success("上传成功");
      this.setState({
         visible:false,
@@ -119,7 +120,8 @@ class AddBox extends React.Component{
         title:"",
         row:"",
         data:[],
-        fileList:[]
+        fileList:[],
+        os:2
      });
      this.props.propHandBox(false);
      this.props.propsFetchs(1);
@@ -145,7 +147,7 @@ class AddBox extends React.Component{
               Message.error('上传失败');
         },
         success:(res_1)=>{
-          fetchs(`${config.url_adminGame}/addGameActive?game_name=${this.state.gameName}&title=${this.state.title}&sort=${this.state.row}&active_img=${res_1.key}&active=${this.state.active}&type=${this.state.radioValue}&name=${this.state.activityName}`).then((res_3)=>{
+          fetchs(`${config.url_adminGame}/addGameActive?game_name=${this.state.gameName}&title=${this.state.title}&sort=${this.state.row}&active_img=${res_1.key}&active=${this.state.active}&type=${this.state.radioValue}&name=${this.state.activityName}&sys=${this.state.os}`).then((res_3)=>{
             if(res_3.data.state){
               Message.success("上传成功");
               this.setState({
@@ -156,7 +158,8 @@ class AddBox extends React.Component{
                  gameName:"",
                  title:"",
                  row:"",
-                 data:[]
+                 data:[],
+                 os:2
               });
               this.props.propHandBox(false);
               this.props.propsFetchs(1);
@@ -294,7 +297,6 @@ class AddBox extends React.Component{
           style={{width:400,display:"block",marginTop:15}}
           disabled={this.state.inputToggle}
           />
-
           <Input
           addonBefore="激活状态"
           value={this.state.active}
@@ -303,6 +305,17 @@ class AddBox extends React.Component{
           style={{width:400,display:"block",marginTop:15}}
           disabled={this.state.inputToggle}
           />
+          <Radio.Group onChange={(e)=>{
+            this.setState({
+              os:e.target.value
+            });
+          }}
+          value={this.state.os}
+          style={{marginTop:18,lineHeight:2}}
+          >
+             <Radio value={2}>android</Radio>
+             <Radio value={1}>ios</Radio>
+          </Radio.Group>
          </Input.Group>
          <Upload
          {...props}

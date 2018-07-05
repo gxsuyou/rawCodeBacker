@@ -57,6 +57,9 @@ class Recommend extends React.Component{
        title:'推荐位类型',
        dataIndex:'recommendType',
      },{
+       title:"系统",
+       dataIndex:'sys'
+     },{
        title:"操作",
        key:'action',
        render:(text,record)=>(
@@ -105,7 +108,7 @@ class Recommend extends React.Component{
     fetchs(`${config.url_admin}/active?p=${p}`)
     .then((res)=>{
       var i =1;
-      var sort,title,active;
+      var sort,title,active,sys;
       res.data.result.forEach((item)=>{
         if(item.sort==null){
           var sort="无"
@@ -146,6 +149,8 @@ class Recommend extends React.Component{
        var imgSrc=`http://img.oneyouxi.com.cn/${item.active_img}`;
      }
 
+     item.sys==1?sys="ios":sys="android";
+
         this.state.mainData.push({
           key:i++,
           id:item.id,
@@ -156,7 +161,8 @@ class Recommend extends React.Component{
           sort:sort,
           active:active,
           recommendType:recommendType,
-          game_id:item.game_id
+          game_id:item.game_id,
+          sys:sys
         });
 
       });
@@ -280,9 +286,7 @@ class Recommend extends React.Component{
           activityImgSrc={this.state.editorActivityImgSrc}
           propHandBox={this.propHandBox.bind(this)}
           propsFetchs={this.fetchs_chapter.bind(this)
-
           }
-
         />
       </div>
     )

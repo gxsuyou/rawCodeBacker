@@ -36,12 +36,7 @@ class AddBox extends React.Component{
        Message.error("激活必须为数字");
        return false;
     }
-
-    switch(this.state.radioValue){
-      case 2:
-       this.androidUpload(this.state.fileList);
-      break;
-    }
+    this.androidUpload(this.state.fileList);
   }
 
   androidUpload(fileList){
@@ -128,8 +123,10 @@ class AddBox extends React.Component{
         cancelText="取消"
        >
        <Radio.Group onChange={(e)=>{this.setState({radioValue:e.target.value})}} value={this.state.radioValue}
-       style={{marginTop:0,lineHeight:2}}>
-          <Radio value={2}>安卓</Radio>
+       style={{marginTop:0,lineHeight:2}}
+       >
+          <Radio value={2}>android</Radio>
+          <Radio value={1}>ios</Radio>
           {
           // <Radio value={4}>首页推荐位(一张图)</Radio>
           // <Radio value={5}>首页推荐游戏(两张图)</Radio>

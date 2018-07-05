@@ -97,7 +97,7 @@ class Tag extends React.Component{
       var active,sys;
       res.data.result.forEach((item)=>{
         item.active?active="激活":active="未激活";
-        item.sys==2?sys="android":"ios";
+        item.sys==2?sys="android":sys="ios";
          c.push({
            key:i++,
            id:item.id,
