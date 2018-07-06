@@ -15,6 +15,9 @@ class UploadBox extends React.Component{
     fileList_package:[],
     id:"",
     tabActive:"imgUpload",
+    iconShow:null,
+    titleImgShow:null,
+    cutImgListShow:[]
   }
   onCancel(){
     this.setState({
@@ -240,12 +243,20 @@ class UploadBox extends React.Component{
     this.setState({
       visible:p.uploadBoxVision,
       id:p.id,
-      //m:true
     });
+
+    if(p.uploadBoxVision){
+      fetchs(`${config.url_adminGame}/GameMsgDetail?id=${p.id}`).then((res)=>{
+        this.setState({
+          iconShow:res.data[0].icon,
+          titleImgShow:res.data[0].game_title_img,
+          cutImgListShow:res.data[0].imgList
+        })
+      });
+    }
   }
   onRemove_icon(file){
     this.setState(({ fileList_icon }) => {
-      // console.log(file);
       const newFileList = fileList_icon.slice();
       newFileList.splice(-1, 1);
       return {
@@ -349,16 +360,42 @@ class UploadBox extends React.Component{
                <Icon type="upload"/> 游戏icon(单张,192*192以上)
              </Button>
            </Upload>
+             {
+              this.state.iconShow===null?(
+                 null
+               ):(
+                 <div>
+                  <img style={{width:80,marginBottom:5}} src={`${config.qiniu_img}${this.state.iconShow}`}/>
+                </div>
+               )
+             }
            <Upload {...props_main}>
              <Button>
                <Icon type="upload"/> 游戏头图(单张,1280*720以上)
              </Button>
            </Upload>
+             {
+               this.state.titleImgShow===null?(
+                 null
+               ):(
+                 <div>
+                  <img style={{width:180,marginBottom:5}} src={`${config.qiniu_img}${this.state.titleImgShow}`}/>
+                </div>
+               )
+             }
            <Upload {...props_cut}  multiple={true}>
             <Button>
               <Icon type="upload"/> 游戏截图(最少3张,最多8张横竖图不限制)
             </Button>
            </Upload>
+           <div style={{display:"flex",overflowY:"scroll"}}>
+           {
+             this.state.cutImgListShow.map((item,index)=>
+             <div><img
+              style={{width:120,marginRight:5,marginLeft:5}}
+              src={`${config.qiniu_img}${item.img_src}`} /></div>)
+           }
+           </div>
         </TabPane>
         <TabPane
         tab="游戏包上传"

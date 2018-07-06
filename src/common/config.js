@@ -11,6 +11,7 @@ if(process.env.NODE_ENV==="development"){
 
 
 const config={
+  qiniu_img:"http://img.oneyouxi.com.cn/",
   url_1:url_1,
   url_adminGame:`${url_1}adminGame`,
   url_login:`${url_1}admin/login`,

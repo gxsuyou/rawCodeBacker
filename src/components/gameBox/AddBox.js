@@ -7,6 +7,7 @@ import styles from "./AddBox.scss";
 const Option =Select.Option;
 const TabPane = Tabs.TabPane;
 const {TextArea}=Input;
+
 const RadioGroup = Radio.Group;
 class AddBox extends react.Component{
   state={
@@ -17,7 +18,7 @@ class AddBox extends react.Component{
     gameRecommend:"",
     gamePackagename:"",
     type:"alone",
-    sys:2,
+    sys:"2",
     tabsValue:"",
     brief:"",
     sysDownInput:true,
@@ -123,7 +124,7 @@ class AddBox extends react.Component{
         key:"24"
       }],
     defaultOption:[],
-    strategyTopGame:0
+    strategyTopGame:0,
   }
   componentWillReceiveProps(p){
     this.setState({
@@ -158,7 +159,7 @@ class AddBox extends react.Component{
           gameRecommend:"",
           gamePackagename:"",
           type:"alone",
-          sys:2,
+          sys:"2",
           brief:""
        });
       this.state.defaultOption.splice(0,this.state.defaultOption.length);
@@ -201,7 +202,9 @@ class AddBox extends react.Component{
          <Input addonBefore="游戏简介" placeholder="游戏公司"
          value={this.state.gameRecommend} onChange={(e)=>{this.setState({gameRecommend:e.target.value})}} />
          <Input.Group compact>
-         <Select defaultValue="2" onChange={(value)=>{
+         <Select
+         value={this.state.sys}
+         onChange={(value)=>{
            if(value==1){
              this.setState({
                sys:value,
@@ -213,7 +216,6 @@ class AddBox extends react.Component{
                sysDownInput:true
              });
            }
-
          }}>
            <Option value="2">android</Option>
            <Option value="1">ios</Option>

@@ -4,13 +4,14 @@ import fetchs from "../../utils/request";
 import config from "../../common/config";
 import styles from "./AddBox.scss";
 import qiniu from "../../utils/_qiniu";
+const RadioGroup = Radio.Group;
 const Option=Select.Option;
 
 
 
-function fake(n,callback){
+function fake(n,os,callback){
   const data=[];
-  fetchs(`${config.url_adminGame}/activeSearch?name=${n}`).then((res)=>{
+  fetchs(`${config.url_adminGame}/activeSearch?name=${n}&sys=${os}`).then((res)=>{
     res.data.result.forEach((item)=>{
       data.push({
         value:item.game_name,
@@ -27,7 +28,8 @@ class AddBox extends React.Component{
     visible:false,
     gameName:"",
     data:[],
-    fileList:[]
+    fileList:[],
+    os:2
   }
   handleCancel = (e) => {
     this.setState({
@@ -39,6 +41,7 @@ class AddBox extends React.Component{
     this.props.propHandBox(false);
   }
   handleOk = () => {
+
     if(this.state.gameName==""){
       Message.error("游戏名不能为空");
       return false;
@@ -51,21 +54,7 @@ class AddBox extends React.Component{
       });
     }
     this.indexUpload(this.state.fileList);
-    // return false;
-    // fetchs(`${config.url_adminNews}/addSlideGame?game_id=${this.state.data[0].id}`).then((res)=>{
-    //   if(res.data.state){
-    //     Message.success("添加成功");
-    //     this.setState({
-    //       visible: false,
-    //       gameName:"",
-    //       data:[]
-    //     });
-    //     this.props.propHandBox(false);
-    //     this.props.propsFetchs(1);
-    //   }else{
-    //     Message.error("添加失败");
-    //   }
-    // });
+
   }
 
   indexUpload(fileList){
@@ -73,9 +62,6 @@ class AddBox extends React.Component{
       Message.error("游戏展示图只能放置一张图");
       return false;
     }
-    // console.error(this.state.gameName);
-    // return false;
-  // return false
    const key =`headGame/gameName${this.state.gameName}/gameId${this.state.data[0].id}`;
 
    fetchs(`${config.url_admin}/getUptokenByMsg?scope=oneyouxiimg&key=${key}`).then((res)=>{
@@ -119,11 +105,11 @@ class AddBox extends React.Component{
     if(value===""){
       return false;
     }
-    fake(value,(data)=> this.setState({ data }));
+    fake(value,this.state.os,(data)=> this.setState({ data }));
   }
   focusGetData(){
     const c=[];
-    fetchs(`${config.url_adminGame}/activeSearch`).then((res)=>{
+    fetchs(`${config.url_adminGame}/activeSearch?sys=${this.state.os}`).then((res)=>{
       res.data.result.forEach((item)=>{
           c.push({
             value:item.game_name,
@@ -136,6 +122,14 @@ class AddBox extends React.Component{
       });
     });
   }
+  changeOs=(e)=>{
+     this.setState({
+       os:e.target.value,
+       data:[],
+       gameName:""
+     });
+  }
+
    render(){
      const options = this.state.data.map(d => <Option key={d.value}>{d.text}</Option>);
      const props={
@@ -167,6 +161,14 @@ class AddBox extends React.Component{
           okText="提交"
           cancelText="取消"
         >
+         <RadioGroup
+          value={this.state.os}
+          onChange={this.changeOs}
+          style={{marginBottom:10}}
+         >
+           <Radio value={2}>android</Radio>
+           <Radio value={1}>ios</Radio>
+         </RadioGroup>
           <Select
              mode="combobox"
              value={this.state.gameName}

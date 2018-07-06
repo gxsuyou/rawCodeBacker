@@ -28,6 +28,9 @@ class HeadGame extends React.Component{
        title:'游戏名称',
        dataIndex:'gameName',
      },{
+       title:"系统",
+       dataIndex:'os'
+     },{
        title:"操作",
        key:'action',
        render:(text,record)=>(
@@ -58,12 +61,14 @@ class HeadGame extends React.Component{
     });
     fetchs(`${config.url_adminNews}/getHeadGame?p=${p}`)
     .then((res)=>{
-      var i =1;
+      var i =1,sys;
       res.data.result.forEach((item)=>{
+        item.sys==1?sys="ios":sys="android";
         this.state.mainData.push({
           key:i++,
           gameName:item.game_name,
-          id:item.id
+          id:item.id,
+          os:sys
         });
       });
       const pagination={...this.state.pagination};
@@ -76,7 +81,6 @@ class HeadGame extends React.Component{
     });
   }
   showModal = (v) => {
-    console.log(v);
     this.setState({
       visible: true,
     });
