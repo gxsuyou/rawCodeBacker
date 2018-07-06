@@ -133,7 +133,6 @@ class AddGameBox extends React.Component{
        Message.error("游戏名字必须填写");
        return false;
      }
-
      fetchs(`${config.url_adminGame}/addSubjectGame?game_name=${this.state.gameName}&subjectId=${this.state.subjectId}&sys=${this.state.os}`).then((res)=>{
 
        if(res.data.state){
