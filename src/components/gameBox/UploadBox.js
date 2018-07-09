@@ -26,7 +26,9 @@ class UploadBox extends React.Component{
       fileList_main:[],
       fileList_cut:[],
       fileList_package:[],
-      m:false
+      iconShow:null,
+      titleImgShow:null,
+      cutImgListShow:[]
     });
     this.props.handleUploadBoxChange(false);
   }
@@ -65,8 +67,6 @@ class UploadBox extends React.Component{
                    key:`game/gameId${this.state.id}/icon`,
                    token:res.data.upToken,
                    success:function(res_1){
-
-
                      if(res_1.key){
                         fetchs(`${config.url_adminGame}/updateGameIcon?id=${id}&url=${res_1.key}`).then((res_2)=>{
                             if(res_2.data.state){
@@ -212,10 +212,12 @@ class UploadBox extends React.Component{
               visible:false,
               fileList_icon:[],
               fileList_main:[],
-              fileList_cut:[]
+              fileList_cut:[],
+              iconShow:null,
+              titleImgShow:null,
+              cutImgListShow:[]
             });
             this.props.handleUploadBoxChange(false);
-            console.log("重要"+this.state.fileList_icon)
           }
         });
       }).catch(()=>{
@@ -364,7 +366,7 @@ class UploadBox extends React.Component{
               this.state.iconShow===null?(
                  null
                ):(
-                 <div>
+                 <div style={{marginTop:15}}>
                   <img style={{width:80,marginBottom:5}} src={`${config.qiniu_img}${this.state.iconShow}`}/>
                 </div>
                )
@@ -378,7 +380,7 @@ class UploadBox extends React.Component{
                this.state.titleImgShow===null?(
                  null
                ):(
-                 <div>
+                 <div style={{marginTop:15}}>
                   <img style={{width:180,marginBottom:5}} src={`${config.qiniu_img}${this.state.titleImgShow}`}/>
                 </div>
                )
@@ -388,7 +390,7 @@ class UploadBox extends React.Component{
               <Icon type="upload"/> 游戏截图(最少3张,最多8张横竖图不限制)
             </Button>
            </Upload>
-           <div style={{display:"flex",overflowY:"scroll"}}>
+           <div style={{marginTop:15,display:"flex",overflowY:"scroll"}}>
            {
              this.state.cutImgListShow.map((item,index)=>
              <div><img
