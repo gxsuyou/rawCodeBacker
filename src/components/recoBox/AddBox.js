@@ -7,9 +7,9 @@ import z from "../../utils/_qiniu";
 const Option=Select.Option;
 
 
-function fake(n,callback){
+function fake(n,os,callback){
   const data=[];
-  fetchs(`${config.url_adminGame}/activeSearch?name=${n}`).then((res)=>{
+  fetchs(`${config.url_adminGame}/activeSearch?name=${n}&sys=${os}`).then((res)=>{
     res.data.result.forEach((item)=>{
       data.push({
         value:item.game_name,
@@ -165,15 +165,10 @@ class AddBox extends React.Component{
               this.props.propsFetchs(1);
             }
           });
-
         }
       });
-
-
     }
   });
-
-
  }
 
 
@@ -189,11 +184,11 @@ class AddBox extends React.Component{
     if(value===""){
       return false;
     }
-    fake(value,(data)=> this.setState({ data }));
+    fake(value,this.state.os,(data)=> this.setState({ data }));
   }
   focusGetData(){
     const c=[];
-    fetchs(`${config.url_adminGame}/activeSearch`).then((res)=>{
+    fetchs(`${config.url_adminGame}/activeSearch?sys=${this.state.os}`).then((res)=>{
       res.data.result.forEach((item)=>{
           c.push({
             value:item.game_name,
@@ -307,7 +302,8 @@ class AddBox extends React.Component{
           />
           <Radio.Group onChange={(e)=>{
             this.setState({
-              os:e.target.value
+              os:e.target.value,
+              gameName:""
             });
           }}
           value={this.state.os}

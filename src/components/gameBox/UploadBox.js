@@ -57,14 +57,13 @@ class UploadBox extends React.Component{
     observable = qiniu.upload(file, key, token, putExtra, config),
     subscription = observable.subscribe(subObject);
   }
-  uploadIcon(id){
+  uploadIcon(id,random){
     return new Promise((resolve,reject)=>{
-
-          fetchs(`${config.url_admin}/getUptokenByMsg?scope=oneyouxiimg&key=game/gameId${this.state.id}/icon`,).then((res)=>{
-              // if(res.data.state){
+       var  key=`game/gameId${this.state.id}/icon/${random}`;
+          fetchs(`${config.url_admin}/getUptokenByMsg?scope=oneyouxiimg&key=${key}`,).then((res)=>{
                  this.uploadQiniu({
                    file:this.state.fileList_icon[0],
-                   key:`game/gameId${this.state.id}/icon`,
+                   key:key,
                    token:res.data.upToken,
                    success:function(res_1){
                      if(res_1.key){
@@ -78,27 +77,19 @@ class UploadBox extends React.Component{
                         });
 
                      }
-
-
                    }
-
                  });
-               //}
-
-
             });
-
-
     });
   }
-  uploadMain(id){
+  uploadMain(id,random){
     return new Promise((resolve,reject)=>{
-
-         fetchs(`${config.url_admin}/getUptokenByMsg?scope=oneyouxiimg&key=game/gameId${this.state.id}/titleImg`).then((res)=>{
+         var key=`game/gameId${this.state.id}/titleImg/${random}`;
+         fetchs(`${config.url_admin}/getUptokenByMsg?scope=oneyouxiimg&key=${key}`).then((res)=>{
              // if(res.data.state){
                 this.uploadQiniu({
                   file:this.state.fileList_main[0],
-                  key:`game/gameId${this.state.id}/titleImg`,
+                  key:key,
                   token:res.data.upToken,
                   success:function(res_1){
 
@@ -122,11 +113,12 @@ class UploadBox extends React.Component{
           });
     });
   }
-  uploadCut(id,file,i){
-    fetchs(`${config.url_admin}/getUptokenByMsg?scope=oneyouxiimg&key=game/gameId${id}/list${i}`).then((res)=>{
+  uploadCut(id,file,i,random){
+    var key=`game/gameId${id}/list${i}/${random}`;
+    fetchs(`${config.url_admin}/getUptokenByMsg?scope=oneyouxiimg&key=${key}`).then((res)=>{
        this.uploadQiniu({
          file:file,
-         key:`game/gameId${id}/list${i}`,
+         key:key,
          token:res.data.upToken,
          success:function(res_1){
              if(res_1.key){
@@ -174,6 +166,19 @@ class UploadBox extends React.Component{
     });
 
   }
+  //删除图片
+  deleteImg(){
+    if((this.state.iconShow!==null||this.state.titleImgShow!==null)&&this.state.tabActive=="imgUpload"){
+      fetchs(`${config.url_admin}/deleteGameImg?id=${this.state.id}`).then((res)=>{
+         if(res.data.state){
+           this.getMsgDetail(this.state.id);
+         }
+      });
+    }else{
+      this.handleUpload();
+    }
+  }
+
   handleUpload(){
     if(this.state.tabActive=="imgUpload"){
        if(this.state.fileList_icon.length!==1){
@@ -196,16 +201,14 @@ class UploadBox extends React.Component{
         return false;
       }
 
-
+      var random=Math.round(Math.random()*1000);
       Promise.all([
-        this.uploadIcon(this.state.id),
-        this.uploadMain(this.state.id)
+        this.uploadIcon(this.state.id,random),
+        this.uploadMain(this.state.id,random)
       ]).then(()=>{
-        fetchs(`${config.url_adminGame}/deleteGameImg?id=${this.state.id}`).then((res)=>{
-          if(res.data.state){
             var i=0;
             this.state.fileList_cut.forEach((item)=>{
-              this.uploadCut(this.state.id,item,i++);
+              this.uploadCut(this.state.id,item,i++,random);
             });
             Message.success("图片上传成功");
             this.setState({
@@ -218,13 +221,9 @@ class UploadBox extends React.Component{
               cutImgListShow:[]
             });
             this.props.handleUploadBoxChange(false);
-          }
-        });
       }).catch(()=>{
         Message.error("上传错误!");
-      })
-
-
+      });
     }else{
       if(this.state.fileList_package.length!==1){
         Message.error("只能上传一个安装包");
@@ -248,15 +247,20 @@ class UploadBox extends React.Component{
     });
 
     if(p.uploadBoxVision){
-      fetchs(`${config.url_adminGame}/GameMsgDetail?id=${p.id}`).then((res)=>{
-        this.setState({
-          iconShow:res.data[0].icon,
-          titleImgShow:res.data[0].game_title_img,
-          cutImgListShow:res.data[0].imgList
-        })
-      });
+       this.getMsgDetail(p.id);
     }
   }
+
+  getMsgDetail(id){
+    fetchs(`${config.url_adminGame}/GameMsgDetail?id=${id}`).then((res)=>{
+      this.setState({
+        iconShow:res.data[0].icon,
+        titleImgShow:res.data[0].game_title_img,
+        cutImgListShow:res.data[0].imgList
+      })
+    });
+  }
+
   onRemove_icon(file){
     this.setState(({ fileList_icon }) => {
       const newFileList = fileList_icon.slice();
@@ -342,7 +346,7 @@ class UploadBox extends React.Component{
        <Modal
        title="上传数据"
        visible={this.state.visible}
-       onOk={this.handleUpload.bind(this)}
+       onOk={this.deleteImg.bind(this)}
        onCancel={this.onCancel.bind(this)}
        okText="提交"
        cancelText="取消"
