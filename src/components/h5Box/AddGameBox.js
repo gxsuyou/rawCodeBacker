@@ -150,7 +150,6 @@ class AddGameBox extends React.Component{
 
   render(){
     const options = this.state.data.map(d => <Option key={d.value}>{d.text}</Option>);
-
     return(
      <Modal
       title="添加游戏"

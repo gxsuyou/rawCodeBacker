@@ -35,7 +35,7 @@ class AddBox extends React.Component{
     os:2,
     inputToggle:false
   }
-  handleCancel = (e) => {
+  handleCancel=(e)=>{
     this.setState({
       visible: false,
       radioValue:1,

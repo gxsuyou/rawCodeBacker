@@ -164,9 +164,9 @@ class AddBox extends React.Component{
        >
        <Input.Group>
        <Input
-       addonBefore="标题"
+       addonBefore="游戏名称"
        value={this.state.title}
-       placeholder="输入标题"
+       placeholder="输入游戏名称(请忽超过10个字)"
        onChange={(e)=>{this.setState({title:e.target.value})}}
        style={{width:400,display:"block",marginTop:15}}
        />
