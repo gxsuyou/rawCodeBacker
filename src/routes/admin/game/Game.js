@@ -1,18 +1,20 @@
 import React from "react";
-import {Table,Button,Modal,Input,message} from 'antd';
+import {Table,Button,Modal,Input,message,Radio} from 'antd';
 import styles from "./Game.scss";
 import config from "../../../common/config.js";
 import fetchs from "../../../utils/request.js";
-//盒子
+/*弹窗组件*/
 import TagBox from "../../../components/gameBox/TagBox";
 import AddBox from "../../../components/gameBox/AddBox";
 import UploadBox from "../../../components/gameBox/UploadBox";
+/*弹窗组件结束*/
 const {TextArea}=Input;
 const Search =Input.Search;
 class Game extends React.Component{
   state={
       checkAll:true,
       loading:false,
+      os:"2",
       pagination:{},
       currentPagination:1,
       editorMessageVisible:false,
@@ -247,7 +249,7 @@ class Game extends React.Component{
   }
   fetch(p){
     this.setState({ loading: true });
-    fetchs(`${config.url_getAdminGame}?p=${p}`)
+    fetchs(`${config.url_getAdminGame}?p=${p}&sys=${this.state.os}`)
     .then((res)=>{
       var i=1;
       var c=[]
@@ -290,8 +292,10 @@ class Game extends React.Component{
           gameDetail:item.game_detail
         });
       });
+      console.log(this.state.currentPagination)
      const pagination ={...this.state.pagination};
      pagination.total=(res.data.totalPage)*10;
+     pagination.current=p;
       this.setState({
         loading:false,
         MainData:c,
@@ -357,18 +361,38 @@ class Game extends React.Component{
 
     })
   }
+  osRenderChange=(e)=>{
+    this.setState({
+      os:e.target.value,
+      currentPagination:1,
+    });
+    setTimeout(()=>{
+      this.fetch(1);
+    },300);
+  }
   render(){
     return(
      <div className={styles.table}>
+    { /* 顶部操作start */}
      <div className={styles.tableOperations}>
-     <Search
-     addonBefore="游戏名"
-     style={{width:350,marginRight:20}}
-     placeholder="输入游戏名称"
-     onSearch={this.searchName.bind(this)}
-       />
+       <Search
+        addonBefore="游戏名"
+        style={{width:350,marginRight:20}}
+        placeholder="输入游戏名称"
+        onSearch={this.searchName.bind(this)}/>
+      <Radio.Group
+         style={{marginRight:20}}
+         defaultValue="2"
+         buttonStyle="solid"
+         value={this.state.os}
+         onChange={this.osRenderChange}
+      >
+         <Radio.Button value="2">Android</Radio.Button>
+         <Radio.Button value="1">Ios</Radio.Button>
+      </Radio.Group>
       <Button onClick={this.addGameModel.bind(this)} type="primary">添加</Button>
      </div>
+    { /* 顶部操作end */}
      <Table
       columns={this.state.titleData}
       dataSource={this.state.MainData}
@@ -440,9 +464,7 @@ class Game extends React.Component{
        />
       </Modal>
       <TagBox tagBoxVision={this.state.tagBoxVision} id={this.state.editorMessageId} handleTagBoxChange={this.handleTagBoxChange.bind(this)}/>
-      {
-        /*添加的文本框*/
-      }
+      { /*添加的文本框*/}
       <AddBox addBoxVision={this.state.addBoxVision} handleAddBoxChange={this.handleTagBoxChange.bind(this)} fetch={this.fetch.bind(this)}/>
       <UploadBox
       id={this.state.editorMessageId} uploadBoxVision={this.state.uploadBoxVision} handleUploadBoxChange={this.handleTagBoxChange.bind(this)}

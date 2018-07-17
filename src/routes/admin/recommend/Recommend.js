@@ -1,5 +1,5 @@
 import React from "react";
-import {Select,Table,Button,Input,Message} from 'antd';
+import {Select,Table,Button,Input,Message,Radio} from 'antd';
 import styles from "./Recommend.scss";
 import fetchs from "../../../utils/request.js";
 import config from "../../../common/config";
@@ -12,6 +12,7 @@ class Recommend extends React.Component{
   state={
     visible:false,
     loading:false,
+    os:"2",
     addBoxVision:false,
     editorBoxVison:false,
     editorBoxRecommendType:1,
@@ -100,12 +101,15 @@ class Recommend extends React.Component{
    });
    this.fetchs_chapter(e.current);
  }
+ /* 推荐位渲染开始
+ @params p 页数
+ */
   fetchs_chapter(p){
     this.setState({
       loading:true,
       mainData:[]
     });
-    fetchs(`${config.url_admin}/active?p=${p}`)
+    fetchs(`${config.url_admin}/active?p=${p}&sys=${this.state.os}`)
     .then((res)=>{
       var i =1;
       var sort,title,active,sys;
@@ -175,6 +179,17 @@ class Recommend extends React.Component{
       });
     });
   }
+
+    osRenderChange=(e)=>{
+      this.setState({
+        os:e.target.value,
+        current:1
+      });
+      setTimeout(()=>{
+        this.fetchs_chapter(1);
+      },300)
+    }
+
   showModal = (v) => {
     console.log(v);
     this.setState({
@@ -220,9 +235,6 @@ class Recommend extends React.Component{
         }else if(item.type == '6'){
           var recommendType='推荐位（竖排10个）';
         }
-
-
-
        if(item.active_img==""){
          var imgSrc="暂无数据";
        }else{
@@ -251,16 +263,28 @@ class Recommend extends React.Component{
       editorBoxVison:e
     });
   }
+
+
   render(){
     return(
       <div className={styles.table}>
        <div className={styles.tableOperations}>
         <Search
-       addonBefore="活动名"
-        style={{width:350}}
-        placeholder="输入活动名"
-        onSearch={this.searchName.bind(this)}
-        className={styles.tableOperationsInput}  />
+         addonBefore="活动名"
+         style={{width:350}}
+         placeholder="输入活动名"
+         onSearch={this.searchName.bind(this)}
+         className={styles.tableOperationsInput} />
+        <Radio.Group
+         style={{marginLeft:20}}
+         defaultValue="2"
+         buttonStyle="solid"
+         value={this.state.os}
+        onChange={this.osRenderChange}
+        >
+          <Radio.Button value="2">Android</Radio.Button>
+          <Radio.Button value="1">Ios</Radio.Button>
+        </Radio.Group>
         <Button onClick={()=>{this.setState({addBoxVision:true})}} type="primary">添加</Button>
        </div>
        <Table

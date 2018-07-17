@@ -67,7 +67,7 @@ class AddBox extends React.Component{
    this.setState({
      toggleInput:false
    });
-   var key =`strategy/strategyTitle${this.state.title}`;
+   var key =`strategy/strategyTitle${this.state.title.replace(/\s+/g,"")}`;
    var uid =config.getCookie('uid');
    fetchs(`${config.url_admin}/getUptokenByMsg?scope=oneyouxiimg&key=${key}`).then((res)=>{
      if(res.data.state){

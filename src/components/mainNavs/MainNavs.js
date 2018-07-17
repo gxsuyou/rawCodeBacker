@@ -70,13 +70,17 @@ class MainNavs extends React.Component{
         this.setState({
           current:"5"
         });
+      }else if(hash.indexOf('advice')!=-1){
+        this.setState({
+          current:"10"
+        });
       }
 
     }
   render(){
     return(
        <Menu
-        defaultOpenKeys={['sub1','sub2','sub3','sub4']}
+        defaultOpenKeys={['sub1','sub2','sub3','sub4','sub5']}
         mode="inline"
         inlineCollapsed={this.state.collapsed}
         style={{border:"none"}}
@@ -135,10 +139,14 @@ class MainNavs extends React.Component{
            </Link>
           </Menu.Item>
         </SubMenu>
-        {
-        // <SubMenu key="sub5" title={<span><Icon type="setting"/><span>超级管理</span></span>}>
-        // </SubMenu>
-        }
+         <SubMenu key="sub5" title={<span><Icon type="setting"/>
+         <span>用户意见反馈</span></span>}>
+           <Menu.Item key="10">
+            <Link to="/admin/advice">
+             查看反馈
+           </Link>
+          </Menu.Item>
+         </SubMenu>
        </Menu>
     )
   }

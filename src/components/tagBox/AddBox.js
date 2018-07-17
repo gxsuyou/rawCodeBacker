@@ -103,7 +103,6 @@ class AddBox extends React.Component{
          });
        },
        beforeUpload: (file) => {
-
          this.setState(({ fileList }) => ({
            fileList: [...fileList, file],
          }));

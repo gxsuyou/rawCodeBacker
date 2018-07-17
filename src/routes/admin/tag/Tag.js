@@ -68,7 +68,7 @@ class Tag extends React.Component{
     editorBoxOs:2,
     current:1
   }
-  UNSAFE_componentWillMount(){
+  componentWillMount(){
     this.fetchsTag(1);
     config.setCookie("path","tag",0.05);
   }

@@ -1,5 +1,5 @@
 import React from "react";
-import {Modal,Upload,Button,Icon,Tabs,Message} from "antd";
+import {Spin,Modal,Upload,Button,Icon,Tabs,Message} from "antd";
 import fetchs from "../../utils/request";
 import config from "../../common/config";
 import styles from "./UploadBox.scss";
@@ -8,7 +8,7 @@ const TabPane=Tabs.TabPane;
 class UploadBox extends React.Component{
   state={
     visible:false,
-    uploading: false,
+    uploading:false,
     fileList_icon: [],
     fileList_main:[],
     fileList_cut:[],
@@ -135,13 +135,13 @@ class UploadBox extends React.Component{
        });
     });
   }
-  uploadPackage(id,suffix){
+  uploadPackage(id,suffix,key){
     return new Promise((resolve,reject)=>{
-      fetchs(`${config.url_admin}/getUptokenByMsg?scope=oneyouxiapk&key=game/gameId${id}.${suffix}`).then((res)=>{
+      fetchs(`${config.url_admin}/getUptokenByMsg?scope=oneyouxi${suffix}&key=${key}`).then((res)=>{
           if(res.data.state){
             this.uploadQiniu({
               file:this.state.fileList_package[0],
-              key:`game/gameId${id}.${suffix}`,
+              key:key,
               token:res.data.upToken,
               success:(res_1)=>{
                  if(res_1.key){
@@ -167,7 +167,8 @@ class UploadBox extends React.Component{
   }
   //删除图片
   deleteImg(){
-    if((this.state.iconShow!==null||this.state.titleImgShow!==null)&&this.state.tabActive=="imgUpload"){
+    console.log(this.state.cutImgListShow.length);
+    if((this.state.iconShow!==null||this.state.titleImgShow!==null||this.state.cutImgListShow.length!==0)&&this.state.tabActive=="imgUpload"){
       fetchs(`${config.url_admin}/deleteGameImg?id=${this.state.id}`).then((res)=>{
          if(res.data.state){
            this.getMsgDetail(this.state.id);
@@ -201,6 +202,7 @@ class UploadBox extends React.Component{
       }
 
       var random=Math.round(Math.random()*1000);
+      this.setState({uploading:true});
       Promise.all([
         this.uploadIcon(this.state.id,random),
         this.uploadMain(this.state.id,random)
@@ -217,7 +219,8 @@ class UploadBox extends React.Component{
               fileList_cut:[],
               iconShow:null,
               titleImgShow:null,
-              cutImgListShow:[]
+              cutImgListShow:[],
+              uploading:false
             });
             this.props.handleUploadBoxChange(false);
       }).catch(()=>{
@@ -225,25 +228,42 @@ class UploadBox extends React.Component{
       });
     }else{
       //安装包上传
-      var uploadPackName=this.state.fileList_package[0].name,suffix;
-      this.state.os==2?suffix="apk":suffix="ipa";
       if(this.state.fileList_package.length!==1){
         Message.error("只能上传一个安装包");
         return false;
       }
+      /* 不同系统验证包 */
+      var uploadPackName=this.state.fileList_package[0].name,suffix;
+      this.state.os==2?suffix="apk":suffix="ipa";
+
       if(uploadPackName.indexOf(suffix)==-1){
         Message.error("请区分安装包后再上传");
         return false;
       }
-     this.uploadPackage(this.state.id,suffix).then(()=>{
-       this.setState({
-         visible:false,
-         fileList_package:[]
-       });
-       this.props.handleUploadBoxChange(false);
-     });
+    this.setState({uploading:true});
+    var random=Math.round(Math.random()*1000);
+    var key=`game/gameId${this.state.id}.${suffix}/${random}`;
+      this.deletePackBag(key).then(()=>{
+        this.uploadPackage(this.state.id,suffix,key).then(()=>{
+          this.setState({
+            visible:false,
+            fileList_package:[],
+            uploading:false
+          });
+          this.props.handleUploadBoxChange(false);
+        });
+      });
     }
   }
+  /* 删除原来的包 */
+  deletePackBag(key){
+    return new Promise((resolve,reject)=>{
+      fetchs(`${config.url_admin}/deleteGameApp?key=${key}&sys=${this.state.os}`).then((res)=>{
+         resolve();
+      });
+    })
+  }
+  /* 打开弹窗接受props初始化原本的数据 */
   UNSAFE_componentWillReceiveProps(p){
     this.setState({
       visible:p.uploadBoxVision,
@@ -254,7 +274,7 @@ class UploadBox extends React.Component{
        this.getMsgDetail(p.id);
     }
   }
-  //初始化数据
+  /* 初始化数据 */
   getMsgDetail(id){
     fetchs(`${config.url_adminGame}/GameMsgDetail?id=${id}`).then((res)=>{
       this.setState({
@@ -357,11 +377,15 @@ class UploadBox extends React.Component{
        okText="提交"
        cancelText="取消"
        >
-       <Tabs
+       <Spin spinning={this.state.uploading} delay={500}>
+        <Tabs
         className={styles.tabs}
         onChange={(e)=>this.setState({tabActive:e})}
         defaultActiveKey="imgUpload"
-       >
+        >
+        {
+          /* 游戏图片上传 */
+        }
         <TabPane
           style={{marginTop:10}}
           tab="游戏图片上传"
@@ -409,6 +433,9 @@ class UploadBox extends React.Component{
            }
            </div>
         </TabPane>
+        {
+          /* 包上传 */
+        }
         <TabPane
         tab="游戏包上传"
         key="packPageUpload"
@@ -419,7 +446,8 @@ class UploadBox extends React.Component{
            </Button>
           </Upload>
         </TabPane>
-       </Tabs>
+        </Tabs>
+       </Spin>
        </Modal>
     )
   }
