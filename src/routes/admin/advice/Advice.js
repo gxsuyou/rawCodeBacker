@@ -85,6 +85,11 @@ class Advice extends React.Component{
   handleTableChange(e){
     this.fetch(e.current);
   }
+  propHandBox=function(v){
+    this.setState({
+      adviceVisibleBox:v
+    });
+  }
   fetch=(p)=>{
      this.setState({
        loading:true
@@ -125,6 +130,7 @@ class Advice extends React.Component{
         <ShowBox
          visible={this.state.adviceVisibleBox}
          id={this.state.adviceIdBox}
+         propHandBox={this.propHandBox.bind(this)}
         />
       </div>
     )

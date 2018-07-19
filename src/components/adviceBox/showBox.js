@@ -10,8 +10,8 @@ class Show extends React.Component{
     img:[]
   }
   componentWillReceiveProps(e){
-    this.setState({visible:e.visible});
     if(e.visible){
+       this.setState({visible:e.visible});
        fetchs(`${config.url_admin}/getFeedBackDetail?id=${e.id}`)
        .then((res)=>{
          console.log(res);
@@ -25,6 +25,7 @@ class Show extends React.Component{
   }
   cancel=()=>{
     this.setState({visible:false,content:"",img:[]});
+    this.props.propHandBox(false);
   }
   render(){
     return (
