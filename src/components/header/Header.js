@@ -16,7 +16,7 @@ class AdminHeader extends React.Component{
     config.delCookie("pwd","",-1);
     config.delCookie("uid","",-1);
     config.delCookie("nikeName","",-1);
-    window.location="/#/";
+    window.location=`${config.url_back}#/`;
   }
   state={
     visible:false,

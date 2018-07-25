@@ -1,13 +1,12 @@
-if(process.env.NODE_ENV==="development"){
-  var login=true;
-}else{
-   login=false;
-}
-const c= {
+// if(process.env.NODE_ENV==="development"){
+//   var login=false;
+// }else{
+//    login=false;
+// }
+const c={
   namespace:'adminIndex',
   state:{
-    age:10,
-    login:login,
+    login:false,
     user:null,
   },
   reducers:{

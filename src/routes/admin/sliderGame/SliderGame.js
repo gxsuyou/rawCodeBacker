@@ -31,6 +31,9 @@ class SliderGame extends React.Component{
        title:'游戏名称',
        dataIndex:'gameName',
      },{
+       title:'系统',
+       dataIndex:'os'
+     },{
        title:"操作",
        key:'action',
        render:(text,record)=>(
@@ -65,11 +68,14 @@ class SliderGame extends React.Component{
     fetchs(`${config.url_adminNews}/getSlideGame?p=${p}`)
     .then((res)=>{
       var i =1;
+      var os;
       res.data.result.forEach((item)=>{
+        item.sys==2?os='android':os='ios';
         this.state.mainData.push({
           key:i++,
           gameName:item.game_name,
-          id:item.id
+          id:item.id,
+          os:os
         });
       });
       const pagination={...this.state.pagination};
@@ -82,7 +88,6 @@ class SliderGame extends React.Component{
     });
   }
   showModal = (v) => {
-    console.log(v);
     this.setState({
       visible: true,
     });

@@ -38,12 +38,21 @@ class AddBox extends React.Component{
     toggleInput:true,
     editor:null
   }
-  UNSAFE_componentWillReceiveProps(e){
+  componentWillReceiveProps(e){
     this.setState({
       visible:e.visible,
     });
   }
   handleOk=()=>{
+    if(this.state.gameName==""){
+      this.setState({
+        optionData:[{
+            value:null,
+            text:null,
+            id:null
+          }]
+      })
+    }
    var content=this.state.content.replace(/&nbsp;/g,"<span> </span>");
    content=content.replace(/&quot;/g,"");
     if(this.state.title==""){

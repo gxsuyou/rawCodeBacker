@@ -8,9 +8,9 @@ const Option=Select.Option;
 
 
 
-function fake(n,callback){
+function fake(n,os,callback){
   const data=[];
-  fetchs(`${config.url_adminGame}/activeSearch?name=${n}`).then((res)=>{
+  fetchs(`${config.url_adminGame}/activeSearch?name=${n}&sys=${os}`).then((res)=>{
     res.data.result.forEach((item)=>{
       data.push({
         value:item.game_name,
@@ -26,7 +26,8 @@ class AddBox extends React.Component{
   state={
     visible:false,
     gameName:"",
-    data:[]
+    data:[],
+    radioValue:2
   }
   handleCancel = (e) => {
     this.setState({
@@ -48,7 +49,6 @@ class AddBox extends React.Component{
         }
       });
     }
-   // console.log(this.state.data[0].id);
     fetchs(`${config.url_adminNews}/addSlideGame?game_id=${this.state.data[0].id}`).then((res)=>{
       if(res.data.state){
         Message.success("添加成功");
@@ -65,9 +65,7 @@ class AddBox extends React.Component{
     });
   }
 
-
-
-  UNSAFE_componentWillReceiveProps(e){
+  componentWillReceiveProps(e){
     this.setState({
       visible:e.visible
     });
@@ -77,12 +75,11 @@ class AddBox extends React.Component{
     if(value===""){
       return false;
     }
-    //console.log(value);
-    fake(value,(data)=> this.setState({ data }));
+    fake(value,this.state.radioValue,(data)=> this.setState({ data }));
   }
   focusGetData(){
     const c=[];
-    fetchs(`${config.url_adminGame}/activeSearch`).then((res)=>{
+    fetchs(`${config.url_adminGame}/activeSearch?sys=${this.state.radioValue}`).then((res)=>{
       res.data.result.forEach((item)=>{
           c.push({
             value:item.game_name,
@@ -97,7 +94,6 @@ class AddBox extends React.Component{
   }
    render(){
      const options = this.state.data.map(d => <Option key={d.value}>{d.text}</Option>);
-
      return(
        <Modal
           title="添加推荐位"
@@ -108,6 +104,19 @@ class AddBox extends React.Component{
           okText="提交"
           cancelText="取消"
         >
+        <Radio.Group
+        onChange={(e)=>{
+          this.setState({
+            radioValue:e.target.value,
+            gameName:""
+          })
+        }}
+         value={this.state.radioValue}
+         style={{marginBottom:10}}
+        >
+          <Radio value={2}>android</Radio>
+          <Radio value={1}>ios</Radio>
+        </Radio.Group>
           <Select
              mode="combobox"
              value={this.state.gameName}

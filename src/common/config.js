@@ -1,17 +1,20 @@
 if(process.env.NODE_ENV==="development"){
- //var url_1="http://192.168.0.104:8878/";
-     var url_1="http://192.168.0.67:8878/";
+ var url_1="http://192.168.0.207:8878/";
+     // var url_1="http://127.0.0.1:8000/";
       // var url_1="http://127.0.0.1:8878/";
      // var   url_1="http://182.61.26.179:8878/";
-
+    var url_back="/";
+      //url_1="http://182.61.26.179:8000/";
 }else{
-  url_1="http://182.61.26.179:8878/";
+  var url_1="https://admin.oneyouxi.com.cn/";
+  var url_back="https://admin.oneyouxi.com.cn/www/index.html";
 }
 
 
 const config={
   qiniu_img:"http://img.oneyouxi.com.cn/",
   url_1:url_1,
+  url_back:url_back,
   url_adminGame:`${url_1}adminGame`,
   url_login:`${url_1}admin/login`,
   url_getAdminGame:`${url_1}admin/gameAdmin`,

@@ -21,15 +21,13 @@ class MainNavs extends React.Component{
     });
   }
   componentWillMount(){
-    if(this.props.adminIndex.login){
-
-    }else{
-      window.location="/#/";
+    if(!this.props.adminIndex.login){
+      window.location.href=`${config.url_back}`;
       return false;
     }
     const path=config.getCookie("path");
     if(path!==null){
-      window.location.href=`/#/admin/${path}`;
+       window.location.href=`${config.url_back}#/admin/${path}`;
     }
   }
   componentDidMount(){

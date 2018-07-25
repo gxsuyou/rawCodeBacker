@@ -8,7 +8,6 @@ const FormItem = Form.Item;
 message.config({
   maxCount:1,
 })
-
 class IndexPage extends React.Component{
   constructor(){
     super();
@@ -19,7 +18,6 @@ class IndexPage extends React.Component{
   }
 ;
  componentDidMount(){
-
     if(config.getCookie("user")!=null&&config.getCookie("pwd")!=null){
       this.fetch_login(config.getCookie("user"),config.getCookie("pwd"));
     }
@@ -41,12 +39,12 @@ fetch_login(user,pwd){
  }).then((res)=>{
      if(res.data.state){
        //登录成功
-       window.location="/#/admin/game";
        this.props.dispatch({
          type:"adminIndex/loginToggle",
          user:user,
          loginTrue:true
        });
+       window.location.href=`${config.url_back}#/admin/game`;
        config.setCookie("user",user,0.5);
        config.setCookie("pwd",pwd,0.5);
        config.setCookie("uid",res.data.user[0].id);

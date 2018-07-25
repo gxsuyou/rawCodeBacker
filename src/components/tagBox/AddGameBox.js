@@ -1,14 +1,14 @@
 import React from "react";
-import {Modal,Button,Select,Message,Table} from "antd";
+import {Modal,Button,Select,Message,Table,Radio} from "antd";
 import fetchs from "../../utils/request";
 import config from "../../common/config";
 import styles from "./AddGameBox.scss";
 const Option=Select.Option;
 
 
-function fake(n,callback){
+function fake(n,os,callback){
   const data=[];
-  fetchs(`${config.url_adminGame}/activeSearch?name=${n}`).then((res)=>{
+  fetchs(`${config.url_adminGame}/activeSearch?name=${n}&sys=${os}`).then((res)=>{
     res.data.result.forEach((item)=>{
       data.push({
         value:item.game_name,
@@ -66,7 +66,7 @@ class AddGameBox extends React.Component{
        }
      });
    }
-   handleCancel = () => {
+   handleCancel =()=>{
      this.setState({
        visible: false,
        gameName:"",
@@ -80,11 +80,11 @@ class AddGameBox extends React.Component{
      if(value===""){
        return false;
      }
-     fake(value,(data)=> this.setState({ data }));
+     fake(value,this.state.os,(data)=> this.setState({ data }));
    }
    focusGetData(){
      const c=[];
-     fetchs(`${config.url_adminGame}/activeSearch`).then((res)=>{
+     fetchs(`${config.url_adminGame}/activeSearch?sys=${this.state.os}`).then((res)=>{
        res.data.result.forEach((item)=>{
            c.push({
              value:item.game_name,
@@ -171,7 +171,7 @@ class AddGameBox extends React.Component{
           onFocus={this.focusGetData.bind(this)}
       >
         {options}
-      </Select >
+      </Select>
       <Button onClick={this.addGame} style={{marginLeft:20}}>添加游戏</Button>
       <Table
       className={styles.table}
