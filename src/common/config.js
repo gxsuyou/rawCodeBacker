@@ -17,7 +17,7 @@ const config={
   url_back:url_back,
   url_adminGame:`${url_1}adminGame`,
   url_login:`${url_1}admin/login`,
-  url_getAdminGame:`${url_1}admin/gameAdmin`,
+  url_getAdminGame:`${url_1}adminGame/gameAdmin`,
   url_admin:`${url_1}admin`,
   url_adminStrategy:`${url_1}adminStrategy`,
   url_adminNews:`${url_1}adminNews`,

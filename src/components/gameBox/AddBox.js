@@ -138,6 +138,8 @@ class AddBox extends react.Component{
     this.props.handleAddBoxChange(false);
   }
   onOk(){
+    let brief=this.state.brief.replace(/\n/g,"<br>");
+
     if(this.state.gameName===""){
       Message.error("游戏名不能为空");
       return false;
@@ -149,7 +151,7 @@ class AddBox extends react.Component{
     }
    const cls=this.state.defaultOption.join(",");
    const uid=config.getCookie("uid");
-   fetchs(`${config.url_adminGame}/addGameMsg?gameName=${this.state.gameName}&gameVersion=${this.state.gameVersion}&gamePackagename=${this.state.gamePackagename}&gameRecommend=${this.state.gameRecommend}&type=${this.state.type}&cls=${cls}&gameCompany=${this.state.gameCompany}&sys=${this.state.sys}&admin=${uid}&gameDetail=${this.state.brief}&strategy_head=${this.state.strategyTopGame}&gameDownloadIos=${this.state.iosDownHref}`).then((res)=>{
+   fetchs(`${config.url_adminGame}/addGameMsg?gameName=${this.state.gameName}&gameVersion=${this.state.gameVersion}&gamePackagename=${this.state.gamePackagename}&gameRecommend=${this.state.gameRecommend}&type=${this.state.type}&cls=${cls}&gameCompany=${this.state.gameCompany}&sys=${this.state.sys}&admin=${uid}&gameDetail=${brief}&strategy_head=${this.state.strategyTopGame}&gameDownloadIos=${this.state.iosDownHref}`).then((res)=>{
      if(res.data.state===1){
         this.setState({
           visible:false,
@@ -199,7 +201,7 @@ class AddBox extends react.Component{
          value={this.state.gameCompany}
          onChange={(e)=>{this.setState({gameCompany:e.target.value})}}
           />
-         <Input addonBefore="游戏简介" placeholder="游戏公司"
+         <Input addonBefore="游戏简介" placeholder="游戏简介(10到15个字)"
          value={this.state.gameRecommend} onChange={(e)=>{this.setState({gameRecommend:e.target.value})}} />
          <Input.Group compact>
          <Select

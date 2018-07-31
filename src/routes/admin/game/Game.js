@@ -15,6 +15,7 @@ class Game extends React.Component{
       checkAll:true,
       loading:false,
       os:"2",
+      rowType:"null",
       pagination:{},
       currentPagination:1,
       editorMessageVisible:false,
@@ -77,10 +78,10 @@ class Game extends React.Component{
         title:"下载数",
         dataIndex:"gameInstallNum"
       },{
-        title:"首页排序",
+        title:"热门榜",
         dataIndex:"sortIndex"
       },{
-        title:"热玩排序",
+        title:"下载榜",
         dataIndex:"sortHot"
       },{
         title:"攻略顶部的游戏推荐",
@@ -249,7 +250,7 @@ class Game extends React.Component{
   }
   fetch(p){
     this.setState({ loading: true });
-    fetchs(`${config.url_getAdminGame}?p=${p}&sys=${this.state.os}`)
+    fetchs(`${config.url_getAdminGame}?p=${p}&sys=${this.state.os}&sortType=${this.state.rowType}`)
     .then((res)=>{
       var i=1;
       var c=[]
@@ -292,7 +293,6 @@ class Game extends React.Component{
           gameDetail:item.game_detail
         });
       });
-      console.log(this.state.currentPagination)
      const pagination ={...this.state.pagination};
      pagination.total=(res.data.totalPage)*10;
      pagination.current=p;
@@ -308,7 +308,7 @@ class Game extends React.Component{
       this.fetch(1);
       return false;
     }
-    fetchs(`${config.url_admin}/searchGameByMsg?type=game_name&msg=${e}`)
+    fetchs(`${config.url_adminGame}/searchGameByMsg?type=game_name&msg=${e}`)
     .then((res)=>{
         this.setState({
           MainData:[]
@@ -358,7 +358,6 @@ class Game extends React.Component{
           MainData:this.state.MainData,
           pagination
         });
-
     })
   }
   osRenderChange=(e)=>{
@@ -370,11 +369,78 @@ class Game extends React.Component{
       this.fetch(1);
     },300);
   }
+    /* 热门排行
+    @params选择不同参数
+   */
+  gameRow(e,p=1){
+    fetchs(`${config.url_adminGame}/gameAdmin?p=${p}&sys=${this.state.os}&sortType=${e.target.value}`).then((res)=>{
+      var i=1;
+      var c=[]
+      var up,sys;
+      res.data.result.forEach((item)=>{
+        if(item.game_size==null){
+          var size=0;
+        }else{
+          size=item.game_size;
+        }
+        if(item.game_company==null){
+          var company="无";
+        }else{
+           company=item.game_company;
+        }
+        item.activation?up="是":up="否";
+        item.sys==2?sys="Android":sys="ios";
+        c.push({
+          key:i++,
+          game_name:item.game_name,
+          id:item.id,
+          up:up,
+          sys:sys,
+          addTime:item.add_time,
+          gameInstallNum:item.game_download_num,
+          sortIndex:item.sort,
+          sortHot:item.sort2,
+          admin:item.comment,
+          company:company,
+          version:item.game_version,
+          updowm:item.activation,
+          strategyGame:item.strategy_head,
+          size:size,
+          game_company:item.game_company,
+          game_version:item.game_version,
+          gameRecommend:item.game_recommend,
+          gameDownLoaderHref:item.game_download_ios,
+          gameDetail:item.game_detail
+        });
+      });
+     const pagination ={...this.state.pagination};
+     pagination.total=(res.data.totalPage)*10;
+     pagination.current=p;
+      this.setState({
+        loading:false,
+        MainData:c,
+        pagination,
+        rowType:e.target.value
+      })
+    })
+  }
   render(){
     return(
      <div className={styles.table}>
-    { /* 顶部操作start */}
+      { /* 顶部操作start */}
      <div className={styles.tableOperations}>
+       <Radio.Group
+          buttonStyle="solid"
+          defaultValue="null"
+          value={this.state.rowType}
+          onChange={this.gameRow.bind(this)}
+          style={{marginRight:20}}
+       >
+         <Radio.Button value="sort">热门榜</Radio.Button>
+         <Radio.Button value="sort2">下载榜</Radio.Button>
+         <Radio.Button value="sort3" disabled>one榜</Radio.Button>
+         <Radio.Button value="null" >查看全部</Radio.Button>
+       </Radio.Group>
        <Search
         addonBefore="游戏名"
         style={{width:350,marginRight:20}}
@@ -422,11 +488,11 @@ class Game extends React.Component{
            placeholder="输入游戏版本号"/>
          <Input addonBefore="游戏下载数" onChange={this.EditorMessageOnChange.bind(this,"DownloadNum")}
          value={this.state.editorMessageDownloadNum}
-         placeholder="请输入游戏下载数"/>
-         <Input addonBefore="首页优先级" onChange={this.EditorMessageOnChange.bind(this,"IndexPriority")}
+         placeholder="请输入热门榜优先级"/>
+         <Input addonBefore="热门榜优先级" onChange={this.EditorMessageOnChange.bind(this,"IndexPriority")}
         value={this.state.editorMessageIndexPriority}
-          placeholder="请输入首页优先级" />
-         <Input addonBefore="热玩优先级" onChange={this.EditorMessageOnChange.bind(this,"HotPriority")}
+          placeholder="请输入下载版优先级" />
+         <Input addonBefore="下载版优先级" onChange={this.EditorMessageOnChange.bind(this,"HotPriority")}
          value={this.state.editorMessageHotPriority}
          placeholder="请输入热玩优先级" />
          <Input addonBefore="游戏大小" onChange={this.EditorMessageOnChange.bind(this,"GameSize")}
