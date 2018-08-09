@@ -135,6 +135,9 @@ class UploadBox extends React.Component{
        });
     });
   }
+
+
+  /* 上传包 */
   uploadPackage(id,suffix,key){
     return new Promise((resolve,reject)=>{
       fetchs(`${config.url_admin}/getUptokenByMsg?scope=oneyouxi${suffix}&key=${key}`).then((res)=>{

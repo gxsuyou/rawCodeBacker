@@ -24,7 +24,9 @@ class Strategy extends React.Component{
       dataIndex:"action",
       render:(text,record)=>(
         <span className={styles.button}>
-          <Button onClick={this.essenceHand.bind(this,record.id,record.essence)}>{record.essenceName}</Button>
+         {
+          // <Button onClick={this.essenceHand.bind(this,record.id,record.essence)}>{record.essenceName}</Button>
+          }
           <Button onClick={()=>{
             this.setState({
               editorBoxVisible:true,

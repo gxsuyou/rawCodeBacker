@@ -5,8 +5,6 @@ import config from "../../common/config";
 import styles from "./AddBox.scss";
 import z from "../../utils/_qiniu";
 const Option=Select.Option;
-
-
 function fake(n,os,callback){
   const data=[];
   fetchs(`${config.url_adminGame}/activeSearch?name=${n}&sys=${os}`).then((res)=>{
@@ -46,11 +44,12 @@ class AddBox extends React.Component{
     this.props.propHandBox(false);
   }
   handleOk = () => {
+    console.log(this.state.radioValue);
     if(this.state.gameName==""){
       Message.error("游戏名不能为空");
       return false;
     }else{
-      fetchs(`${config.url_adminGame}/hasGame?name=${this.state.gameName}`).then((res)=>{
+      fetchs(`${config.url_adminGame}/hasGame?name=${this.state.gameName}&sys=${this.state.os}`).then((res)=>{
         if(res.data.state==0){
           Message.error("游戏名不存在");
           return false;

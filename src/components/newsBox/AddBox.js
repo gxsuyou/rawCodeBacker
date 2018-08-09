@@ -53,8 +53,20 @@ class AddBox extends React.Component{
           }]
       })
     }
+    console.log(this.state.gameName==this.state.optionData[0].value)
+    if(this.state.gameName!=this.state.optionData[0].value){
+          Message.error('选择错误请重新选择游戏');
+          return false;
+    }
+    console.log(this.state.optionData,this.state.gameName);
    var content=this.state.content.replace(/&nbsp;/g,"<span> </span>");
    content=content.replace(/&quot;/g,"");
+   console.log(content)
+   return;
+
+
+
+
     if(this.state.title==""){
       Message.error("标题不能为空");
       return false;
@@ -199,13 +211,16 @@ class AddBox extends React.Component{
 
   }
   info(){
+    // alert(1132312);
     Modal.info({
       title:"预览",
       content: (
         <div dangerouslySetInnerHTML={{__html:this.state.content}}>
         </div>
       ),
-      onOk() {},
+      onOk(){
+
+      },
       width:680,
       okText:"确认",
       className:styles.see
@@ -268,7 +283,7 @@ class AddBox extends React.Component{
         >
          <Button>
            <Icon type="upload"/> 上传文章头图
-           (单张,295(高)*768(宽))
+           (单张,364(高)*768(宽))
          </Button>
         </Upload>
         <Button  onClick={this.info.bind(this)}>预览</Button>

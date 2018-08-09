@@ -149,6 +149,10 @@ class Game extends React.Component{
     if(String(gameRecommend)=="null"){
       gameRecommend="";
     }
+    if(gameDetail==null){
+      gameDetail="";
+    }
+    var gameDetail=gameDetail.replace(/<br>/g,'\n');
      this.setState({
        editorMessageId:id,
        editorMessageVisible:true,
@@ -169,7 +173,6 @@ class Game extends React.Component{
      });
   }
   handleOk(){
-
   const loadNum=this.state.editorMessageDownloadNum,
   up=this.state.editorMessageUp,
   IndexPriority=this.state.editorMessageIndexPriority,
@@ -178,7 +181,8 @@ class Game extends React.Component{
   GameName=this.state.editorMessageGameName,
   MessageVision=this.state.editorMessageVision,
   brief=this.state.editorMessageBrief,
-  gameDetail=this.state.editorMessageGameDetail;
+  gameDetail=this.state.editorMessageGameDetail.replace(/\n/g,"<br>");
+
  if(
      MessageVision===""||
      GameName===""||

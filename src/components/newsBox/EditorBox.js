@@ -181,10 +181,14 @@ class EditorBox extends React.Component{
      editor.create();
      setTimeout(()=>{
        editor.txt.html(this.state.initContent);
+       this.setState({
+         content:this.state.initContent
+       })
      },800);
 
    }
    info(){
+     console.log(this.state.content);
      Modal.info({
        title:"预览",
        content: (

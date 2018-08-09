@@ -85,7 +85,11 @@ class EditorBox extends React.Component{
     Message.error("首页轮播推荐位只放置一张图");
     return false;
    }
-   const key =`activity/activityType${this.state.type}/gameId${this.state.gameId}`;
+
+   const random=Math.round(Math.random()*100);
+   // console.log(random)
+   // return false;
+   const key =`activity/activityType${this.state.type}/gameId${this.state.gameId}_${random}`;
 
   fetchs(`${config.url_admin}/getUptokenByMsg?scope=oneyouxiimg&key=${key}`).then((res)=>{
     qiniu.upload({
@@ -113,7 +117,6 @@ class EditorBox extends React.Component{
             this.props.propsFetchs(this.state.current);
           }
         });
-
       }
     });
 

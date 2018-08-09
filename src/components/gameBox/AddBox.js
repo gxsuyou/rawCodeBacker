@@ -140,6 +140,7 @@ class AddBox extends react.Component{
   onOk(){
     let brief=this.state.brief.replace(/\n/g,"<br>");
 
+    console.log(brief);
     if(this.state.gameName===""){
       Message.error("游戏名不能为空");
       return false;
