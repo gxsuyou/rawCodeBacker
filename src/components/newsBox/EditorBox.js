@@ -189,10 +189,13 @@ class EditorBox extends React.Component{
    }
    info(){
      console.log(this.state.content);
+     let content =this.state.content.replace(/<span> <\/span>/g,"&nbsp;")
+
+     console.log(content);
      Modal.info({
        title:"预览",
        content: (
-         <div dangerouslySetInnerHTML={{__html:this.state.content}}>
+         <div dangerouslySetInnerHTML={{__html:content}}>
          </div>
        ),
        onOk() {},
