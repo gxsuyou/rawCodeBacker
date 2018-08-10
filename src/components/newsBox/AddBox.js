@@ -53,19 +53,16 @@ class AddBox extends React.Component{
           }]
       })
     }
-    console.log(this.state.gameName==this.state.optionData[0].value)
-    if(this.state.gameName!=this.state.optionData[0].value){
-          Message.error('选择错误请重新选择游戏');
-          return false;
-    }
     console.log(this.state.optionData,this.state.gameName);
+    if(this.state.gameName!=this.state.optionData[0].value){
+       if(this.state.gameName!=""){
+         Message.error('选择错误请重新选择游戏');
+         return false;
+       }
+    }
+
    var content=this.state.content.replace(/&nbsp;/g,"<span> </span>");
    content=content.replace(/&quot;/g,"");
-   console.log(content)
-   return;
-
-
-
 
     if(this.state.title==""){
       Message.error("标题不能为空");

@@ -146,17 +146,20 @@ class EditorBox extends React.Component{
   }
    initData(id){
     fetchs(`${config.url_adminNews}/getNewsByMsg?id=${id}`).then((res)=>{
+
+      var content=res.data[0].detail.replace(/<span> <\/span>/g,"&nbsp;");
+
       this.setState({
         title:res.data[0].title,
         browse:res.data[0].browse,
         agress:res.data[0].agree,
         comment:res.data[0].comment,
         date:res.data[0].add_time,
-        initContent:res.data[0].detail
+        initContent:content
       });
       if(this.state.editor!==null){
         this.state.editor.txt.clear();
-        this.state.editor.txt.html(res.data[0].detail);
+        this.state.editor.txt.html(content);
       }
     });
 
@@ -188,10 +191,7 @@ class EditorBox extends React.Component{
 
    }
    info(){
-     console.log(this.state.content);
      let content =this.state.content.replace(/<span> <\/span>/g,"&nbsp;")
-
-     console.log(content);
      Modal.info({
        title:"预览",
        content: (
