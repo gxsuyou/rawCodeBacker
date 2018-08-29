@@ -2,14 +2,13 @@ import React from "react";
 import {Table,Button,Modal,Input,message,Radio} from 'antd';
 import styles from "./Game.scss";
 import config from "../../../common/config.js";
-import fetchs from "../../../utils/request.js";
-/*弹窗组件*/
+import fetchs from "../../../utils/request.js";/*弹窗组件*/
 import TagBox from "../../../components/gameBox/TagBox";
 import AddBox from "../../../components/gameBox/AddBox";
-import UploadBox from "../../../components/gameBox/UploadBox";
-/*弹窗组件结束*/
+import UploadBox from "../../../components/gameBox/UploadBox";/*弹窗组件结束*/
 const {TextArea}=Input;
 const Search =Input.Search;
+const confirm = Modal.confirm;
 class Game extends React.Component{
   state={
       checkAll:true,
@@ -34,6 +33,7 @@ class Game extends React.Component{
       editorMessageIosDownHref:"",
       editorMessagelotBrief:"",
       editorMessageGameDetail:"",
+      editorMessagePackagename:"",
       //tagBox
       tagBoxVision:false,
       //addBox
@@ -49,6 +49,9 @@ class Game extends React.Component{
       },{
         title: '游戏ID',
         dataIndex:"id"
+      },{
+        title:'包名',
+        dataIndex:'packagename'
       },{
         title: '上架状态',
         dataIndex:"up",
@@ -90,20 +93,44 @@ class Game extends React.Component{
         title:"管理员",
         dataIndex:"admin"
       },{
+        title:"是否上传安装包",
+        dataIndex:"package"
+      },{
         title:"操作",
         dataIndex:"action",
         render:(text,record)=>(
           <span className={styles.button}>
            <Button  onClick={this.showModalEditorMessage.bind(this,record.id,record.game_name,record.company,record.version,record.updowm,record.size,record.sortIndex,record.sortHot,record.gameInstallNum,record.strategyGame,record.gameRecommend,record.gameDownLoaderHref,
-           record.sys,record.gameDetail)}>编辑信息</Button>
+           record.sys,record.gameDetail,record.packagename)}>编辑信息</Button>
            <Button  onClick={this.UploadVision.bind(this,record.id)}>上传数据</Button>
            <Button onClick={this.tagBoxVision.bind(this,record.id)}>标签</Button>
-           <Button onClick={this.deleteData.bind(this,record.key,record.id)} type="danger">删除</Button>
+           <Button onClick={this.showDeleteConfirm.bind(this,record.key,record.id)} type="danger">删除</Button>
           </span>
         )
       }],
       MainData:[]
   }
+
+  /* 跳出弹框 */
+  showDeleteConfirm(key,id){
+    confirm({
+      title:'游戏',
+      content:'您确认删除这条游戏吗？',
+      okText:'删除',
+      okType:'danger',
+      cancelText:'取消',
+      onOk:()=>{
+        this.deleteData(key,id);
+      },
+      onCancel(){
+        console.log('Cancel');
+      },
+    });
+  }
+
+
+
+
   UploadVision(id){
     this.setState({
       uploadBoxVision:true,
@@ -139,8 +166,8 @@ class Game extends React.Component{
   }
 
   /* 打开编辑弹框初始化数据 */
-  showModalEditorMessage(id,gameName,company,version,activation,size,sort,sort2,gameInstallNum,strategyGame,gameRecommend,gameDownLoaderHref,sys,gameDetail){
-
+  showModalEditorMessage(id,gameName,company,version,activation,size,sort,sort2,gameInstallNum,strategyGame,gameRecommend,gameDownLoaderHref,sys,gameDetail,packagename){
+    console.log(packagename)
     if(sys=="ios"){
       sys=1;
     }else{
@@ -151,6 +178,9 @@ class Game extends React.Component{
     }
     if(gameDetail==null){
       gameDetail="";
+    }
+    if(packagename==null){
+      packagename="";
     }
     var gameDetail=gameDetail.replace(/<br>/g,'\n');
      this.setState({
@@ -169,7 +199,8 @@ class Game extends React.Component{
        editorMessageIosDownHref:gameDownLoaderHref,
        editorMessageSys:sys,
        editorMessageGameDetail:gameDetail,
-       tagBoxVision:false
+       tagBoxVision:false,
+       editorMessagePackagename:packagename
      });
   }
   handleOk(){
@@ -181,7 +212,8 @@ class Game extends React.Component{
   GameName=this.state.editorMessageGameName,
   MessageVision=this.state.editorMessageVision,
   brief=this.state.editorMessageBrief,
-  gameDetail=this.state.editorMessageGameDetail.replace(/\n/g,"<br>");
+  gameDetail=this.state.editorMessageGameDetail.replace(/\n/g,"<br>"),
+  packagename=this.state.editorMessagePackagename;
 
  if(
      MessageVision===""||
@@ -201,19 +233,17 @@ class Game extends React.Component{
   Object.is(Number(loadNum),NaN)!=false||
   Object.is(Number(up),NaN)!=false||
   Object.is(Number(IndexPriority),NaN)!=false||
-  Object.is(Number(HotPriority),NaN)!=false||
-  Object.is(Number(GameSize),NaN)!=false
+  Object.is(Number(HotPriority),NaN)!=false
     ){
       message.error("必须输入数字!");
       return false;
     }
-
     fetchs(`${config.url_adminGame}/SetGameMsg`,{
     method:"POST",
     headers: {
       'Content-Type':'application/x-www-form-urlencoded' // 指定提交方式为表单提交
     },
-    body:`name=${this.state.editorMessageGameName}&activation=${this.state.editorMessageUp}&company=${this.state.editorMessageCompanyName}&version=${this.state.editorMessageVision}&download_num=${this.state.editorMessageDownloadNum}&sort=${this.state.editorMessageIndexPriority}&sort2=${this.state.editorMessageHotPriority}&size=${this.state.editorMessageGameSize}&id=${this.state.editorMessageId}&strategy_head=${this.state.editorMessageGameStrategy}&game_recommend=${brief}&gameDownloadIos=${this.state.editorMessageIosDownHref}&game_detail=${gameDetail}`}).then((res)=>{
+    body:`name=${this.state.editorMessageGameName}&activation=${this.state.editorMessageUp}&company=${this.state.editorMessageCompanyName}&version=${this.state.editorMessageVision}&download_num=${this.state.editorMessageDownloadNum}&sort=${this.state.editorMessageIndexPriority}&sort2=${this.state.editorMessageHotPriority}&size=${this.state.editorMessageGameSize}&id=${this.state.editorMessageId}&strategy_head=${this.state.editorMessageGameStrategy}&game_recommend=${brief}&gameDownloadIos=${this.state.editorMessageIosDownHref}&game_detail=${gameDetail}&gamePackagename=${packagename}`}).then((res)=>{
       if(res.data.state){
          this.setState({
            editorMessageVisible:false,
@@ -259,9 +289,8 @@ class Game extends React.Component{
       var i=1;
       var c=[]
       var up,sys;
-
+      var packageornot;
       res.data.result.forEach((item)=>{
-
         if(item.game_size==null){
           var size=0;
         }else{
@@ -272,6 +301,13 @@ class Game extends React.Component{
         }else{
            company=item.game_company;
         }
+        if(item.sys==2){
+          //是否安卓安装包
+          item.game_download_andriod==null?packageornot="否":packageornot="是";
+        }else{
+          item.game_download_ios2==null?packageornot="否":packageornot="是";
+        }
+
         item.activation?up="是":up="否";
         item.sys==2?sys="Android":sys="ios";
         c.push({
@@ -294,7 +330,9 @@ class Game extends React.Component{
           game_version:item.game_version,
           gameRecommend:item.game_recommend,
           gameDownLoaderHref:item.game_download_ios,
-          gameDetail:item.game_detail
+          gameDetail:item.game_detail,
+          packagename:item.game_packagename,
+          package:packageornot
         });
       });
      const pagination ={...this.state.pagination};
@@ -318,7 +356,7 @@ class Game extends React.Component{
           MainData:[]
         });
         var i=1;
-        var up,sys;
+        var up,sys,packageornot;
         res.data.forEach((item)=>{
           item.activation?up="是":up="否";
           item.sys==2?sys="Android":sys="ios";
@@ -332,6 +370,15 @@ class Game extends React.Component{
           }else{
              company=item.game_company;
           }
+
+          if(item.sys==2){
+            //是否安卓安装包
+            item.game_download_andriod==null?packageornot="否":packageornot="是";
+          }else{
+            item.game_download_ios2==null?packageornot="否":packageornot="是";
+          }
+
+
            this.state.MainData.push({
              key:i++,
              game_name:item.game_name,
@@ -352,7 +399,9 @@ class Game extends React.Component{
              game_version:item.game_version,
              gameRecommend:item.game_recommend,
              gameDownLoaderHref:item.game_download_ios,
-             gameDetail:item.game_detail
+             gameDetail:item.game_detail,
+             packagename:item.game_packagename,
+             package:packageornot
            })
         });
         const pagination ={...this.state.pagination};
@@ -380,7 +429,7 @@ class Game extends React.Component{
     fetchs(`${config.url_adminGame}/gameAdmin?p=${p}&sys=${this.state.os}&sortType=${e.target.value}`).then((res)=>{
       var i=1;
       var c=[]
-      var up,sys;
+      var up,sys,packageornot;
       res.data.result.forEach((item)=>{
         if(item.game_size==null){
           var size=0;
@@ -391,6 +440,12 @@ class Game extends React.Component{
           var company="无";
         }else{
            company=item.game_company;
+        }
+        if(item.sys==2){
+          //是否安卓安装包
+          item.game_download_andriod==null?packageornot="否":packageornot="是";
+        }else{
+          item.game_download_ios2==null?packageornot="否":packageornot="是";
         }
         item.activation?up="是":up="否";
         item.sys==2?sys="Android":sys="ios";
@@ -414,7 +469,9 @@ class Game extends React.Component{
           game_version:item.game_version,
           gameRecommend:item.game_recommend,
           gameDownLoaderHref:item.game_download_ios,
-          gameDetail:item.game_detail
+          gameDetail:item.game_detail,
+          packagename:item.game_packagename,
+          package:packageornot
         });
       });
      const pagination ={...this.state.pagination};
@@ -428,11 +485,51 @@ class Game extends React.Component{
       })
     })
   }
+
+   format = function (s, c) {
+     return s.replace(/{(\w+)}/g,
+         function (m, p) {
+             return c[p];
+         });
+ }
+  base64 = function (s) {
+      return window.btoa(unescape(encodeURIComponent(s)));
+  }
+
+  /* 导出excel */
+  outputExcel=()=>{
+    var uri = 'data:application/vnd.ms-excel;base64,';
+    var template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel"' +
+           'xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>'
+           + '<x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets>'
+           + '</x:ExcelWorkbook></xml><![endif]-->' +
+           ' <style type="text/css">' +
+           'table td {' +
+           'border: 1px solid #000000;' +
+           'width: 500px;' +
+           'height: 30px;' +
+           ' text-align: center;' +
+           'background-color: #4f891e;' +
+           'color: #ffffff;' +
+           ' }' +
+           '</style>' +
+           '</head><body><table class="excelTable">{table}</body></html>';
+        var td="";
+        fetchs(`${config.url_adminGame}/allGame?sys=${this.state.os}`).then((res)=>{
+          res.data.forEach((item)=>{
+            td+=`<tr><td style='width:500px'>${item.game_name}</td></tr>`
+          });
+          var ta=`<table cellspacing='0' cellpadding='0' border='1' id='tableToExcel'><tbody>${td}</tbody></table>`
+           var ctx = {table:ta};
+           window.location.href =uri+this.base64(this.format(template,ctx))
+        })
+  }
   render(){
     return(
      <div className={styles.table}>
       { /* 顶部操作start */}
      <div className={styles.tableOperations}>
+       <Button onClick={this.outputExcel} type="primary">导出游戏excel</Button>
        <Radio.Group
           buttonStyle="solid"
           defaultValue="null"
@@ -461,6 +558,7 @@ class Game extends React.Component{
          <Radio.Button value="1">Ios</Radio.Button>
       </Radio.Group>
       <Button onClick={this.addGameModel.bind(this)} type="primary">添加</Button>
+
      </div>
     { /* 顶部操作end */}
      <Table
@@ -502,6 +600,11 @@ class Game extends React.Component{
          <Input addonBefore="游戏大小" onChange={this.EditorMessageOnChange.bind(this,"GameSize")}
          value={this.state.editorMessageGameSize}
          placeholder="输入游戏大小" />
+
+         <Input addonBefore="包名" onChange={this.EditorMessageOnChange.bind(this,"Packagename")}
+         value={this.state.editorMessagePackagename}
+         placeholder="输入包名" />
+
 
          <Input addonBefore="游戏10字简介" onChange={this.EditorMessageOnChange.bind(this,"Brief")}
          value={this.state.editorMessageBrief}

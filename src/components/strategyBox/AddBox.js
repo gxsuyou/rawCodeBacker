@@ -60,9 +60,8 @@ class AddBox extends React.Component{
      return false;
    }
    if(this.state.toggleInput==false){
-     Message.error("正在加载中");
+     Message.error("正在上传，稍等");
      return false;
-
    }
    this.setState({
      toggleInput:false

@@ -11,6 +11,8 @@ class Advice extends React.Component{
     loading:false,
     adviceVisibleBox:false,
     adviceIdBox:null,
+    selectedRowKeys:[],
+    batchDelete:[],
     columns:[
       {
         title:'序列',
@@ -50,7 +52,9 @@ class Advice extends React.Component{
              查看详情
             </Button>
             <Button type='danger'
-            onClick={this.delete.bind(this,recored.id)}
+            onClick={()=>{
+              this.delete(recored.id);
+            }}
             >
              删除
             </Button>
@@ -68,11 +72,12 @@ class Advice extends React.Component{
   删除按钮
    @params(id)文章的id
   */
-  delete=function(v){
+  delete=function(v,p=this.state.pagination.current){
     fetchs(`${config.url_admin}/delFeedBack?id=${v}`).then((res)=>{
       if(res.data.state){
         Message.success("删除成功");
-        this.fetch(this.state.pagination.current);
+        console.log(this.state.data.length);
+        this.fetch(p);
       }else{
         Message.success("删除失败")
       }
@@ -83,6 +88,9 @@ class Advice extends React.Component{
    @params(e) 当前文章页数
   */
   handleTableChange(e){
+    this.setState({
+      selectedRowKeys:[]
+    })
     this.fetch(e.current);
   }
   propHandBox=function(v){
@@ -112,19 +120,63 @@ class Advice extends React.Component{
        this.setState({
          data:c,
          loading:false,
-         pagination
+         pagination,
+         selectedRowKeys:[]
        });
      });
   }
+
+
+ batchDetete=()=>{
+   if(this.state.batchDelete.length==this.state.data.length){
+     var fullCutPage=1;
+     if(this.state.pagination.current!=1){
+        fullCutPage=this.state.pagination.current-1;
+     }
+       this.state.batchDelete.forEach((item)=>{
+         this.delete(item.id,fullCutPage)
+       })
+
+
+   }else{
+
+     if(this.state.batchDelete.length>0){
+       this.state.batchDelete.forEach((item)=>{
+         this.delete(item.id)
+       })
+     }
+
+   }
+   // console.log(this.state.pagination)
+   // return ;
+
+ }
+
   render(){
+    const {  selectedRowKeys } = this.state;
+    const rowSelection = {
+      onChange: (selectedRowKeys,selectedRows) => {
+        this.setState({
+          selectedRowKeys,
+          batchDelete:selectedRows
+        });
+      },
+      selectedRowKeys
+    };
+
+
     return (
       <div className={styles.table}>
+        <div className={styles.tableOperations}>
+          <Button onClick={this.batchDetete} type="danger">批量删除</Button>
+        </div>
         <Table
          columns={this.state.columns}
          pagination={this.state.pagination}
          loading={this.state.loading}
          dataSource={this.state.data}
          onChange={this.handleTableChange.bind(this)}
+         rowSelection={rowSelection}
         >
         </Table>
         <ShowBox

@@ -20,12 +20,15 @@ class Strategy extends React.Component{
       title: '上传用户',
       dataIndex:'user'
     },{
+      title:'精华',
+      dataIndex:'essence'
+    },{
       title:"操作",
       dataIndex:"action",
       render:(text,record)=>(
         <span className={styles.button}>
          {
-          // <Button onClick={this.essenceHand.bind(this,record.id,record.essence)}>{record.essenceName}</Button>
+          <Button onClick={this.essenceHand.bind(this,record.id,record.essence)}>{record.essenceName}</Button>
           }
           <Button onClick={()=>{
             this.setState({
@@ -85,18 +88,23 @@ class Strategy extends React.Component{
       loading:true
     })
     fetchs(`${config.url_adminStrategy}/getStrategyByMsgPage?msg=&p=${p}`).then((res)=>{
-      var i=1,essence,admin_comment;
+      var i=1,essence,admin_comment,essence_ronot;
       var c=[];
       res.data.result.forEach((item)=>{
         item.essence?essence="精华":essence="取消";
         item.admin?admin_comment=`后台上传 : ${item.admin_comment}`:admin_comment=`App客户端上传`;
+
+        item.essence?essence_ronot="是":essence_ronot="否";
+
+
+
         c.push({
           key:i++,
           user:admin_comment,
           game:item.game_name,
           title:item.title,
           essenceName:essence,
-          essence:item.essence,
+          essence:essence_ronot,
           id:item.id
         });
         const pagination ={...this.state.pagination};

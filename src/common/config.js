@@ -1,11 +1,12 @@
 if(process.env.NODE_ENV==="development"){
- var url_1="http://192.168.0.207:8878/";
+ // var url_1="http://192.168.0.207:8878/";
      // var url_1="http://127.0.0.1:8000/";
       // var url_1="http://127.0.0.1:8878/";
-     // var   url_1="http://192.61.0.207:8878/";
+     var url_1="http://192.168.0.207:8878/";
     var url_back="/";
       //url_1="http://182.61.26.179:8000/";
-    var url_1="https://admin.oneyouxi.com.cn/";
+    // var url_1="https://admin.oneyouxi.com.cn/";
+    // var url_1="http://127.0.0.1:8878/"
 }else{
   var url_1="https://admin.oneyouxi.com.cn/";
   var url_back="https://admin.oneyouxi.com.cn/www/index.html";

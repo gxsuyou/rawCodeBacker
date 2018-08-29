@@ -7,7 +7,6 @@ import styles from "./AddBox.scss";
 const Option =Select.Option;
 const TabPane = Tabs.TabPane;
 const {TextArea}=Input;
-
 const RadioGroup = Radio.Group;
 class AddBox extends react.Component{
   state={

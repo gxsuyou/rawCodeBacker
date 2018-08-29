@@ -245,7 +245,7 @@ class UploadBox extends React.Component{
       }
     this.setState({uploading:true});
     var random=Math.round(Math.random()*1000);
-    var key=`game/gameId${this.state.id}.${suffix}/${random}`;
+    var key=`game/gameId${this.state.id}_${random}.${suffix}`;
       this.deletePackBag(key).then(()=>{
         this.uploadPackage(this.state.id,suffix,key).then(()=>{
           this.setState({
