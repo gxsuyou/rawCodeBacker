@@ -21,7 +21,7 @@ class Strategy extends React.Component{
       dataIndex:'user'
     },{
       title:'精华',
-      dataIndex:'essence'
+      dataIndex:'essence_ronot'
     },{
       title:"操作",
       dataIndex:"action",
@@ -104,7 +104,8 @@ class Strategy extends React.Component{
           game:item.game_name,
           title:item.title,
           essenceName:essence,
-          essence:essence_ronot,
+          essence:item.essence,
+          essence_ronot:essence_ronot,
           id:item.id
         });
         const pagination ={...this.state.pagination};

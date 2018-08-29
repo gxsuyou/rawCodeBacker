@@ -44,6 +44,8 @@ class AddBox extends React.Component{
     });
   }
   handleOk=()=>{
+    // console.log(this.state.content)
+    // return false;
     if(this.state.gameName==""){
       this.setState({
         optionData:[{
@@ -62,8 +64,10 @@ class AddBox extends React.Component{
     }
 
    var content=this.state.content.replace(/&nbsp;/g,"<span> </span>");
-   content=content.replace(/&quot;/g,"");
 
+   content=content.replace(/&gt;/g,">")
+   content=content.replace(/&lt;/g,"<");
+   content=content.replace(/&quot;/g,"");
     if(this.state.title==""){
       Message.error("标题不能为空");
       return false;

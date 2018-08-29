@@ -39,7 +39,9 @@ class EditorBox extends React.Component{
 
   editor(){
     var content=this.state.content.replace(/&nbsp;/g,"<span> </span>");
-    content=content.replace(/&quot;/g,"");
+    content=content.replace(/&quot;/g,"")
+    content=content.replace(/&gt;/g,">")
+    content=content.replace(/&lt;/g,"<")
     fetchs(`${config.url_adminStrategy}/setStrategy`,{
       method:"POST",
       headers: {
@@ -75,7 +77,6 @@ class EditorBox extends React.Component{
    initData(id){
     fetchs(`${config.url_adminStrategy}/setStrategy?id=${id}`).then((res)=>{
       if(res.data.state){
-        console.log()
         let detail=""
         if(res.data.result.detail==null){
             detail="";

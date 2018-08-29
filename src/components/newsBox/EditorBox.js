@@ -79,6 +79,8 @@ class EditorBox extends React.Component{
 
   editor(){
     var content=this.state.content.replace(/&nbsp;/g,"<span> </span>");
+    content=content.replace(/&gt;/g,">")
+    content=content.replace(/&lt;/g,"<");
     content=content.replace(/&quot;/g,"");
     fetchs(`${config.url_adminNews}/setNewsById`,{
       method:"POST",
@@ -96,6 +98,7 @@ class EditorBox extends React.Component{
   }
 
   indexUpload(fileList){
+
    if(fileList.length!=1){
     Message.error("首页轮播推荐位只放置一张图");
     return false;

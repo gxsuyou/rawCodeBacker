@@ -42,7 +42,9 @@ class AddBox extends React.Component{
   }
   handleOk=()=>{
     var content=this.state.content.replace(/&nbsp;/g,"<span> </span>");
-    content=content.replace(/&quot;/g,"");
+    content=content.replace(/&quot;/g,"")
+    content=content.replace(/&gt;/g,">")
+    content=content.replace(/&lt;/g,"<")
     if(this.state.gameName==""){
       Message.error("游戏名不能为空");
       return false;
