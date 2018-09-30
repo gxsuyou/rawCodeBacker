@@ -1,3 +1,4 @@
+
 import React from "react";
 import {Modal,Message,Icon,Upload,Input,Button,Tabs} from "antd";
 import qiniu from "../../utils/_qiniu";
@@ -5,6 +6,7 @@ import config from "../../common/config";
 import fetchs from "../../utils/request";
 import E from 'wangeditor';
 import styles from "./AddBox.scss";
+// var qiniu = require("qiniu-js");
 const TabPane = Tabs.TabPane;
 
 
@@ -26,10 +28,20 @@ class EditorBox extends React.Component{
     current:1,
     toggleEditor:false,
     editor:null,
+    img:null,
     content:"",
-    initContent:""
+    initContent:"",
+    fileList_headImg:[]
   }
+
+  deleteImg(){
+    fetchs(`${config.url_adminNews}/setNewsImg?id=${this.state.id}`).then((res)=>{
+
+    })
+  }
+
   handleOk=()=>{
+
     if(this.state.title===""){
       Message.error("标题不能为空");
       return false;
@@ -74,10 +86,28 @@ class EditorBox extends React.Component{
       Message.error("发表内容不能为空");
       return false;
     }
-    this.editor();
+   if(this.state.fileList_headImg[0]==undefined){
+       this.editor(this.state.img);
+   }else{
+      this.deleteImg()
+      var key =`News/newsName=${new Date().getTime()}`;
+      fetchs(`${config.url_admin}/getUptokenByMsg?scope=oneyouxiimg&key=${key}`).then((res)=>{
+          if(res.data.state){
+              qiniu.upload({
+                file:this.state.fileList_headImg[0],
+                key:key,
+                token:res.data.upToken,
+                success:(res_1)=>{
+                  this.editor(res_1.key);
+                }
+              })
+          }
+      })
+   }
+
   }
 
-  editor(){
+  editor(res_1){
     var content=this.state.content.replace(/&nbsp;/g,"<span> </span>");
     content=content.replace(/&gt;/g,">")
     content=content.replace(/&lt;/g,"<");
@@ -87,7 +117,7 @@ class EditorBox extends React.Component{
       headers: {
       'Content-Type':'application/x-www-form-urlencoded'
       },
-      body:`id=${this.state.id}&title=${this.state.title}&browse=${this.state.browse}&agree=${this.state.agress}&comment=${this.state.comment}&detail=${content}`
+      body:`id=${this.state.id}&title=${this.state.title}&browse=${this.state.browse}&agree=${this.state.agress}&comment=${this.state.comment}&detail=${content}&img=${res_1}`
     }).then((res_2)=>{
       if(res_2.data.state){
         Message.success("上传成功");
@@ -133,6 +163,7 @@ class EditorBox extends React.Component{
   handleCancel=()=>{
     this.setState({
       visible:false,
+      fileList_headImg:[]
     });
     this.props.handBox(false);
   }
@@ -158,8 +189,12 @@ class EditorBox extends React.Component{
         agress:res.data[0].agree,
         comment:res.data[0].comment,
         date:res.data[0].add_time,
-        initContent:content
+        initContent:content,
+        content:content,
+        img:res.data[0].img
       });
+
+      console.log(res.data[0].img)
       if(this.state.editor!==null){
         this.state.editor.txt.clear();
         this.state.editor.txt.html(content);
@@ -209,6 +244,27 @@ class EditorBox extends React.Component{
    }
 
   render(){
+    const props={
+      onRemove: (file) => {
+        //删除时候触发
+        this.setState(({ fileList_headImg }) => {
+          const index = fileList_headImg.indexOf(file);
+          const newFileList = fileList_headImg.slice();
+          newFileList.splice(index, 1);
+          return {
+            fileList_headImg: newFileList,
+          }
+        })
+      },
+      beforeUpload: (file) => {
+        this.setState(({ fileList_headImg }) => ({
+          fileList_headImg: [...fileList_headImg, file],
+        }));
+        return false;
+      },
+      fileList:this.state.fileList_headImg,
+      listType:'text',
+    }
     return(
       <Modal
        title="编辑文章"
@@ -250,6 +306,22 @@ class EditorBox extends React.Component{
              onChange={(e)=>{this.setState({comment:e.target.value})}}
              style={{width:400,display:"block",marginTop:15,marginButtom:10}}
              />
+             <div style={{display:"flex",marginTop:15}}>
+             <Upload {...props}>
+               <Button >
+                 <Icon type="upload"/> 修改资讯头图
+               </Button>
+             </Upload>
+             {
+               this.state.img==null?(
+                 null
+               ):(
+                 <div style={{marginLeft:"20px"}}>
+                  <img style={{width:"200px"}} src={`${config.qiniu_img}${this.state.img}`} alt=""/>
+                </div>
+               )
+             }
+            </div>
              <Input
              addonBefore="发表日期"
              value={this.state.date}
@@ -257,12 +329,13 @@ class EditorBox extends React.Component{
              onChange={(e)=>{this.setState({date:e.target.value})}}
              style={{width:400,display:"block",marginTop:15,marginButtom:10,float:"left"}}
              />
+
              <Button
              onClick={this.info.bind(this)}
               style={{float:"right",marginTop:15}}
              >预览</Button>
-            </Input.Group>
 
+            </Input.Group>
             <div ref={this.initEditor.bind(this)} style={{textAlign:'left',marginTop:15}}></div>
       </Modal>
     )

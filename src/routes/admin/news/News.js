@@ -20,6 +20,15 @@ class News extends React.Component{
       title:"浏览数",
       dataIndex:"browse"
     },{
+      title:"资讯头图地址",
+      dataIndex:"newsAddress",
+      key:'newsAddress',
+      render:(text,record)=>(
+        <span>
+         <a href={record.newsAddress} target="_blank">{record.newsAddress}</a>
+        </span>
+      )
+    },{
       title:"点赞数",
       dataIndex:"agree"
     },{
@@ -116,7 +125,8 @@ showEditorBox(id){
           browse:item.browse,
           agree:item.agree,
           comment:item.comment,
-          up:item.up
+          up:item.up,
+          newsAddress:`http://img.oneyouxi.com.cn/${item.img}`
         });
         const pagination ={...this.state.pagination};
         pagination.total=(res.data.totalPage)*10;

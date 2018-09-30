@@ -132,7 +132,7 @@ class Recommend extends React.Component{
        }else if(item.type == '5'){
         var recommendType='推荐位（横向2个）';
       }else if(item.type == '6'){
-        var recommendType='推荐位（竖排10个）';
+        var recommendType='推荐位（竖排15个）';
       }
 
       if(item.title==null){
@@ -233,7 +233,7 @@ class Recommend extends React.Component{
          }else if(item.type == '5'){
           var recommendType='推荐位（横向2个）';
         }else if(item.type == '6'){
-          var recommendType='推荐位（竖排10个）';
+          var recommendType='推荐位（竖排15个）';
         }
        if(item.active_img==""){
          var imgSrc="暂无数据";

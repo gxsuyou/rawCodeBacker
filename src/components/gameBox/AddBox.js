@@ -139,7 +139,7 @@ class AddBox extends react.Component{
   onOk(){
     let brief=this.state.brief.replace(/\n/g,"<br>");
 
-    console.log(brief);
+    // console.log(brief);
     if(this.state.gameName===""){
       Message.error("游戏名不能为空");
       return false;
@@ -149,9 +149,15 @@ class AddBox extends react.Component{
       Message.error("分类不能为空");
       return false;
     }
+
    const cls=this.state.defaultOption.join(",");
    const uid=config.getCookie("uid");
-   fetchs(`${config.url_adminGame}/addGameMsg?gameName=${this.state.gameName}&gameVersion=${this.state.gameVersion}&gamePackagename=${this.state.gamePackagename}&gameRecommend=${this.state.gameRecommend}&type=${this.state.type}&cls=${cls}&gameCompany=${this.state.gameCompany}&sys=${this.state.sys}&admin=${uid}&gameDetail=${brief}&strategy_head=${this.state.strategyTopGame}&gameDownloadIos=${this.state.iosDownHref}`).then((res)=>{
+   fetchs(`${config.url_adminGame}/addGameMsg`,{
+     method:"POST",
+     headers:{
+     'Content-Type':'application/x-www-form-urlencoded' // 指定提交方式为表单提交
+     },
+     body:`gameName=${this.state.gameName}&gameVersion=${this.state.gameVersion}&gamePackagename=${this.state.gamePackagename}&gameRecommend=${this.state.gameRecommend}&type=${this.state.type}&cls=${cls}&gameCompany=${this.state.gameCompany}&sys=${this.state.sys}&admin=${uid}&gameDetail=${brief}&strategy_head=${this.state.strategyTopGame}&gameDownloadIos=${this.state.iosDownHref}`}).then((res)=>{
      if(res.data.state===1){
         this.setState({
           visible:false,

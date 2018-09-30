@@ -144,22 +144,22 @@ class EditorBox extends React.Component{
       case "推荐位（横向2个）":
        var type=5;
       break;
-      case "推荐位（竖排10个）":
+      case "推荐位（竖排15个）":
        var type=6;
       break;
    }
    var active;
    e.activityStatus==="激活"?active=1:active=0;
 
-     if(type==5||type==6){
-      this.setState({
-        inputToggle:true
-      });
-    }else{
-      this.setState({
-        inputToggle:false
-      });
-    }
+    //  if(type==5||type==6){
+    //   this.setState({
+    //     inputToggle:true
+    //   });
+    // }else{
+    //   this.setState({
+    //     inputToggle:false
+    //   });
+    // }
 
 
     this.setState({

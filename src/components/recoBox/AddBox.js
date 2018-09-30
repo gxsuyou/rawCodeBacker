@@ -261,7 +261,7 @@ class AddBox extends React.Component{
             <Radio value={1}>首页轮播推荐位(一张图)</Radio>
             <Radio value={4}>首页推荐位(一张图)</Radio>
             <Radio value={5}>首页推荐游戏(两张图)</Radio>
-            <Radio value={6}>首页推荐游戏(竖排10张图)</Radio>
+            <Radio value={6}>首页推荐游戏(竖排15张图)</Radio>
          </Radio.Group>
          <Input.Group
           className={styles.InputGroup}

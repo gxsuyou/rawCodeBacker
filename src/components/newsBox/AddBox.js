@@ -44,8 +44,9 @@ class AddBox extends React.Component{
     });
   }
   handleOk=()=>{
-    // console.log(this.state.content)
-    // return false;
+
+
+
     if(this.state.gameName==""){
       this.setState({
         optionData:[{
@@ -94,7 +95,7 @@ class AddBox extends React.Component{
    });
 
 
-   var key =`News/newsName=${this.state.title}`;
+   var key =`News/newsName=${new Date().getTime()}`;
    var uid =config.getCookie('uid');
    fetchs(`${config.url_admin}/getUptokenByMsg?scope=oneyouxiimg&key=${key}`).then((res)=>{
      if(res.data.state){
@@ -212,7 +213,6 @@ class AddBox extends React.Component{
 
   }
   info(){
-    // alert(1132312);
     Modal.info({
       title:"预览",
       content: (

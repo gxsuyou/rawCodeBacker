@@ -25,6 +25,7 @@ class Game extends React.Component{
       editorMessageDownloadNum:"",
       editorMessageIndexPriority:"",
       editorMessageHotPriority:"",
+      editorMessageOnePriority:"",
       editorMessageGameSize:"",
       editorMessageId:"",
       editorMessageGameStrategy:"",
@@ -87,6 +88,9 @@ class Game extends React.Component{
         title:"下载榜",
         dataIndex:"sortHot"
       },{
+        title:"ONE排行版",
+        dataIndex:"sortOne"
+      },{
         title:"攻略顶部的游戏推荐",
         dataIndex:"strategyGame"
       },{
@@ -101,7 +105,7 @@ class Game extends React.Component{
         render:(text,record)=>(
           <span className={styles.button}>
            <Button  onClick={this.showModalEditorMessage.bind(this,record.id,record.game_name,record.company,record.version,record.updowm,record.size,record.sortIndex,record.sortHot,record.gameInstallNum,record.strategyGame,record.gameRecommend,record.gameDownLoaderHref,
-           record.sys,record.gameDetail,record.packagename)}>编辑信息</Button>
+           record.sys,record.gameDetail,record.packagename,record.sortOne)}>编辑信息</Button>
            <Button  onClick={this.UploadVision.bind(this,record.id)}>上传数据</Button>
            <Button onClick={this.tagBoxVision.bind(this,record.id)}>标签</Button>
            <Button onClick={this.showDeleteConfirm.bind(this,record.key,record.id)} type="danger">删除</Button>
@@ -166,8 +170,7 @@ class Game extends React.Component{
   }
 
   /* 打开编辑弹框初始化数据 */
-  showModalEditorMessage(id,gameName,company,version,activation,size,sort,sort2,gameInstallNum,strategyGame,gameRecommend,gameDownLoaderHref,sys,gameDetail,packagename){
-    console.log(packagename)
+  showModalEditorMessage(id,gameName,company,version,activation,size,sort,sort2,gameInstallNum,strategyGame,gameRecommend,gameDownLoaderHref,sys,gameDetail,packagename,sortOne){
     if(sys=="ios"){
       sys=1;
     }else{
@@ -182,6 +185,7 @@ class Game extends React.Component{
     if(packagename==null){
       packagename="";
     }
+
     var gameDetail=gameDetail.replace(/<br>/g,'\n');
      this.setState({
        editorMessageId:id,
@@ -192,6 +196,7 @@ class Game extends React.Component{
        editorMessageUp:activation,
        editorMessageIndexPriority:sort,
        editorMessageHotPriority:sort2,
+       editorMessageOnePriority:sortOne,
        editorMessageGameSize:size,
        editorMessageDownloadNum:gameInstallNum,
        editorMessageGameStrategy:strategyGame,
@@ -208,6 +213,7 @@ class Game extends React.Component{
   up=this.state.editorMessageUp,
   IndexPriority=this.state.editorMessageIndexPriority,
   HotPriority=this.state.editorMessageHotPriority,
+  OnePriority=this.state.editorMessageOnePriority,
   GameSize=this.state.editorMessageGameSize,
   GameName=this.state.editorMessageGameName,
   MessageVision=this.state.editorMessageVision,
@@ -233,7 +239,8 @@ class Game extends React.Component{
   Object.is(Number(loadNum),NaN)!=false||
   Object.is(Number(up),NaN)!=false||
   Object.is(Number(IndexPriority),NaN)!=false||
-  Object.is(Number(HotPriority),NaN)!=false
+  Object.is(Number(HotPriority),NaN)!=false||
+  Object.is(Number(OnePriority),NaN)!=false
     ){
       message.error("必须输入数字!");
       return false;
@@ -243,7 +250,7 @@ class Game extends React.Component{
     headers: {
       'Content-Type':'application/x-www-form-urlencoded' // 指定提交方式为表单提交
     },
-    body:`name=${this.state.editorMessageGameName}&activation=${this.state.editorMessageUp}&company=${this.state.editorMessageCompanyName}&version=${this.state.editorMessageVision}&download_num=${this.state.editorMessageDownloadNum}&sort=${this.state.editorMessageIndexPriority}&sort2=${this.state.editorMessageHotPriority}&size=${this.state.editorMessageGameSize}&id=${this.state.editorMessageId}&strategy_head=${this.state.editorMessageGameStrategy}&game_recommend=${brief}&gameDownloadIos=${this.state.editorMessageIosDownHref}&game_detail=${gameDetail}&gamePackagename=${packagename}`}).then((res)=>{
+    body:`name=${this.state.editorMessageGameName}&activation=${this.state.editorMessageUp}&company=${this.state.editorMessageCompanyName}&version=${this.state.editorMessageVision}&download_num=${this.state.editorMessageDownloadNum}&sort=${this.state.editorMessageIndexPriority}&sort2=${this.state.editorMessageHotPriority}&size=${this.state.editorMessageGameSize}&id=${this.state.editorMessageId}&strategy_head=${this.state.editorMessageGameStrategy}&game_recommend=${brief}&gameDownloadIos=${this.state.editorMessageIosDownHref}&game_detail=${gameDetail}&gamePackagename=${packagename}&sort3=${OnePriority}`}).then((res)=>{
       if(res.data.state){
          this.setState({
            editorMessageVisible:false,
@@ -290,6 +297,7 @@ class Game extends React.Component{
       var c=[]
       var up,sys;
       var packageornot;
+      var oneSort;
       res.data.result.forEach((item)=>{
         if(item.game_size==null){
           var size=0;
@@ -301,6 +309,14 @@ class Game extends React.Component{
         }else{
            company=item.game_company;
         }
+
+       if(item.sort3==null){
+         oneSort=0
+       }else{
+         oneSort=item.sort3
+       }
+
+
         if(item.sys==2){
           //是否安卓安装包
           item.game_download_andriod==null?packageornot="否":packageornot="是";
@@ -320,6 +336,7 @@ class Game extends React.Component{
           gameInstallNum:item.game_download_num,
           sortIndex:item.sort,
           sortHot:item.sort2,
+          sortOne:oneSort,
           admin:item.comment,
           company:company,
           version:item.game_version,
@@ -356,7 +373,7 @@ class Game extends React.Component{
           MainData:[]
         });
         var i=1;
-        var up,sys,packageornot;
+        var up,sys,packageornot,oneSort;
         res.data.forEach((item)=>{
           item.activation?up="是":up="否";
           item.sys==2?sys="Android":sys="ios";
@@ -369,6 +386,12 @@ class Game extends React.Component{
             var company="无";
           }else{
              company=item.game_company;
+          }
+
+          if(item.sort3==null){
+            oneSort=0
+          }else{
+            oneSort=item.sort3
           }
 
           if(item.sys==2){
@@ -389,6 +412,7 @@ class Game extends React.Component{
              gameInstallNum:item.game_download_num,
              sortIndex:item.sort,
              sortHot:item.sort2,
+             sortOne:oneSort,
              admin:item.comment,
              company:company,
              version:item.game_version,
@@ -422,19 +446,23 @@ class Game extends React.Component{
       this.fetch(1);
     },300);
   }
-    /* 热门排行
-    @params选择不同参数
-   */
+    /* 热门排行@params选择不同参数*/
   gameRow(e,p=1){
     fetchs(`${config.url_adminGame}/gameAdmin?p=${p}&sys=${this.state.os}&sortType=${e.target.value}`).then((res)=>{
       var i=1;
       var c=[]
-      var up,sys,packageornot;
+      var up,sys,packageornot,oneSort;
+
       res.data.result.forEach((item)=>{
         if(item.game_size==null){
           var size=0;
         }else{
           size=item.game_size;
+        }
+        if(item.sort3==null){
+          oneSort=0
+        }else{
+          oneSort=item.sort3
         }
         if(item.game_company==null){
           var company="无";
@@ -459,6 +487,7 @@ class Game extends React.Component{
           gameInstallNum:item.game_download_num,
           sortIndex:item.sort,
           sortHot:item.sort2,
+          sortOne:oneSort,
           admin:item.comment,
           company:company,
           version:item.game_version,
@@ -485,8 +514,8 @@ class Game extends React.Component{
       })
     })
   }
-
-   format = function (s, c) {
+  /* 导出excel */
+  format = function (s, c) {
      return s.replace(/{(\w+)}/g,
          function (m, p) {
              return c[p];
@@ -495,8 +524,6 @@ class Game extends React.Component{
   base64 = function (s) {
       return window.btoa(unescape(encodeURIComponent(s)));
   }
-
-  /* 导出excel */
   outputExcel=()=>{
     var uri = 'data:application/vnd.ms-excel;base64,';
     var template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel"' +
@@ -539,7 +566,7 @@ class Game extends React.Component{
        >
          <Radio.Button value="sort">热门榜</Radio.Button>
          <Radio.Button value="sort2">下载榜</Radio.Button>
-         <Radio.Button value="sort3" disabled>one榜</Radio.Button>
+         <Radio.Button value="sort3">one榜</Radio.Button>
          <Radio.Button value="null" >查看全部</Radio.Button>
        </Radio.Group>
        <Search
@@ -593,19 +620,20 @@ class Game extends React.Component{
          placeholder="请输入热门榜优先级"/>
          <Input addonBefore="热门榜优先级" onChange={this.EditorMessageOnChange.bind(this,"IndexPriority")}
         value={this.state.editorMessageIndexPriority}
-          placeholder="请输入下载版优先级" />
-         <Input addonBefore="下载版优先级" onChange={this.EditorMessageOnChange.bind(this,"HotPriority")}
+          placeholder="请输入下载榜优先级" />
+         <Input addonBefore="下载榜优先级" onChange={this.EditorMessageOnChange.bind(this,"HotPriority")}
          value={this.state.editorMessageHotPriority}
-         placeholder="请输入热玩优先级" />
+         />
+         <Input addonBefore="one榜优先级"
+         onChange={this.EditorMessageOnChange.bind(this,"OnePriority")}
+         value={this.state.editorMessageOnePriority}
+         />
          <Input addonBefore="游戏大小" onChange={this.EditorMessageOnChange.bind(this,"GameSize")}
          value={this.state.editorMessageGameSize}
          placeholder="输入游戏大小" />
-
          <Input addonBefore="包名" onChange={this.EditorMessageOnChange.bind(this,"Packagename")}
          value={this.state.editorMessagePackagename}
          placeholder="输入包名" />
-
-
          <Input addonBefore="游戏10字简介" onChange={this.EditorMessageOnChange.bind(this,"Brief")}
          value={this.state.editorMessageBrief}
          placeholder="游戏10字简介" />

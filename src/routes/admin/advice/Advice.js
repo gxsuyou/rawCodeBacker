@@ -4,12 +4,14 @@ import styles from "./Advice.scss";
 import config from "../../../common/config";
 import fetchs from "../../../utils/request";
 import ShowBox from '../../../components/adviceBox/showBox'
+import SendAdviseBox from "../../../components/adviceBox/adviseBox"
 class Advice extends React.Component{
   state={
     data:[],
     pagination:{},
     loading:false,
     adviceVisibleBox:false,
+    sendAdviceBox:false,
     adviceIdBox:null,
     selectedRowKeys:[],
     batchDelete:[],
@@ -36,11 +38,24 @@ class Advice extends React.Component{
           </span>
         )
       },{
+        title:'反馈意见内容',
+        dataIndex:'status',
+        key:'status'
+      },{
         title:"操作",
         dataIndex:'action',
         key:'action',
         render:(text,recored)=>(
           <span className={styles.button}>
+            <Button
+             onClick={()=>{
+               // console.log()
+               this.setState({
+                 sendAdviceBox:true,
+                 adviceIdBox:recored.id
+               })
+             }}
+            >发送信息</Button>
             <Button
              onClick={()=>{
                this.setState({
@@ -93,10 +108,14 @@ class Advice extends React.Component{
     })
     this.fetch(e.current);
   }
-  propHandBox=function(v){
+  propHandBox=function(v,n){
     this.setState({
-      adviceVisibleBox:v
+      adviceVisibleBox:v,
+      sendAdviceBox:v
     });
+    if(n){
+      this.fetch(n)
+    }
   }
   fetch=(p)=>{
      this.setState({
@@ -106,12 +125,15 @@ class Advice extends React.Component{
      then((res)=>{
        var i=1;
        var c=[];
+       var status;
        res.data.result.forEach((item)=>{
+         item.status==1?status="是":status="否";
           c.push({
             key:i++,
             nickName:item.nick_name,
             content:item.detail,
-            id:item.id
+            id:item.id,
+            status:status
           })
        });
        const pagination={...this.state.pagination};
@@ -145,11 +167,7 @@ class Advice extends React.Component{
          this.delete(item.id)
        })
      }
-
    }
-   // console.log(this.state.pagination)
-   // return ;
-
  }
 
   render(){
@@ -183,6 +201,12 @@ class Advice extends React.Component{
          visible={this.state.adviceVisibleBox}
          id={this.state.adviceIdBox}
          propHandBox={this.propHandBox.bind(this)}
+        />
+        <SendAdviseBox
+          visible={this.state.sendAdviceBox}
+          id={this.state.adviceIdBox}
+           page={this.state.pagination.current}
+          propHandBox={this.propHandBox.bind(this)}
         />
       </div>
     )

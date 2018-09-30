@@ -1,5 +1,5 @@
 import React from "react";
-import {Select,Table,Button,Input,Message} from 'antd';
+import {Select,Table,Button,Input,Message,Radio} from 'antd';
 import styles from "./HeadGame.scss";
 import fetchs from "../../../utils/request.js";
 import config from "../../../common/config";
@@ -19,6 +19,7 @@ class HeadGame extends React.Component{
     editorActivitySort:"",
     editorActivityStatus:"",
     editorActivityImgSrc:"",
+    os:"2",
     current:1,
     columns:[
       {title:'序号',
@@ -59,7 +60,7 @@ class HeadGame extends React.Component{
       loading:true,
       mainData:[]
     });
-    fetchs(`${config.url_adminNews}/getHeadGame?p=${p}`)
+    fetchs(`${config.url_adminNews}/getHeadGame?p=${p}}&sys=${this.state.os}`)
     .then((res)=>{
       var i =1,sys;
       res.data.result.forEach((item)=>{
@@ -105,10 +106,29 @@ class HeadGame extends React.Component{
       editorBoxVison:e
     });
   }
+  osRenderChange=(e)=>{
+    this.setState({
+      os:e.target.value,
+      current:1,
+    });
+    setTimeout(()=>{
+      this.fetchs_chapter(1);
+    },300);
+  }
   render(){
     return(
       <div className={styles.table}>
        <div className={styles.tableOperations}>
+       <Radio.Group
+          style={{marginRight:20}}
+          defaultValue="2"
+          buttonStyle="solid"
+          value={this.state.os}
+          onChange={this.osRenderChange}
+       >
+          <Radio.Button value="2">Android</Radio.Button>
+          <Radio.Button value="1">Ios</Radio.Button>
+       </Radio.Group>
         <Button onClick={()=>{this.setState({addBoxVision:true})}} type="primary">添加</Button>
        </div>
        <Table
