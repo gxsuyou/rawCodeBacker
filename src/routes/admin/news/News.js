@@ -70,16 +70,14 @@ showEditorBox(id){
   }
 
   handleTableChange=(pagination,filters,sorter)=>{
-
     this.setState({
       current:pagination.current
     });
-    this.fetchsNews(pagination.current);
-    //console.log(this.state.current);
+    this.fetchsNews(pagination.current)
   }
 
+
  deleteNews(id){
-  // /adminNews/?id
    fetchs(`${config.url_adminNews}/deleteNewsById?id=${id}`).then((res)=>{
      if(res.data.state){
        Message.success("删除成功");
@@ -89,6 +87,7 @@ showEditorBox(id){
      }
    })
  }
+
  essenceHand(id,up){
    var _up;
    up==1?_up=0:_up=1;

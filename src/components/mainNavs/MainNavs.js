@@ -27,6 +27,7 @@ class MainNavs extends React.Component{
     }
     const path=config.getCookie("path");
     if(path!==null){
+
        window.location.href=`${config.url_back}#/admin/${path}`;
     }
   }
@@ -48,29 +49,33 @@ class MainNavs extends React.Component{
         this.setState({
           current:"4"
         });
-      }else if(hash.indexOf("HeadBox")!=-1){
-        this.setState({
-          current:"6"
-        });
-      }else if(hash.indexOf("SliderGame")!=-1){
-        this.setState({
-          current:"7"
-        });
-      }else if(hash.indexOf("h5")!=-1){
-        this.setState({
-          current:"8"
-        });
-      }else if(hash.indexOf("Strategy")!=-1){
-        this.setState({
-          current:"9"
-        });
-      }else if(hash.indexOf("news")!=-1){
+      }else if(hash.indexOf("activityarea")!=-1){
         this.setState({
           current:"5"
         });
-      }else if(hash.indexOf('advice')!=-1){
+      }else if(hash.indexOf("news")!=-1){
+        this.setState({
+          current:"6"
+        });
+      }else if(hash.indexOf("HeadBox")!=-1){
+        this.setState({
+          current:"7"
+        });
+      }else if(hash.indexOf("SliderGame")!=-1){
+        this.setState({
+          current:"8"
+        });
+      }else if(hash.indexOf("h5")!=-1){
+        this.setState({
+          current:"9"
+        });
+      }else if(hash.indexOf("Strategy")!=-1){
         this.setState({
           current:"10"
+        });
+      }else if(hash.indexOf('advice')!=-1){
+        this.setState({
+          current:"11"
         });
       }
 
@@ -101,19 +106,24 @@ class MainNavs extends React.Component{
              标签
             </Link>
            </Menu.Item>
+            <Menu.Item key="5">
+            <Link to="/admin/activityarea">
+             活动专区
+            </Link>
+           </Menu.Item>
          </SubMenu>
          <SubMenu key="sub2" title={<span><Icon type="setting" /><span>咨询管理</span></span>}>
-          <Menu.Item key="5">
+          <Menu.Item key="6">
            <Link to="/admin/news">
              资讯
             </Link>
           </Menu.Item>
-          <Menu.Item key="6">
+          <Menu.Item key="7">
              <Link to="/admin/HeadBox">
               头部游戏设置
             </Link>
           </Menu.Item>
-          <Menu.Item key="7">
+          <Menu.Item key="8">
             <Link to="/admin/SliderGame">
               横向游戏设置
             </Link>
@@ -124,14 +134,14 @@ class MainNavs extends React.Component{
         H5游戏管理</span>
         </span>
       }>
-          <Menu.Item key="8">
+          <Menu.Item key="9">
           <Link to="/admin/h5">
              H5
           </Link>
           </Menu.Item>
         </SubMenu>
         <SubMenu key="sub4" title={<span><Icon type="setting" /><span>攻略管理</span></span>}>
-          <Menu.Item key="9">
+          <Menu.Item key="10">
             <Link to="/admin/Strategy">
              攻略
            </Link>
@@ -139,7 +149,7 @@ class MainNavs extends React.Component{
         </SubMenu>
          <SubMenu key="sub5" title={<span><Icon type="setting"/>
          <span>用户意见反馈</span></span>}>
-           <Menu.Item key="10">
+           <Menu.Item key="11">
             <Link to="/admin/advice">
              查看反馈
            </Link>

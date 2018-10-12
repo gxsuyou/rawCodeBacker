@@ -37,6 +37,7 @@ fetch_login(user,pwd){
     },
     body:`name=${user}&pwd=${pwd}`
  }).then((res)=>{
+      console.log(res)
      if(res.data.state){
        //登录成功
        this.props.dispatch({

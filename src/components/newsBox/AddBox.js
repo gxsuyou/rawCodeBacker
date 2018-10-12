@@ -1,5 +1,5 @@
 import React from "react";
-import {Modal,Button,Select,Input,Upload,Icon,Message} from "antd";
+import {Modal,Button,Select,Input,Upload,Icon,Message,Radio} from "antd";
 import fetchs from "../../utils/request";
 import config from "../../common/config";
 import qiniu from "../../utils/_qiniu";
@@ -7,9 +7,9 @@ import styles from "./AddBox.scss";
 import E from 'wangeditor';
 
 const Option=Select.Option;
-function fake(n,callback){
+function fake(n,os,callback){
   const data=[];
-  fetchs(`${config.url_adminGame}/activeSearch?name=${n}`).then((res)=>{
+  fetchs(`${config.url_adminGame}/activeSearch?name=${n}&sys=${os}`).then((res)=>{
     res.data.result.forEach((item)=>{
       data.push({
         value:item.game_name,
@@ -35,6 +35,7 @@ class AddBox extends React.Component{
     chapterData:"",
     content:"",
     gameName:"",
+    os:2,
     toggleInput:true,
     editor:null
   }
@@ -44,9 +45,6 @@ class AddBox extends React.Component{
     });
   }
   handleOk=()=>{
-
-
-
     if(this.state.gameName==""){
       this.setState({
         optionData:[{
@@ -150,7 +148,6 @@ class AddBox extends React.Component{
 
     }
    });
-
   }
 
 
@@ -173,13 +170,13 @@ class AddBox extends React.Component{
     if(value===""){
       return false;
     }
-    fake(value,(data)=>this.setState({
+    fake(value,this.state.os,(data)=>this.setState({
       optionData:data
     }));
   }
   focusGetData(){
     const c=[];
-    fetchs(`${config.url_adminGame}/activeSearch`).then((res)=>{
+    fetchs(`${config.url_adminGame}/activeSearch?sys=${this.state.os}`).then((res)=>{
       res.data.result.forEach((item)=>{
           c.push({
             value:item.game_name,
@@ -270,6 +267,23 @@ class AddBox extends React.Component{
          onFocus={this.focusGetData.bind(this)}>
        {options}
      </Select>
+     <Radio.Group onChange={(e)=>{
+       this.setState({
+         os:e.target.value,
+         gameName:"",
+         optionData:[{
+             value:null,
+             text:null,
+             id:null
+           }]
+       });
+     }}
+     value={this.state.os}
+     style={{lineHeight:2,marginLeft:30}}
+     >
+        <Radio value={2}>android</Radio>
+        <Radio value={1}>ios</Radio>
+     </Radio.Group>
       <Input.Group className={styles.InputGroup}>
         <Input
         addonBefore="文章标题"

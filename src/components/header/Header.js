@@ -20,6 +20,9 @@ class AdminHeader extends React.Component{
   }
   state={
     visible:false,
+    bindAppVisible:false,
+    bindAppOnlyId:"",
+    bindAppUser:"",
     user:"",
     nickName:"",
     oldPwd:"",
@@ -45,6 +48,51 @@ class AdminHeader extends React.Component{
       nickName:nickName
     });
   }
+
+
+  bindBox=()=>{
+    console.log("init",config.url_1)
+    const id=config.getCookie("uid");
+    this.setState({
+        bindAppVisible:true,
+    })
+    fetchs(`${config.url_1}users/getBindingInfo?id=${id}`).then((res)=>{
+
+      if(res.data.length!==0){
+          this.setState({
+            bindAppUser:res.data[0].only_id
+          })
+      }else{
+        this.setState({
+          bindAppUser:"无"
+        })
+      }
+
+    })
+
+  }
+
+  onBindOK=()=>{
+    const id=config.getCookie("uid");
+    console.log(this.state.bindAppOnlyId,id)
+    if(this.state.bindAppOnlyId==""){
+      Message.error("不能为空")
+      return false;
+    }
+    fetchs(`${config.url_1}users/getUserBinding?user=${this.state.bindAppOnlyId}&id=${id}`).then((res)=>{
+        if(res.data.state){
+          Message.success("绑定成功")
+          this.setState({
+            bindAppVisible:false
+          })
+        }else{
+          Message.error("绑定失败")
+        }
+    })
+
+  }
+
+
   onOK=()=>{
    if(this.state.user===""){
      Message.error("用户名不能为空");
@@ -77,7 +125,6 @@ class AdminHeader extends React.Component{
   }
 
   const uid=config.getCookie("uid");
-
   fetchs(`${config.url_admin}/setPassword`,{
     method:"POST",
     headers:{
@@ -112,6 +159,44 @@ class AdminHeader extends React.Component{
               visible:true
             })}}
             >修改密码</Button>
+            <Button className={styles.outPut}
+            onClick={
+               this.bindBox
+            }>
+              绑定App账户
+            </Button>
+          <Modal
+           title="绑定App账户"
+            visible={this.state.bindAppVisible}
+            onCancel={()=>{
+              this.setState({
+                bindAppVisible:false
+              })
+            }}
+            onOk={this.onBindOK}
+            okText="绑定"
+            cancelText="取消"
+          >
+           <Input.Group
+           className={styles.InputGroup}
+           >
+             <Input
+             addonBefore="绑定APP的id"
+             disabled={true}
+             value={this.state.bindAppUser}
+              />
+              <Input
+                addonBefore="APP的id"
+                placeholder="输入您App的only_id(只能绑定一次)"
+                value={this.state.bindAppOnlyId}
+                onChange={(e)=>{
+                  this.setState({bindAppOnlyId:e.target.value})
+                }}
+               />
+           </Input.Group>
+          </Modal>
+
+
           <Modal
            title="密码修改"
            visible={this.state.visible}

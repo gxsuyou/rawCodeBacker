@@ -17,6 +17,7 @@ import HeadBox from "./headGame/HeadGame";
 import H5 from "./h5/H5";
 import News from "./news/News.js";
 import Advice from "./advice/Advice";
+import Activityarea from "./activityarea/Activityarea"
 const { Header, Sider, Content } = Layout;
 
 class AdminIndex extends React.Component{
@@ -57,6 +58,10 @@ class AdminIndex extends React.Component{
           />
           <Route path="/admin/advice"
             component={Advice}
+          />
+          <Route
+          path="/admin/activityarea"
+            component={Activityarea}
           />
         </Content>
        </Layout>
